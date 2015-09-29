@@ -1,0 +1,43 @@
+<template name="randomDrop">
+	<div class="template-randomDrop container">
+		<div class="crate-buttons">
+			<button class="{{#if dailyDropEnabled}}enabled{{else}}disabled{{/if}}" id="drop-button">{{dailyDropText dailyDropEnabled}}</button>
+			{{#each quality}}
+				{{#with dropButton this}}
+				<button class="{{buttonQuality}}-button crate-button {{#if enabled}}enabled{{else}}disabled{{/if}}" data-button_quality="{{buttonQuality}}">{{buttonQuality}} crate - {{crateCost}}</button>
+				{{/with}}
+			{{/each}}
+		</div>
+
+		{{#each drop}}
+			<div class="drop" data-painting-id="{{this._id}}">
+				{{>itemTemplate this._id}}
+				<div class="row">
+					<button data-item_id="{{this._id}}" class="add-to-inventory">add to inventory</button>
+					<button data-item_id="{{this._id}}" class="quick-sell">sell</button>
+				</div>
+			</div>
+		{{/each}}
+
+	</div>
+</template>
+
+<template name="dropAnimationModal">
+	<div class="template-dropAnimationModal">
+	    <div style="z-index:9999999999999999;" class="modal fade">
+	        <div class="modal-dialog">
+	            <div class="modal-content container">
+	            	<div class="pick-section">
+		                <h4 class="{{quality}}">{{quality}}</h4>
+		                <div class="row">
+			            	<button id="stop-button" type="button" class="btn btn-default">stop</button>
+			            </div>
+			        </div>
+			        <div class="reward">
+			        	<h4>you received a <span class="{{crateQuality}}">{{crateQuality}}</span> crate!</h4>
+			        </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+</template>

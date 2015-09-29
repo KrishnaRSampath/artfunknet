@@ -1,0 +1,145 @@
+<template name="auctionTable">
+	<div class="template-auctionTable">
+		<div class="col-xs-12 no-padding">
+			<table class="auction-table" data-table_id="{{this.table_id}}">
+				<tr>
+				{{#each header this}}
+					{{> headerTemplate this}}
+				{{/each}}
+				</tr>
+				{{#each this.auction}}
+					{{#with auction_info this}}
+					<tr data-auction_id="{{auction_id}}" id="{{#if winning}}winning{{else}}{{#if losing}}losing{{/if}}{{/if}}">
+						<td>
+							{{#with thumbnailInfo item_id}}
+							<img class="image-thumb preview enabled" src="{{imageURL}}" width="{{image_width}}" height="{{image_height}}"/>
+							{{/with}}
+						</td>
+						{{#with time_remaining expiration}}
+						<td class="{{#if soon}}soon{{/if}}">{{remaining}}</td>
+						{{/with}}
+						<td>{{title}}</td>
+						<td>{{date}}</td>
+						<td>{{artist}}</td>
+						<td><span class="{{rarity}}"><strong>{{rarity}}</strong></span></td>
+						<td>{{height}} x {{width}}</td>
+						<td>{{condition}}</td>
+						<td>
+						{{#each attributes}}
+							<p class="item-attribute">{{text}}</p>
+						{{/each}}
+						</td>
+						<td class="{{#if history}}highlight{{/if}}">{{current_bid auction_id}}</td>
+						<td>{{buy_now}}</td>
+						<td class="action-buttons">						
+							<span class="place-bid {{#if biddable}}enabled{{else}}disabled{{/if}}" data-auction_id="{{auction_id}}"><i class="fa fa-usd"></i></span>
+							<span class="view-history {{#if history}}enabled{{else}}disabled{{/if}}" data-auction_id="{{auction_id}}"><i class="fa fa-history"></i></span>
+						</td>
+						<td><a href="/user/{{seller}}">{{seller}}</a></td>
+					</tr>
+					{{/with}}
+				{{/each}}
+			</table>
+		</div>
+	</div>
+</template>
+
+<template name="headerTemplate">
+	<th class="table-header" data-sort="{{sort_id}}" data-table_id="{{table_id}}">
+		<div class="row no-margin">
+			<div class="col-xs-8">
+				<p>{{text}}</p>
+			</div>
+			<div class="col-xs-4">
+				{{#with sorted this}}{{#if sort}}{{#if ascending}}<i class="fa fa-caret-up"></i>{{else}}<i class="fa fa-caret-down"></i>{{/if}}{{else}} {{/if}}{{/with}}
+			</div>
+		</div>
+	</th>
+</template>
+
+<template name="placeBidModal">
+	<div class="template-placeBidModal">
+	    <div style="z-index:9999999999999999;" class="modal fade">
+	        <div class="modal-dialog">
+	            <div class="modal-content container">
+	            	{{#with auctionData}}
+	                <h2>Place your bid for <span class="highlight">{{title}}</span> by <span class="highlight">{{artist}}</span></h2>
+	                <div class="row quick-bid">
+			            <button id="bid-minimum" type="button" class="btn btn-default">bid minimum - ${{minimum}}</button>
+			            {{#if canBuy}}
+			            <button id="buy-now" type="button" class="btn btn-default">buy now - ${{buy_now}}</button>
+			            {{/if}}
+			        </div>
+                	<div class="row">
+                		<p>funds available: ${{balance}}</p>
+                	</div>
+	                <div class="row">
+		                <textarea id="bid-amount" placeholder="bid amount"></textarea>
+		            </div>
+		            <div class="row modal-buttons">
+			            <button id="ok-modal" type="button" class="btn btn-default">ok</button>
+			            <button id="cancel-modal" type="button" class="btn btn-default" data-dismiss="modal">cancel</button>
+			        </div>
+			        <div class="errors">
+		            	{{#each error}}
+		            	<p class="error-text">{{this}}</p>
+		            	{{/each}}
+	            	</div>
+			        {{/with}}
+	            </div>
+	        </div>
+	    </div>
+	</div>
+</template>
+
+<template name="auctionHistoryModal">
+	<div class="template-auctionHistoryModal">
+	    <div style="z-index:9999999999999999;" class="modal fade">
+	        <div class="modal-dialog">
+	            <div class="modal-content container">
+	            	{{#with auctionData}}
+	                <h2>Bid history for <span class="highlight">{{title}}</span> by <span class="highlight">{{artist}}</span></h2>
+			        {{/with}}
+	                <table class="history-table">
+	                	<tr>
+		                	<th class="table-header">
+								<p>amount</p>			
+							</th>
+							<th class="table-header">
+								<p>timestamp</p>
+							</th>
+						</tr>
+	                	{{#each history}}
+	                	<tr class="{{#if even}}even{{/if}}">
+	                		<td>{{amount}}</td>
+	                		<td>{{date}}</td>
+	                	</tr>
+	                	{{/each}}
+	                </table>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+</template>
+
+<template name="previewModal">
+	<div class="template-previewModal">
+	    <div style="z-index:9999999999999999;" class="modal fade">
+	        <div class="modal-dialog">
+	            <div class="modal-content container">
+	            	{{#with auctionData}}
+	                <h2><span class="highlight">{{title}}</span> by <span class="highlight">{{artist}}</span></h2>
+			        {{/with}}
+	            	{{#with imageInfo itemId}}
+					<img class="image-thumb" src="{{imageURL}}" width="{{image_width}}" height="{{image_height}}"/>
+					<!-- <img class="image-thumb" src="img/paintings/{{filename}}" width="{{image_width}}" height="{{image_height}}"/> -->
+					{{#if biddable}}
+			        <button id="place-bid" type="button" class="btn btn-default">place bid</button>
+			        {{/if}}
+			        <button id="close-button" type="button" class="btn btn-default">close</button>
+					{{/with}}
+	            </div>
+	        </div>
+	    </div>
+	</div>
+</template>

@@ -1,0 +1,14 @@
+<template name="navbar">
+	<div class="template-navbar">
+		{{#if currentUser}}
+		<div class="col-xs-12 no-padding pull-right">
+			<div class="container">
+				<a href="/"><i class="fa fa-home"></i></a>
+				<a href="/auctions"><i class="fa fa-gavel"></i></a>
+				<a href="/loot"><i class="fa fa-gift"></i></a>
+		        <a href="/logout"><i class="fa fa-sign-out light-gray"></i></a>
+		    </div>
+	    </div>
+	    {{/if}}
+	</div>
+</template>

@@ -1,0 +1,32 @@
+.template-alerts tr {
+	border-top: 1px solid gray;
+	border-bottom: 1px solid gray;
+}
+
+.template-alerts tr:nth-child(even) {
+	background-color: #EEEEEE;
+}
+
+.template-alerts td {
+	padding: 10px 36px;
+	font-size: 1.2em;
+}
+
+.template-alerts .good {
+	color: green;
+}
+
+.template-alerts .bad {
+	color: red;
+}
+
+.template-alerts i {
+	color: black;
+	opacity: .5;
+	font-size: 1.2em;
+}
+
+.template-alerts i:hover {
+	opacity: 1;
+	cursor: pointer;
+}

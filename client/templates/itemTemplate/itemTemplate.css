@@ -1,0 +1,13 @@
+.template-itemTemplate .artwork {
+	margin: 20px;
+	border-top: 1px solid gray;
+}
+
+.template-itemTemplate p {
+	margin: 5px 20px;
+}
+
+.template-itemTemplate .image-thumb {
+	margin: 24px auto;
+	text-align: center;
+}

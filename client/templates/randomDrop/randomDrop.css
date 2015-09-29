@@ -1,0 +1,57 @@
+.template-randomDrop .drop {
+	margin: 20px;
+	border-top: 1px solid gray;
+}
+
+.template-randomDrop p {
+	margin: 5px 20px;
+}
+
+.template-randomDrop button {
+	font-size: 1em;
+	width: 200px;
+	height: 36px;
+}
+
+.template-randomDrop .disabled {
+	opacity: .5;
+}
+
+.pick-section, .template-dropAnimationModal .reward {
+	margin: 48px auto;
+}
+
+.template-randomDrop .crate-buttons button {
+	background-color: white;
+	width: 260px;
+	font-weight: bold;
+}
+
+#drop-button {
+	background-color: black;
+}
+
+.template-randomDrop .bronze-button {
+	border: 1px solid #D8947D;
+	color: #D8947D;
+}
+
+.template-randomDrop .silver-button {
+	border: 1px solid #AAAAAA;
+	color: #AAAAAA;
+}
+
+.template-randomDrop .gold-button {
+	border: 1px solid #D8AF5C;
+	color: #D8AF5C;
+}
+
+.template-randomDrop .platinum-button {
+	border: 1px solid #BFBFBF;
+	color: #BFBFBF;
+}
+
+.template-randomDrop .diamond-button {
+	border: 1px solid #93CFCF;
+	color: #93CFCF;
+}

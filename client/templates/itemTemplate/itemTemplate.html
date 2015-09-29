@@ -1,0 +1,30 @@
+<template name="itemTemplate">
+	<div class="template-itemTemplate">
+		<div class="row">
+			<div class="col-xs-5">
+				{{#with itemData this}}
+
+				<h2>{{title}}</h2>
+				<p>{{date}}</p>
+				<p>{{artist}}</p>
+				<p><span class="{{rarity}}"><strong>{{rarity}}</strong></span></p>
+				<p>{{medium}}</p>
+				<p>{{height}} x {{width}}</p>
+				<p>condition: {{condition}}</p>
+				<p>estimated value: {{itemValue item_id}}</p>
+				{{#each attributes}}
+					<p class="item-attribute">{{text}}</p>
+				{{/each}}
+
+				{{/with}}
+			</div>
+
+			<div class="col-xs-7">
+				{{#with imageInfo this}}
+				<!-- <img class="image-thumb" src="img/paintings/{{filename}}" alt="{{title}}" width="{{image_width}}" height="{{image_height}}"/> -->
+				<img class="image-thumb" src="{{imageURL}}" alt="{{title}}" width="{{image_width}}" height="{{image_height}}"/>
+				{{/with}}
+			</div>
+		</div>
+	</div>
+</template>

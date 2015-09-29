@@ -1,0 +1,170 @@
+body {
+	color: #777777;
+	font-family: courier;
+}
+
+.upload-section {
+	position: relative;
+	width: 100%;
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
+	display: inline-block;
+}
+
+h2 {
+	margin-bottom: 10px;
+	font-size: 20px;
+}
+
+.upload-section textarea {
+	padding-left: 12px;
+	font-size: 18px;
+	width: 400px;
+	height: 24px;
+	resize: none;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+h1 {
+	color: gray;
+}
+
+button {
+	border: none;
+	background-color: black;
+	color: white;
+	font-family: inherit;
+	cursor: pointer;
+	width: 200px;
+	height: 40px;
+	font-size: 1.5em;
+}
+
+.submit-button {
+	display: block;
+	float: left;
+	clear: both;
+	margin-top: 20px;
+	margin-bottom: 80px;
+}
+
+.field-title {
+	padding: 0 0 0 0;
+	margin-bottom: 0px;
+}
+
+.preview-window {
+	background-color: #DDDDDD;
+	width: 480px;
+	height: 480px;
+	text-align: center;
+	vertical-align: middle;
+	padding: auto;
+}
+
+.image-preview {
+	margin: auto;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.helper {
+	display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.upload-area {
+	width: 500px;
+	height: 100%;
+	display: inline-block;
+	float: left;
+}
+
+.data-entry {
+	width: 420px;
+	display: inline-block;
+	float: left;
+}
+
+a {
+	text-decoration: none;
+}
+
+.button-container {
+	display: block;
+	margin-bottom: 20px;
+}
+
+.artwork-entry, .artist-entry {
+	display: block;
+	border: 1px solid gray;
+	padding: 20px 20px 20px 20px;
+}
+
+.masterpiece {
+	color: teal;
+}
+
+.legendary {
+	color: orange;
+}
+
+.rare {
+	color: #CCCC00;
+}
+
+.uncommon {
+	color: blue;
+}
+
+.common {
+	color: green;
+}
+
+.bronze {
+	color: #E8A48D;
+}
+
+.silver {
+	color: #DDDDDD;
+}
+
+.gold {
+	color: #E8BF6C;
+}
+
+.platinum {
+	color: #DFDFDF;
+}
+
+.diamond {
+	color: #A3FFFF;
+}
+
+.no-padding {
+	padding: 0px;
+}
+
+.no-margin {
+	margin: 0px;
+}
+
+.container {
+	margin: auto;
+	width: 90%;
+}
+
+.page-content {
+	margin-top: 64px;
+}
+
+.orange {
+	color: #FF6600;
+}
+
+.blue {
+	color: #0066FF;
+}

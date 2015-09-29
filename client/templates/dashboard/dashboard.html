@@ -1,0 +1,21 @@
+<template name="dashboard">
+	<div class="template-dashboard">
+		<div class="container">
+			{{#with userData}}
+			<h2 class="orange">{{profile.screen_name}}</h2>
+			<h4 class="orange">bank balance: ${{bank_balance}}</h4>
+			{{/with}}
+
+			<div class="dash-section">
+				{{> alerts}}
+			</div>
+
+			<div class="dash-section">
+				{{> activeAuctions}}
+			</div>
+			<div class="dash-section">
+				{{> inventory}}
+			</div>
+		</div>
+	</div>
+</template>

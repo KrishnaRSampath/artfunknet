@@ -1,0 +1,21 @@
+.template-navbar i {
+	font-size: 2.0em;
+	margin-right: 20px;
+	color: white;
+	opacity: .75;
+}
+
+.template-navbar i:hover {
+	opacity: 1;
+}
+
+.template-navbar {
+	background-color: black;
+	color: white;
+	height: 64px;
+	padding-top: 20px;
+}
+
+.template-navbar {
+	position: static;
+}

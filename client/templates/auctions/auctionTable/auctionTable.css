@@ -1,0 +1,117 @@
+.template-auctionTable table, .template-auctionHistoryModal table {
+	margin: auto;
+	width: 100%;
+	border: none;
+}
+
+.template-auctionTable table {
+	margin-bottom: 120px;
+}
+
+.template-auctionHistoryModal table {
+	margin: 48px auto;
+}
+
+.template-auctionTable td, .template-auctionHistoryModal td {
+	text-align: center;
+	border: none;
+}
+
+.template-auctionTable tr, .template-auctionHistoryModal tr {
+	border: 1px solid gray;
+	height: 48px;
+}
+
+.template-auctionTable tr:nth-child(even), .template-auctionHistoryModal tr:nth-child(even) {
+	background-color: #EEEEEE;
+}
+
+.template-auctionTable #winning {
+	background-color: #E6FFE6;
+}
+
+.template-auctionTable #losing {
+	background-color: #FFE6E6;
+}
+
+.template-auctionTable tr:hover {
+	cursor: pointer;
+	background-color: #FFFFBB;
+}
+
+.template-auctionTable th, .template-auctionHistoryModal th {
+	background-color: black;
+	font-size: 1em;
+	color: white;
+	min-width: 120px;
+	text-align: center;
+	border-right: 1px solid white;
+	min-height: 80px;
+}
+
+.template-auctionTable th:hover {
+	background-color: #666666;
+	cursor: pointer;
+}
+
+.template-auctionTable .soon {
+	color: red;
+	font-weight: bold;
+}
+
+.template-auctionTable .action-buttons i {
+	color: black;
+	opacity: .5;
+	font-size: 1.2em;
+}
+
+.template-auctionTable .enabled i:hover {
+	opacity: 1;
+	cursor: pointer;
+}
+
+.template-auctionTable .disabled {
+	opacity: .2;
+	cursor: default;
+}
+
+.template-placeBidModal .highlight, .template-auctionHistoryModal .highlight, .template-previewModal .highlight, .template-auctionTable .highlight {
+	font-weight: bold;
+	color: black;
+}
+
+.template-placeBidModal #bid-amount {
+	width: 50%;
+	height: 36px;
+	resize: none;
+	font-size: 1.5em;
+	text-align: center;
+}
+
+.template-placeBidModal .modal-content {
+	margin-bottom: 64px;
+}
+
+.template-placeBidModal .quick-bid {
+	border-bottom: 1px solid black;
+	margin: 24px auto;
+	padding: 24px;
+}
+
+.template-placeBidModal .errors {
+	border-top: 1px solid black;
+	margin-top: 24px;
+	padding: 24px;
+}
+
+.template-placeBidModal .error-text {
+	color: red;
+}
+
+.template-previewModal img {
+	margin: 24px;
+}
+
+.template-previewModal .modal-content {
+	padding-bottom: 48px;
+}
