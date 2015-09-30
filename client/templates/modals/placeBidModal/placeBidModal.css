@@ -12,7 +12,8 @@
 }
 
 .template-placeBidModal .modal-content {
-	margin-bottom: 64px;
+	padding-bottom: 48px;
+	text-align: center;
 }
 
 .template-placeBidModal .quick-bid {
@@ -29,4 +30,10 @@
 
 .template-placeBidModal .error-text {
 	color: red;
+}
+
+.template-placeBidModal .modal-buttons {
+	border-top: 1px solid black;
+	margin-top: 24px;
+	padding-top: 24px;
 }

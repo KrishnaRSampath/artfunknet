@@ -37,3 +37,7 @@
 	font-weight: bold;
 	color: black;
 }
+
+.template-acutionHistoryModal .modal-content {
+	text-align: center;
+}
