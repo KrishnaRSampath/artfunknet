@@ -1,8 +1,9 @@
 var drop_count = 10;
 // var drop_frequency = 86400000 //once per day
-// var drop_frequency = 60000 //once per minute
+//var drop_frequency = 60000 //once per minute
 //var drop_frequency = 3600000 //once per hour
 var drop_frequency = 7200000 //once every 2 hours
+// var drop_frequency = 1000 //once per second
 
 Template.randomDrop.helpers({
 	'drop': function() {
@@ -83,10 +84,8 @@ Template.randomDrop.events ({
 
 	'click .quick-sell' : function(element) {
 		var item_id = $(element.target).data('item_id');
-		Meteor.call('sellArtwork', Meteor.userId(), item_id, function(error) {
-			if (error)
-				console.log(error.message);
-		});
+		Session.set('selectedItem', item_id);
+		Modal.show('quickSellModal');
 	}
 })
 
@@ -104,61 +103,3 @@ Template.randomDrop.destroyed = function() {
 window.onbeforeunload = function(e) {
 	Meteor.call('clearUnclaimed', Meteor.userId());
 };
-
-Template.dropAnimationModal.helpers({
-	'quality' : function() {
-		return Session.get('lotteryQuality');
-	},
-
-	'crateQuality' : function() {
-		return Session.get('rolledQuality');
-	}
-})
-
-Template.dropAnimationModal.events({
-	'click #stop-button' : function() {
-		$('.reward').show();
-		$('.pick-section').hide();
-
-		setTimeout(function() {
-			Modal.hide("dropAnimationModal");
-
-			Meteor.call('generateItems', Meteor.userId(), Session.get('rolledQuality'), drop_count, function(error, result) {
-				if (error)
-					console.log(error.message);
-			})
-		}, 3000);
-	},
-
-	'crateQuality' : function() {
-		return Session.get('rolledQuality') ? Session.get('rolledQuality') : "";
-	}
-})
-
-Template.dropAnimationModal.rendered = function() {
-	$('.pick-section').show();
-	$('.reward').hide();
-
-	Meteor.call('getCrateQuality', function(error, result) {
-		if (error)
-			console.log(error.message);
-
-		else Session.set('rolledQuality', result);
-	});
-
-	this.handle = Meteor.setInterval((function() {
-		var possible_qualities = [
-			'bronze', 'bronze', 'bronze', 'bronze',  'bronze',
-			'silver', 'silver', 'silver', 'silver',
-			'gold', 'gold', 'gold', 
-			'platinum', 'platinum', 
-			'diamond'
-		];
-
-		Session.set('lotteryQuality', possible_qualities[Math.floor(Math.random() * possible_qualities.length)]);
-	}), 100);
-}
-
-Template.dropAnimationModal.destroyed = function() {
-	Meteor.clearInterval(this.handle);
-}

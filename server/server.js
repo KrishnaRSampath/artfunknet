@@ -143,101 +143,130 @@ function waitForUserAdded(userId, attempts){
     }
 }
 
-function clearExpiredAuctions() {
-    var now = moment();
-    var expired = auctions.find({'expiration_date': {$lt : now}}).fetch();
 
-    for (var i=0; i < expired.length; i++) {
-        var item_object = items.findOne({'_id': expired[i].item_id});
+function concludeAuction(auction_id) {
+    var auction_object = auctions.findOne(auction_id);
+    var item_object = items.findOne({'_id': auction_object.item_id});
 
-        if (expired[i].bid_history.length == 0) {
-            items.update(expired[i].item_id, {$set: {'status' : 'claimed'}});
-            auctions.remove({'_id': expired[i]._id});
+    if (auction_object.bid_history.length == 0) {
+        items.update(item_object._id, {$set: {'status' : 'claimed'}});
 
-            var message = "Your auction has ended for " + expired[i].title + " by " + expired[i].artist + " without a sale";
-            var alert_object = {
-                'user_id' : item_object.owner,
-                'message' : message,
-                'link' : '/',
-                'icon' : 'fa-gavel',
-                'sentiment' : "neutral",
-                'time' : moment()
-            };
-            alerts.insert(alert_object);
-        }
+        auctions.remove({'_id': auction_object._id});
 
-        else {
-            var bid_history = expired[i].bid_history;
-            var highest_bid = { 'amount' : 0 }
-
-            for (var n=0; n < bid_history.length; n++) {
-                if (bid_history[n].amount > highest_bid.amount)
-                    highest_bid = bid_history[n];
-            }
-
-            var sale_message = "You have successfully auctioned " + expired[i].title + " by " + expired[i].artist + " for $" + getCommaSeparatedValue(expired[i].current_price)
-            var alert_sale_object = {
-                'user_id' : item_object.owner,
-                'message' : sale_message,
-                'link' : '/',
-                'icon' : 'fa-gavel',
-                'sentiment' : "good",
-                'time' : moment()
-            };
-            alerts.insert(alert_sale_object);
-
-
-            var win_message = "You have won " + expired[i].title + " by " + expired[i].artist + " in the auction house for $" + getCommaSeparatedValue(expired[i].current_price);
-            var alert_win_object = {
-                'user_id' : highest_bid.user_id,
-                'message' : win_message,
-                'link' : '/',
-                'icon' : 'fa-gavel',
-                'sentiment' : "good",
-                'time' : moment()
-            };
-            alerts.insert(alert_win_object);
-
-            addFunds(item_object.owner, highest_bid.amount);
-            items.update(expired[i].item_id, {$set: {'status' : 'claimed', 'owner': highest_bid.user_id}});
-            auctions.remove({'_id': expired[i]._id});
-            Meteor.call('alertUserOfWin', highest_bid.user_id, item_object._id);
-        }
-    }
-}
-
-function clearDisplayedItems() {
-    var finished_displays = items.find({'status' : 'displayed', 'display_details.end': {$lte : moment()._d.toISOString()}}).fetch();
-
-    for (var i=0; i < finished_displays.length; i++) {
-        var artwork_object = artworks.findOne(finished_displays[i].artwork_id);
-        var money_earned = finished_displays[i].display_details.money;
-        var user_id = finished_displays[i].owner;
-        var xp_earned = finished_displays[i].display_details.xp;
-
-        var display_message = "Your exhibition of " + artwork_object.title + " by " + artwork_object.artist + " has concluded. You have earned $" + getCommaSeparatedValue(money_earned);
-        var alert_win_object = {
-            'user_id' : user_id,
-            'message' : display_message,
+        var message = "Your auction has ended for " + auction_object.title + " by " + auction_object.artist + " without a sale";
+        var alert_object = {
+            'user_id' : item_object.owner,
+            'message' : message,
             'link' : '/',
-            'icon' : 'fa-usd',
+            'icon' : 'fa-gavel',
+            'sentiment' : "neutral",
+            'time' : moment()
+        };
+        alerts.insert(alert_object);
+    }
+
+    else {
+        var bid_history = auction_object.bid_history;
+        var highest_bid = { 'amount' : 0 }
+
+        for (var i=0; i < bid_history.length; i++) {
+            if (bid_history[i].amount > highest_bid.amount)
+                highest_bid = bid_history[i];
+        }
+
+        var sale_message = "You have successfully auctioned " + auction_object.title + " by " + auction_object.artist + " for $" + getCommaSeparatedValue(auction_object.current_price)
+        var alert_sale_object = {
+            'user_id' : item_object.owner,
+            'message' : sale_message,
+            'link' : '/',
+            'icon' : 'fa-gavel',
+            'sentiment' : "good",
+            'time' : moment()
+        };
+        alerts.insert(alert_sale_object);
+
+        var win_message = "You have won " + auction_object.title + " by " + auction_object.artist + " in the auction house for $" + getCommaSeparatedValue(auction_object.current_price);
+        var alert_win_object = {
+            'user_id' : highest_bid.user_id,
+            'message' : win_message,
+            'link' : '/',
+            'icon' : 'fa-gavel',
             'sentiment' : "good",
             'time' : moment()
         };
         alerts.insert(alert_win_object);
 
-        var null_display_details = {
-            'money' : 0,
-            'xp' : 0,
-            'end' : ""
-        };
+        addFunds(item_object.owner, highest_bid.amount);
+        
+        items.update(item_object._id, {$set: {'status' : 'claimed', 'owner': highest_bid.user_id}});
+        auctions.remove({'_id': auction_id}, function(error) {
+            if (error)
+                console.log(error.message);
+        });
 
-        addFunds(user_id, money_earned);
-        items.update(finished_displays[i]._id, {$set: {'status' : 'claimed', 'display_details' : null_display_details}});
+        Meteor.call('alertUserOfWin', highest_bid.user_id, item_object._id);
     }
 }
 
+function concludeDisplay(item_id) {
+    var item_object = items.findOne(item_id);
+    var artwork_object = artworks.findOne(item_object.artwork_id);
+    var money_earned = item_object.display_details.money;
+    var user_id = item_object.owner;
+    var xp_earned = item_object.display_details.xp;
+
+    var display_message = "Your exhibition of " + artwork_object.title + " by " + artwork_object.artist + " has concluded. You have earned $" + getCommaSeparatedValue(money_earned);
+    var alert_win_object = {
+        'user_id' : user_id,
+        'message' : display_message,
+        'link' : '/',
+        'icon' : 'fa-usd',
+        'sentiment' : "good",
+        'time' : moment()
+    };
+    alerts.insert(alert_win_object);
+
+    addFunds(user_id, money_earned);
+    
+    var null_display_details = {
+        'money' : 0,
+        'xp' : 0,
+        'end' : ""
+    };
+
+    items.update(item_id, {$set: {'status' : 'claimed', 'display_details' : null_display_details}}, function(error) {
+        if (error)
+            console.log(error.message);
+    });
+}
+
+var check_frequency = 30000
 Meteor.setInterval((function() {
-    clearExpiredAuctions();
-    clearDisplayedItems();
-}), 1000);
+    var next_check = moment().add(check_frequency, 'milliseconds');
+    var next_string = next_check._d.toISOString();
+    var now = moment();
+    var finishing_displays = items.find({'status' : 'displayed', 'display_details.end': {$lt : next_string}}).fetch();
+    for (var i=0; i < finishing_displays.length; i++) {
+        var time_from_now = moment(finishing_displays[i].display_details.end) - moment();
+        concludeDisplayOnTimeout(finishing_displays[i]._id, time_from_now);
+    }
+
+    var expired_auctions = auctions.find({'expiration_date': {$lt : next_check}}).fetch();
+    for (var i=0; i < expired_auctions.length; i++) {
+        var time_from_now = moment(expired_auctions[i].expiration_date) - moment();
+        concludeAuctionOnTimeout(expired_auctions[i]._id, time_from_now);
+    }
+
+}), check_frequency);
+
+function concludeDisplayOnTimeout(item_id, time_offset) {
+    Meteor.setTimeout(function() {
+        concludeDisplay(item_id);
+    }, time_offset);
+}
+
+function concludeAuctionOnTimeout(auction_id, time_offset) {
+    Meteor.setTimeout(function() {
+        concludeAuction(auction_id);
+    }, time_offset);
+}

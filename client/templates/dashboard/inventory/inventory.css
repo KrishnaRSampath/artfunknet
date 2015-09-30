@@ -7,60 +7,50 @@
 	margin: 5px 20px;
 }
 
-.template-inventory button {
+.template-inventory .button-area {
 	font-size: 1em;
-	width: 200px;
 	height: 36px;
+	text-align: center;
+	vertical-align: middle;
+	margin-top: 12px;
 }
 
-.template-inventory button.disabled{
+.template-inventory .button-area > div {
+	text-align: center;
+}
+
+.template-inventory .buttons {
+	width: 100%;
+	margin: auto;
+}
+
+.template-inventory .remaining-text {
+	font-size: 1.1em;
+}
+
+.template-inventory .button-area .disabled{
 	opacity: .5;
 }
 
-.template-createAuctionModal .highlight, .template-onDisplayModal .highlight {
-	font-weight: bold;
+.template-inventory .item-card {
+	width: 500px;
+	height: 300px;
+	display: inline-block;
+	margin: 24px 24px;
+	background-color: #EEEEEE;
+}
+
+.template-inventory .button-area .enabled {
 	color: black;
+	font-size: 1.5em;
+	opacity: .5;
 }
 
-.template-createAuctionModal textarea  {
-	width: 100%;
-	height: 36px;
-	resize: none;
-	font-size: 1.2em;
-	text-align: center;
+.template-inventory .button-area .enabled:hover {
+	opacity: 1;
+	cursor: pointer;
 }
 
-.template-createAuctionModal #duration  {
-	width: 50%;
-	height: 36px;
-	resize: none;
-	font-size: 1.2em;
-	text-align: center;
-}
-
-.template-createAuctionModal .modal-content {
-	margin-bottom: 64px;
-}
-
-.template-createAuctionModal .quick-bid {
-	border-bottom: 1px solid black;
-	margin: 24px auto;
-	padding: 24px;
-}
-
-.template-createAuctionModal .auction-parameters {
-	border-top: 1px solid black;
-	border-bottom: 1px solid black;
-	margin: 24px auto;
-	padding: 24px;
-}
-
-.template-createAuctionModal .errors {
-	border-top: 1px solid black;
-	margin-top: 24px;
-	padding: 24px;
-}
-
-.template-createAuctionModal .error-text, .template-onDisplayModal .error-text {
-	color: red;
+.template-inventory .item-card {
+	border: 1px solid black;
 }

@@ -1,0 +1,13 @@
+.template-quickSellModal img {
+	margin: 24px;
+}
+
+.template-quickSellModal .modal-content {
+	padding-bottom: 48px;
+	text-align: center;
+}
+
+.template-quickSellModal .highlight {
+	font-weight: bold;
+	color: black;
+}

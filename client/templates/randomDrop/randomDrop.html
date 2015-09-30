@@ -9,7 +9,7 @@
 			{{/each}}
 		</div>
 
-		{{#each drop}}
+		<!-- {{#each drop}}
 			<div class="drop" data-painting-id="{{this._id}}">
 				{{>itemTemplate this._id}}
 				<div class="row">
@@ -17,27 +17,32 @@
 					<button data-item_id="{{this._id}}" class="quick-sell">sell</button>
 				</div>
 			</div>
+		{{/each}} -->
+
+		{{#each drop}}
+			<div class="item-card" data-painting-id="{{this._id}}">
+				<div class="row no-padding no-margin">
+					<div class="col-xs-6 no-padding no-margin">
+						{{>itemInfo this._id}}
+					</div>
+					<div class="col-xs-6 no-padding no-margin">
+						<div class="image-thumbnail">
+							{{> itemThumbnail this._id}}
+						</div>
+						<div class="col-xs-12">
+							<div class="row button-area">
+								<div class="col-xs-6">
+									<span><i data-item_id="{{this._id}}" class="enabled add-to-inventory fa fa-plus"></i></span>
+								</div>
+								<div class="col-xs-6">
+									<span><i data-item_id="{{this._id}}" class="enabled quick-sell fa fa-usd"></i></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		{{/each}}
 
-	</div>
-</template>
-
-<template name="dropAnimationModal">
-	<div class="template-dropAnimationModal">
-	    <div style="z-index:9999999999999999;" class="modal fade">
-	        <div class="modal-dialog">
-	            <div class="modal-content container">
-	            	<div class="pick-section">
-		                <h4 class="{{quality}}">{{quality}}</h4>
-		                <div class="row">
-			            	<button id="stop-button" type="button" class="btn btn-default">stop</button>
-			            </div>
-			        </div>
-			        <div class="reward">
-			        	<h4>you received a <span class="{{crateQuality}}">{{crateQuality}}</span> crate!</h4>
-			        </div>
-	            </div>
-	        </div>
-	    </div>
 	</div>
 </template>

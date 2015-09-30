@@ -1,0 +1,52 @@
+.template-createAuctionModal .highlight {
+	font-weight: bold;
+	color: black;
+}
+
+.template-createAuctionModal textarea  {
+	width: 100%;
+	height: 36px;
+	resize: none;
+	font-size: 1.2em;
+	text-align: center;
+}
+
+.template-createAuctionModal #duration  {
+	width: 50%;
+	height: 36px;
+	resize: none;
+	font-size: 1.2em;
+	text-align: center;
+}
+
+.template-createAuctionModal .modal-content {
+	padding-bottom: 48px;
+	text-align: center;
+}
+
+.template-createAuctionModal .quick-bid {
+	border-bottom: 1px solid black;
+	margin: 24px auto;
+	padding: 24px;
+}
+
+.template-createAuctionModal .auction-parameters {
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+	margin: 24px auto;
+	padding: 24px;
+}
+
+.template-createAuctionModal .errors {
+	border-top: 1px solid black;
+	margin-top: 24px;
+	padding: 24px;
+}
+
+.template-createAuctionModal .error-text {
+	color: red;
+}
+
+.template-createAuctionModal .parameter {
+	margin-bottom: 12px;
+}

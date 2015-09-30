@@ -1,0 +1,32 @@
+.template-placeBidModal .highlight {
+	font-weight: bold;
+	color: black;
+}
+
+.template-placeBidModal #bid-amount {
+	width: 50%;
+	height: 36px;
+	resize: none;
+	font-size: 1.5em;
+	text-align: center;
+}
+
+.template-placeBidModal .modal-content {
+	margin-bottom: 64px;
+}
+
+.template-placeBidModal .quick-bid {
+	border-bottom: 1px solid black;
+	margin: 24px auto;
+	padding: 24px;
+}
+
+.template-placeBidModal .errors {
+	border-top: 1px solid black;
+	margin-top: 24px;
+	padding: 24px;
+}
+
+.template-placeBidModal .error-text {
+	color: red;
+}

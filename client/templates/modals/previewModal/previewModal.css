@@ -1,0 +1,13 @@
+.template-previewModal img {
+	margin: 24px;
+}
+
+.template-previewModal .modal-content {
+	padding-bottom: 48px;
+	text-align: center;
+}
+
+.template-previewModal .highlight {
+	font-weight: bold;
+	color: black;
+}

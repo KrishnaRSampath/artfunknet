@@ -1,30 +1,41 @@
-<template name="itemInfo">
+<template name="testTemplate">
+	{{#with artwork}}
+		<div class="item-card" data-painting-id="{{this._id}}">
+			<div class="row no-padding no-margin">
+				<div class="col-xs-6 no-padding no-margin">
+					{{>artworkInfo this._id}}
+				</div>
+				<div class="col-xs-6 no-padding no-margin">
+					<div class="image-thumbnail">
+						{{> artworkThumbnail this._id}}
+					</div>
+				</div>
+			</div>
+		</div>
+	{{/with}}
+</template>
+
+<template name="artworkInfo">
 	<div class="template-itemInfo">
 		<div class="col-xs-12 no-margin">
 			<div class="info-area">
-				{{#with itemData this}}
+				{{#with artworkData this}}
 
 				<h2>{{title}}</h2>
 				<p>{{date}}</p>
 				<p>{{artist}}</p>
+				<p>{{filename}}</p>
 				<p><span class="{{rarity}}"><strong>{{rarity}}</strong></span></p>
-				<p>{{medium}}</p>
 				<p>{{height}} x {{width}}</p>
-				<p>condition: {{condition}}</p>
-				<p>estimated value: {{itemValue item_id}}</p>
-				{{#each attributes}}
-					<p class="item-attribute">{{text}}</p>
-				{{/each}}
-
 				{{/with}}	
 			</div>		
 		</div>
 	</div>
 </template>
 
-<template name="itemThumbnail">
+<template name="artworkThumbnail">
 	<div class="template-itemThumbnail">
-		{{#with imageInfo this}}
+		{{#with artworkInfo this}}
 		<div class="col-xs-12 no-padding no-margin img-container" style="padding-top: {{padding_top}}px">
 			<img class="image-thumb" src="{{imageURL}}" alt="{{title}}" width="{{image_width}}" height="{{image_height}}"/>
 		</div>

@@ -1,0 +1,39 @@
+.template-auctionHistoryModal table {
+	margin: auto;
+	width: 100%;
+	border: none;
+}
+
+.template-auctionHistoryModal table {
+	margin: 48px auto;
+}
+
+.template-auctionHistoryModal td {
+	text-align: center;
+	border: none;
+}
+
+.template-auctionHistoryModal tr {
+	border: 1px solid gray;
+	height: 48px;
+}
+
+.template-auctionHistoryModal tr:nth-child(even) {
+	background-color: #EEEEEE;
+}
+
+
+.template-auctionHistoryModal th {
+	background-color: black;
+	font-size: 1em;
+	color: white;
+	min-width: 120px;
+	text-align: center;
+	border-right: 1px solid white;
+	min-height: 80px;
+}
+
+.template-auctionHistoryModal .highlight {
+	font-weight: bold;
+	color: black;
+}

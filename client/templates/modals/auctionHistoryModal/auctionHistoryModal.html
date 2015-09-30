@@ -1,0 +1,29 @@
+<template name="auctionHistoryModal">
+	<div class="template-auctionHistoryModal">
+	    <div style="z-index:9999999999999999;" class="modal fade">
+	        <div class="modal-dialog">
+	            <div class="modal-content container">
+	            	{{#with auctionData}}
+	                <h2>Bid history for <span class="highlight">{{title}}</span> by <span class="highlight">{{artist}}</span></h2>
+			        {{/with}}
+	                <table class="history-table">
+	                	<tr>
+		                	<th class="table-header">
+								<p>amount</p>			
+							</th>
+							<th class="table-header">
+								<p>timestamp</p>
+							</th>
+						</tr>
+	                	{{#each history}}
+	                	<tr class="{{#if even}}even{{/if}}">
+	                		<td>{{amount}}</td>
+	                		<td>{{date}}</td>
+	                	</tr>
+	                	{{/each}}
+	                </table>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+</template>

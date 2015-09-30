@@ -1,8 +1,13 @@
-Template.itemInfo.helpers({
-	'itemData' : function(item_id) {
+Template.testTemplate.helpers({
+	'artwork' : function() {
+		return artworks.findOne({'img_link': ""});
+	}
+})
+
+Template.artworkInfo.helpers({
+	'artworkData' : function(artwork_id) {
 		try {
-			var item_object = items.findOne(item_id);
-			var artwork_object = artworks.findOne(item_object.artwork_id);
+			var artwork_object = artworks.findOne(artwork_id);
 
 			var item_data_object = {
 				'title' : artwork_object.title,
@@ -12,9 +17,7 @@ Template.itemInfo.helpers({
 				'medium' : artwork_object.medium,
 				'width' : artwork_object.width,
 				'height' : artwork_object.height,
-				'condition' : Math.floor(item_object.condition * 100) + '%',
-				'attirbutes' : item_object.attributes,
-				'item_id' : item_object._id
+				'filename' : artwork_object.filename
 			}
 
 			return item_data_object;
@@ -29,33 +32,16 @@ Template.itemInfo.helpers({
 				'medium' : "",
 				'width' : "",
 				'height' : "",
-				'condition' : "",
-				'attirbutes' : "",
-				'item_id' : "",
+				'filename' : "",
 			}
 		}
-	},
-
-	'itemValue' : function(item_id) {
-		Meteor.call('getItemValue', item_id, 'actual', function(error, result) {
-			if (error)
-				console.log(error.message)
-
-			else {
-				var value_string = "$" + getCommaSeparatedValue(result);
-				Session.set(item_id + '_value', value_string)
-			}
-		})
-
-		return Session.get(item_id + '_value');
 	}
 })
 
-Template.itemThumbnail.helpers({
-	'imageInfo' : function(item_id) {
+Template.artworkThumbnail.helpers({
+	'artworkInfo' : function(artwork_id) {
 		try {
-			var item_object = items.findOne(item_id);
-			var artwork_object = artworks.findOne(item_object.artwork_id);
+			var artwork_object = artworks.findOne(artwork_id);
 
 			var overall_dimension = 250;
 			var max_dimension = 230;

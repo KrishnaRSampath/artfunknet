@@ -154,10 +154,10 @@ getItemValue = function(item_id, type) {
 
 getRolledCrateQuality = function() {
     var roll_quality_map = {
-        'bronze' : 30000,
-        'silver' : 3000,
-        'gold' : 300,
-        'platinum' : 30,
+        'bronze' : 10000,
+        'silver' : 1000,
+        'gold' : 100,
+        'platinum' : 10,
         'diamond' : 1
     }
 
