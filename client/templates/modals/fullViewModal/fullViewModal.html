@@ -1,0 +1,18 @@
+<template name="fullViewModal">
+	<div class="template-fullViewModal">
+	    <div style="z-index:9999999999999999;" class="modal fade">
+	        <div class="modal-dialog">
+	            <div class="modal-content container">
+	            	{{#with itemData}}
+	                <h2><span class="highlight">{{title}}</span> by <span class="highlight">{{artist}}</span></h2>
+	                <h4>Estimated value: <span class="highlight">{{itemValue itemId}}</span></h4>
+			        {{/with}}
+	            	{{#with imageInfo itemId}}
+					<img class="image-thumb" src="/img/paintings/{{filename}}" width="{{image_width}}" height="{{image_height}}"/>
+			        <button id="close-button" type="button" class="btn btn-default">close</button>
+			        {{/with}}
+	            </div>
+	        </div>
+	    </div>
+	</div>
+</template>

@@ -1,0 +1,13 @@
+.template-fullViewModal img {
+	margin: 24px;
+}
+
+.template-fullViewModal .modal-content {
+	padding-bottom: 48px;
+	text-align: center;
+}
+
+.template-fullViewModal .highlight {
+	font-weight: bold;
+	color: black;
+}

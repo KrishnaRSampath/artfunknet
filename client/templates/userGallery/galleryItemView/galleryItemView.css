@@ -1,0 +1,28 @@
+.template-galleryItemView .artwork {
+	margin: 20px;
+	border-top: 1px solid gray;
+}
+
+.template-galleryItemView p {
+	margin: 5px 20px;
+}
+
+.template-galleryItemView .image-thumb {
+	margin: 24px auto;
+	text-align: center;
+}
+
+.template-galleryItemView .card-container {
+	width: 600px;
+	height: 300px;
+}
+
+.template-galleryThumbnail .img-container {
+	text-align: center;
+	vertical-align: middle;
+	height: 250px;
+}
+
+.template-galleryThumbnail .image-thumb:hover {
+	cursor: pointer;
+}

@@ -4,7 +4,7 @@ Template.headerTemplate.events({
 		var sort = $(element.target).closest('.table-header').data('sort');
 		var table_id = $(element.target).closest('.auction-table').data('table_id');
 
-		if (sort != undefined) {
+		if (sort && Session.get(table_id + '_sort')) {
 			var ascending = (Session.get(table_id + '_sort') != sort ? true : !Session.get(table_id + '_ascending'));
 			Session.set(table_id + '_ascending', ascending);
 			Session.set(table_id + '_sort', sort);
@@ -29,7 +29,7 @@ Template.auctionTable.helpers({
 			{ 'text' : 'view', 'sort_id' : undefined, 'table_id' : table_data.table_id  },
 			{ 'text' : 'remaining', 'sort_id' : 'expiration_date', 'table_id' : table_data.table_id  },
 			{ 'text' : 'title', 'sort_id' : 'title', 'table_id' : table_data.table_id  },
-			{ 'text' : 'date', 'sort_id' : undefined, 'table_id' : table_data.table_id  },
+			{ 'text' : 'date', 'sort_id' : 'date', 'table_id' : table_data.table_id  },
 			{ 'text' : 'artist', 'sort_id' : 'artist', 'table_id' : table_data.table_id  },
 			{ 'text' : 'rarity', 'sort_id' : 'rarity', 'table_id' : table_data.table_id  },
 			{ 'text' : 'dimensions', 'sort_id' : undefined, 'table_id' : table_data.table_id  },
@@ -92,6 +92,7 @@ Template.auctionTable.helpers({
 			list_object.losing = (winning_id != Meteor.userId() && winning_id && has_bid);
 			list_object.seller = auction_object.seller;
 			list_object.item_id = item_object._id;
+			list_object.owned = items.find({'owner': Meteor.userId(), '_id': item_object._id}).count() > 0;
 
 			return list_object;
 		}
@@ -119,6 +120,7 @@ Template.auctionTable.helpers({
 				'image_width' : 0,
 				'image_height' : 0,
 				'biddable' : biddable,
+				'filename' : artwork_object.filename,
 				'imageURL' : artwork_object.img_link == "" ? "http://go-grafix.com/data/wallpapers/35/painting-626297-1920x1080-hq-dsk-wallpapers.jpg" : artwork_object.img_link
 			};
 
@@ -144,7 +146,7 @@ Template.auctionTable.helpers({
 				'filename' : ""
 			};
 		}
-	},
+	}
 });
 
 Template.auctionTable.events({

@@ -52,12 +52,13 @@ var generateContent = function() {
 }
 
 var updateContent = function() {
-    for (var i=0; i < painting_data.length; i++) {
-        var file_data = painting_data[i];
-        var img_link = file_data.img_link;
-
-        artworks.update({'filename': file_data.filename}, {$set: {'img_link' : img_link}});
-    }
+    var artwork_objects = artworks.find();
+    artwork_objects.forEach(function(db_object) {
+        if (typeof(db_object.date) == "string") {
+            var new_date = db_object.date.replace("????", "");
+            artworks.update(db_object._id, {$set: {'date' : Number(new_date)}});
+        }
+    });
 }
 
 Meteor.startup(function() {
@@ -67,7 +68,7 @@ Meteor.startup(function() {
 	if (artists.find({}).count() == 0 && artworks.find({}).count() == 0)
 		generateContent();
 
-    else updateContent();
+    updateContent();
 
     if (Meteor.users.find().count() == 0) {
         var last_drop = moment().add(-1, 'days');

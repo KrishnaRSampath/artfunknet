@@ -9,11 +9,32 @@ Template.auctions.helpers({
 		    sort_query[Session.get(table_id + '_sort')] = asc;
 		}
 
-		var auction_array = auctions.find({}, {sort: sort_query}).fetch();
+		//required for pagination
+		var pagination_id = 'main_auctions';
 
+		if (Session.get(pagination_id + '_current') === undefined)
+			Session.set(pagination_id + '_current', 0);
+
+		var pageData = {
+			'identifier': pagination_id,
+			'totalResults': auctions.find({}).count(),
+			'resultsPerPage': 10,
+			'pageNumbersDisplayed': 7,
+		}
+
+		var skip_amount = Number(pageData.resultsPerPage * Session.get(pagination_id + '_current'));
+
+		var auction_array = auctions.find( {}, { sort: sort_query, skip: skip_amount, limit: pageData.resultsPerPage } ).fetch();
+
+		if (auction_array.length < Number(pageData.resultsPerPage * Session.get(pagination_id + '_current')))
+			Session.set('pagination_id' + '_current', Session.get(pagination_id + '_current') - 1);
+		
 		return {
-			'auction' : auction_array,
-			'table_id' : table_id
+			'tableData' : {
+				'auction' : auction_array,
+				'table_id' : table_id,
+			},	
+			'pageData' : pageData
 		}
 	},
 });

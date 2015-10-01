@@ -40,6 +40,7 @@ Template.previewModal.helpers({
 				'image_width' : 0,
 				'image_height' : 0,
 				'biddable' : biddable,
+				'filename' : artwork_object.filename,
 				'imageURL' : artwork_object.img_link == "" ? "http://go-grafix.com/data/wallpapers/35/painting-626297-1920x1080-hq-dsk-wallpapers.jpg" : artwork_object.img_link
 			};
 

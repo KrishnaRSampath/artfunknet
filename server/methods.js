@@ -17,7 +17,8 @@ createAuction = function(item_id, starting, buy_now, duration) {
         'rarity': artwork_object.rarity,
         'medium': artwork_object.medium,
         'condition': item_object.condition,
-        'seller': user_object.profile.screen_name
+        'seller': user_object.profile.screen_name,
+        'date': artwork_object.date
     };
 
     auctions.insert(auction_object);
@@ -147,6 +148,15 @@ Meteor.methods({
         };
 
         return auction_array;
+    },
+
+    'getUserGallery' : function(screen_name) {
+        var user_object = Meteor.users.findOne({'profile.screen_name' : screen_name});
+
+        if (user_object)
+            return items.find({'owner': user_object._id, 'status': 'displayed'}).fetch();
+
+        else return [];
     },
 
     'placeBid' : function(user_id, auction_id, amount) {
@@ -320,6 +330,17 @@ Meteor.methods({
         catch(error) {
             console.log(error.message);
         }
+    },
+
+    'updateAuctions' : function() {
+        var auction_objects = auctions.find();
+
+        auction_objects.forEach(function(db_object) {
+            var item_object = items.findOne(db_object.item_id);
+            var artwork_object = artworks.findOne(item_object.artwork_id);
+           
+            auctions.update(db_object._id, {$set: {'date' : artwork_object.date}});
+        }) 
     }
 })
 

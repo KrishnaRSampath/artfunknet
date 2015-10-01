@@ -30,7 +30,7 @@ Template.placeBidModal.helpers({
 
 	'canBuy' : function() {
 		var auction_object = auctions.findOne(Session.get('selectedAuction'));
-		return !!auction_object && auction_object.buy_now != -1;
+		return !!auction_object && auction_object.buy_now != -1 && Meteor.user().profile.bank_balance >= auction_object.buy_now;
 	}
 })
 

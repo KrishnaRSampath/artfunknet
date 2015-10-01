@@ -1,0 +1,33 @@
+<template name="galleryItemInfo">
+	<div class="template-galleryItemInfo">
+		<div class="col-xs-12 no-margin">
+			<div class="info-area">
+				{{#with itemData this}}
+
+				<h2>{{title}}</h2>
+				<p>{{date}}</p>
+				<p>{{artist}}</p>
+				<p><span class="{{rarity}}"><strong>{{rarity}}</strong></span></p>
+				<p>{{medium}}</p>
+				<p>{{height}} x {{width}}</p>
+				<p>condition: {{condition}}</p>
+				<p>estimated value: {{itemValue item_id}}</p>
+				{{#each attributes}}
+					<p class="item-attribute">{{text}}</p>
+				{{/each}}
+
+				{{/with}}	
+			</div>		
+		</div>
+	</div>
+</template>
+
+<template name="galleryItemThumbnail">
+	<div class="template-galleryItemThumbnail">
+		{{#with imageInfo this}}
+		<div class="col-xs-12 no-padding no-margin img-container" style="padding-top: {{padding_top}}px">
+			<img class="image-thumb" data-item_id="{{item_id}}" src="/img/paintings/{{filename}}" width="{{image_width}}" height="{{image_height}}"/>
+		</div>
+		{{/with}}
+	</div>
+</template>

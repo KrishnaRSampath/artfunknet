@@ -7,8 +7,7 @@
 	                <h2><span class="highlight">{{title}}</span> by <span class="highlight">{{artist}}</span></h2>
 			        {{/with}}
 	            	{{#with imageInfo itemId}}
-					<img class="image-thumb" src="{{imageURL}}" width="{{image_width}}" height="{{image_height}}"/>
-					<!-- <img class="image-thumb" src="img/paintings/{{filename}}" width="{{image_width}}" height="{{image_height}}"/> -->
+					<img class="image-thumb" src="/img/paintings/{{filename}}" width="{{image_width}}" height="{{image_height}}"/>
 					{{#if biddable}}
 			        <button id="place-bid" type="button" class="btn btn-default">place bid</button>
 			        {{/if}}

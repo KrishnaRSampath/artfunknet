@@ -3,7 +3,12 @@
 		<div class="container">
 			<h1>Auction House</h1>
 
-			{{>auctionTable auctionData}}
+			{{>auctionTable auctionData.tableData}}
+			<div class="col-xs-12 no-padding">
+				<div class="auction-pages">
+					{{>pagination auctionData.pageData}}
+				</div>
+			</div>
 		</div>
 	</div>
 </template>

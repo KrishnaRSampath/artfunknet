@@ -25,7 +25,7 @@
 }
 
 .template-inventory .remaining-text {
-	font-size: 1.1em;
+	font-size: 1.0em;
 }
 
 .template-inventory .button-area .disabled{
@@ -33,7 +33,7 @@
 }
 
 .template-inventory .item-card {
-	width: 500px;
+	width: 504px;
 	height: 300px;
 	display: inline-block;
 	margin: 24px 24px;

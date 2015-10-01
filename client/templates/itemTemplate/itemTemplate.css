@@ -22,3 +22,7 @@
 	vertical-align: middle;
 	height: 250px;
 }
+
+.template-itemThumbnail .image-thumb:hover {
+	cursor: pointer;
+}

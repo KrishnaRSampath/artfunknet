@@ -1,0 +1,56 @@
+.template-userGallery .artwork {
+	margin: 20px;
+	border-top: 1px solid gray;
+}
+
+.template-userGallery p {
+	margin: 5px 20px;
+}
+
+.template-userGallery .button-area {
+	font-size: 1em;
+	height: 36px;
+	text-align: center;
+	vertical-align: middle;
+	margin-top: 12px;
+}
+
+.template-userGallery .button-area > div {
+	text-align: center;
+}
+
+.template-userGallery .buttons {
+	width: 100%;
+	margin: auto;
+}
+
+.template-userGallery .remaining-text {
+	font-size: 1.0em;
+}
+
+.template-userGallery .button-area .disabled{
+	opacity: .5;
+}
+
+.template-userGallery .item-card {
+	width: 504px;
+	height: 300px;
+	display: inline-block;
+	margin: 24px 24px;
+	background-color: #EEEEEE;
+}
+
+.template-userGallery .button-area .enabled {
+	color: black;
+	font-size: 1.5em;
+	opacity: .5;
+}
+
+.template-userGallery .button-area .enabled:hover {
+	opacity: 1;
+	cursor: pointer;
+}
+
+.template-userGallery .item-card {
+	border: 1px solid black;
+}

@@ -57,16 +57,18 @@ Template.itemThumbnail.helpers({
 			var item_object = items.findOne(item_id);
 			var artwork_object = artworks.findOne(item_object.artwork_id);
 
-			var overall_dimension = 250;
-			var max_dimension = 230;
+			var overall_dimension = 210;
+			var max_dimension = 200;
 
 			var width = artwork_object.width;
 			var height = artwork_object.height;
 			var ratio = width / height;
 
 			var info_object = {
+				'item_id' : item_id,
 				'image_width' : 0,
 				'image_height' : 0,
+				'filename' : artwork_object.filename,
 				'imageURL' : artwork_object.img_link == "" ? "http://go-grafix.com/data/wallpapers/35/painting-626297-1920x1080-hq-dsk-wallpapers.jpg" : artwork_object.img_link
 			};
 
@@ -87,6 +89,7 @@ Template.itemThumbnail.helpers({
 
 		catch(error) {
 			return {
+				'item_id' : "",
 				'image_width' : 0,
 				'image_height' : 0,
 				'imageURL' : "",
@@ -94,4 +97,12 @@ Template.itemThumbnail.helpers({
 			};
 		}
 	}
+})
+
+Template.itemThumbnail.events({
+	'click .image-thumb' : function(element) {
+		var item_id = $(element.target).data('item_id');
+		Session.set('selectedItem', item_id);
+		Modal.show('fullViewModal');
+	},
 })
