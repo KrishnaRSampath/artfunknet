@@ -1,5 +1,10 @@
 <template name="auctionTable">
 	<div class="template-auctionTable">
+		{{#if full}}
+		<div class="col-xs-12 no-padding">
+			<p>Note: your inventory is currently full. You will be unable to place bids on any items in the Auction House.</p>
+		</div>
+		{{/if}}
 		<div class="col-xs-12 no-padding">
 			<table class="auction-table" data-table_id="{{this.table_id}}">
 				<tr>

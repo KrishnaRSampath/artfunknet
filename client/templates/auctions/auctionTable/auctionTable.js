@@ -84,7 +84,11 @@ Template.auctionTable.helpers({
 			list_object.condition = Math.floor((item_object.condition * 100)) + '%';
 			list_object.attributes = item_object.attributes;
 			list_object.auction_id = auction_object._id;
-			list_object.biddable = Meteor.userId() && (item_object.owner != Meteor.userId()) && (auction_object.bid_minimum <= Meteor.user().profile.bank_balance);
+			list_object.biddable = 
+				Meteor.userId() && 
+				(item_object.owner != Meteor.userId()) && 
+				(auction_object.bid_minimum <= Meteor.user().profile.bank_balance) && 
+				items.find({'owner' : Meteor.userId(), 'status' : {$ne : 'unclaimed'}}).count() < Meteor.user().profile.inventory_cap;
 			list_object.expiration = auction_object.expiration_date;
 			list_object.buy_now = auction_object.buy_now == -1 ? "-" : "$" + getCommaSeparatedValue(auction_object.buy_now),
 			list_object.history = auction_object.bid_history.length > 0;
@@ -92,7 +96,7 @@ Template.auctionTable.helpers({
 			list_object.losing = (winning_id != Meteor.userId() && winning_id && has_bid);
 			list_object.seller = auction_object.seller;
 			list_object.item_id = item_object._id;
-			list_object.owned = items.find({'owner': Meteor.userId(), '_id': item_object._id}).count() > 0;
+			list_object.owned = items.find({'owner': Meteor.userId(), 'artwork_id': list_object._id}).count() > 0;
 
 			return list_object;
 		}
@@ -146,6 +150,13 @@ Template.auctionTable.helpers({
 				'filename' : ""
 			};
 		}
+	},
+
+	'full' : function() {
+		if (Meteor.userId())
+			return items.find({'owner' : Meteor.userId(), 'status' : {$ne : 'unclaimed'}}).count() >= Meteor.user().profile.inventory_cap;
+
+		else return false;
 	}
 });
 

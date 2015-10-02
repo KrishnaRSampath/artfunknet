@@ -14,8 +14,8 @@ Template.createAuctionModal.events ({
 		if (Session.get('auctionMin')) {
 			var errors = [];
 			var item_id = Session.get('selectedItem');
-			var starting = template.find('#starting-amount').value;
-			var buy_now = template.find('#buy-now-amount').value;
+			var starting = getAmountFromInput(template.find('#starting-amount').value);
+			var buy_now = getAmountFromInput(template.find('#buy-now-amount').value);
 			var duration = template.find('#duration').value;
 
 			if (isNaN(starting))

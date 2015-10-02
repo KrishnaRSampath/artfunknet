@@ -1,27 +1,29 @@
 createAuction = function(item_id, starting, buy_now, duration) {
-    var post_date = moment();
-    var expiration_date = moment(post_date).add(duration, 'minutes');
-    var item_object = items.findOne(item_id);
-    var artwork_object = artworks.findOne(item_object.artwork_id);
-    var user_object = Meteor.users.findOne(item_object.owner);
-    var auction_object = {
-        'item_id': item_id,
-        'bid_history': [],
-        'current_price': starting,
-        'buy_now': buy_now,
-        'bid_minimum' : Math.floor(starting * 1.05),
-        'date_posted': post_date,
-        'expiration_date': expiration_date,
-        'title': artwork_object.title,
-        'artist': artwork_object.artist,
-        'rarity': artwork_object.rarity,
-        'medium': artwork_object.medium,
-        'condition': item_object.condition,
-        'seller': user_object.profile.screen_name,
-        'date': artwork_object.date
-    };
+    if (auctions.find({'item_id': item_id}).count() == 0) {
+        var post_date = moment();
+        var expiration_date = moment(post_date).add(duration, 'minutes');
+        var item_object = items.findOne(item_id);
+        var artwork_object = artworks.findOne(item_object.artwork_id);
+        var user_object = Meteor.users.findOne(item_object.owner);
+        var auction_object = {
+            'item_id': item_id,
+            'bid_history': [],
+            'current_price': starting,
+            'buy_now': buy_now,
+            'bid_minimum' : Math.floor(starting * 1.05),
+            'date_posted': post_date,
+            'expiration_date': expiration_date,
+            'title': artwork_object.title,
+            'artist': artwork_object.artist,
+            'rarity': artwork_object.rarity,
+            'medium': artwork_object.medium,
+            'condition': item_object.condition,
+            'seller': user_object.profile.screen_name,
+            'date': artwork_object.date
+        };
 
-    auctions.insert(auction_object);
+        auctions.insert(auction_object);
+    }
 }
 
 Meteor.methods({
@@ -50,6 +52,41 @@ Meteor.methods({
             createUser(user);
         }
 	},
+
+    'validateCreateLogin' : function(user_object, confirmed_password) {
+        try {
+            var errors = [];
+
+            if (user_object.password != confirmed_password)
+                errors.push("Password fields do not match");
+
+            if (user_object.profile.screen_name == "" || Meteor.users.find({'profile.screen_name': user_object.profile.screen_name}).count() > 0)
+                errors.push("Invalid user handle");
+
+            if (user_object.email == "")
+                errors.push("Invalid email address");
+
+            if (user_object.password == "")
+                errors.push("Invalid password");
+
+            if (Meteor.users.find({'emails.0.address': user_object.email}).count() > 0)
+                errors.push("A user with that email address already exists");
+
+            if (errors.length == 0) {
+                createUser(user_object);          
+            }
+
+            return errors;
+        }
+
+        catch(error) {
+            return [error.message];
+        }
+    },
+
+    'emailIsTaken' : function(email_address) {
+        return Meteor.users.find({'emails.0.address': email_address}).count() > 0;
+    },
 
     'generateItems': function(userId, quality, count) {
         try {
@@ -254,10 +291,6 @@ Meteor.methods({
         }
     },
 
-    'alertUserOfWin' : function(user_id, item_id) {
-
-    },
-
     'chargeAccount' : function(user_id, amount) {
         chargeAccount(user_id, amount);
     },
@@ -290,6 +323,27 @@ Meteor.methods({
     'getItemValue' : function(item_id, type) {
         return getItemValue(item_id, type);
     },
+
+    'getCollectionValue' : function(user_id) {
+        var collection_total = 0;
+        var item_objects = items.find({'owner' : user_id, 'status' : {$ne: 'unclaimed'}});
+        item_objects.forEach(function(db_object) {
+            collection_total += getItemValue(db_object._id, 'actual');
+        });
+
+        return collection_total;
+    },
+
+    'getExhibitionValue' : function(user_id) {
+        var display_total = 0;
+        var item_objects = items.find({'owner' : user_id, 'status' : 'displayed'});
+        item_objects.forEach(function(db_object) {
+            display_total += getItemValue(db_object._id, 'actual');
+        });
+
+        return display_total;
+    },
+
 
     'getDisplayDetails' : function(item_id, duration) {
         return getDisplayDetails(item_id, duration);
@@ -341,6 +395,26 @@ Meteor.methods({
            
             auctions.update(db_object._id, {$set: {'date' : artwork_object.date}});
         }) 
+    },
+
+    'alertAllUsers' : function(message) {
+        var admin = Meteor.user().emails[0].address == "jpollack320@gmail.com";
+        if (admin) {
+            var all_users = Meteor.users.find();
+
+            all_users.forEach(function(db_object) {
+                var alert_object = {
+                    'user_id' : db_object._id,
+                    'message' : message,
+                    'link' : '/',
+                    'icon' : 'fa-exclamation',
+                    'sentiment' : "neutral",
+                    'time' : moment()
+                };
+
+                alerts.insert(alert_object);
+            })
+        }
     }
 })
 

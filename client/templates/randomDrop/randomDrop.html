@@ -1,5 +1,6 @@
 <template name="randomDrop">
 	<div class="template-randomDrop container">
+		<h4>bank balance: <span class="orange">${{bank_balance}}</span></h4>
 		<div class="crate-buttons">
 			<button class="{{#if dailyDropEnabled}}enabled{{else}}disabled{{/if}}" id="drop-button">{{dailyDropText dailyDropEnabled}}</button>
 			{{#each quality}}
@@ -9,15 +10,9 @@
 			{{/each}}
 		</div>
 
-		<!-- {{#each drop}}
-			<div class="drop" data-painting-id="{{this._id}}">
-				{{>itemTemplate this._id}}
-				<div class="row">
-					<button data-item_id="{{this._id}}" class="add-to-inventory">add to inventory</button>
-					<button data-item_id="{{this._id}}" class="quick-sell">sell</button>
-				</div>
-			</div>
-		{{/each}} -->
+		{{#if full}}
+		<p>Note: your inventory is currently full. You will be unable to add new artwork to your inventory</p>
+		{{/if}}
 
 		{{#each drop}}
 			<div class="item-card" data-painting-id="{{this._id}}">
@@ -32,7 +27,7 @@
 						<div class="col-xs-12">
 							<div class="row button-area">
 								<div class="col-xs-6">
-									<span><i data-item_id="{{this._id}}" class="enabled add-to-inventory fa fa-plus"></i></span>
+									<span><i data-item_id="{{this._id}}" class="{{#if full}}disabled{{else}}enabled{{/if}} add-to-inventory fa fa-plus"></i></span>
 								</div>
 								<div class="col-xs-6">
 									<span><i data-item_id="{{this._id}}" class="enabled quick-sell fa fa-usd"></i></span>

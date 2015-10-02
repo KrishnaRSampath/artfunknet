@@ -35,6 +35,20 @@ Template.inventory.helpers({
 
 		else return "";
 	},
+
+	'can_display' : function() {
+		if (Meteor.userId())
+			return items.find({'owner' : Meteor.userId(), 'status' : 'displayed'}).count() < Meteor.user().profile.display_cap;
+
+		else return false;
+	},
+
+	'can_auction' : function() {
+		if (Meteor.userId())
+			return items.find({'owner' : Meteor.userId(), 'status' : 'auctioned'}).count() < Meteor.user().profile.auction_cap;
+
+		else return false;
+	}
 })
 
 Template.inventory.events ({

@@ -18,7 +18,11 @@ Template.pagination.helpers({
 
 			else currentPage = 0;
 
-			var pageCount = totalResults / resultsPerPage;
+			var pageCount = Math.floor(totalResults / resultsPerPage);
+			if (totalResults % (pageCount * resultsPerPage) > 0)
+				pageCount++;
+
+			var last_page_index = pageCount - 1;
 
 			var firstPageShown = Math.floor((currentPage / pageNumbersDisplayed)) * pageNumbersDisplayed;
 			var lastPageShown = firstPageShown + pageNumbersDisplayed - 1;
@@ -36,20 +40,20 @@ Template.pagination.helpers({
 			});
 
 			for (var i = 0; i < pageNumbersDisplayed; i++) {
-				var pageStatus; 
+				var page_status; 
+				var page_index = firstPageShown + i;
 
-				if (currentPage == firstPageShown + i)
-					pageStatus = "page-number-current";
+				if (currentPage == page_index)
+					page_status = "page-number-current";
 
-				else if (firstPageShown + i >= pageCount) 
-					pageStatus = "page-number-disabled";
+				else if (page_index > last_page_index) 
+					page_status = "page-number-disabled";
 
-				else pageStatus = "page-number-enabled";
-
+				else page_status = "page-number-enabled";
 
 				pageArray.push({
-					'status' : pageStatus,
-					'pageNum' : firstPageShown + i,
+					'status' : page_status,
+					'pageNum' : page_index,
 					'text' : firstPageShown + i + 1
 				});
 			}
@@ -62,7 +66,7 @@ Template.pagination.helpers({
 
 			pageArray.push({
 				'status' : (lastPageShown < pageCount) ? 'page-number-enabled blue' : 'page-number-disabled',
-				'pageNum' : pageCount - 1,
+				'pageNum' : last_page_index,
 				'text' : '>>'
 			});
 		}

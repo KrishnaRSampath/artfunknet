@@ -46,7 +46,8 @@ Template.placeBidModal.events({
     	//event.preventDefault();
     	var errors = [];
     	var auction_object = auctions.findOne(Session.get('selectedAuction'));
-    	var bid_amount = template.find('#bid-amount').value;
+    	var bid_amount = getAmountFromInput(template.find('#bid-amount').value);
+        
     	if (! !!auction_object) 
     		errors.push("auction not found");
 

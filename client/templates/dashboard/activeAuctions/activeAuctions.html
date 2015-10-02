@@ -1,20 +1,18 @@
 <template name="activeAuctions">
 	<div class="template-activeAuctions">
 		<h1>Auction House Activity</h1>
-		<div class="container">
-			<div class="active-table">
-				{{#if myAuctions.auction}}
-					<h2>Your Auctions</h2>
-					{{>auctionTable myAuctions}}
-				{{/if}}
-			</div>
+		<div class="active-table">
+			{{#if myAuctions.auction}}
+				<h2>Your Auctions</h2>
+				{{>auctionTable myAuctions}}
+			{{/if}}
+		</div>
 
-			<div class="active-table">
-				{{#if myBids.auction}}
-					<h2>Tracked Items</h2>
-					{{>auctionTable myBids}}
-				{{/if}}
-			</div>
+		<div class="active-table">
+			{{#if myBids.auction}}
+				<h2>Tracked Items</h2>
+				{{>auctionTable myBids}}
+			{{/if}}
 		</div>
 	</div>
 </template>

@@ -59,6 +59,18 @@ var updateContent = function() {
             artworks.update(db_object._id, {$set: {'date' : Number(new_date)}});
         }
     });
+
+    var users = Meteor.users.find();
+    users.forEach(function(db_object) {
+        if (db_object.profile.inventory_cap === undefined)
+            Meteor.users.update(db_object._id, {$set: {'profile.inventory_cap': 40}});
+
+        if (db_object.profile.auction_cap === undefined)
+            Meteor.users.update(db_object._id, {$set: {'profile.auction_cap': 8}});
+
+        if (db_object.profile.display_cap === undefined)
+            Meteor.users.update(db_object._id, {$set: {'profile.display_cap': 8}});
+    })
 }
 
 Meteor.startup(function() {
@@ -81,7 +93,10 @@ Meteor.startup(function() {
                 "screen_name": "EindacorDS",
                 "user_type": "player",
                 "bank_balance" : 1000000,
-                "last_drop" : last_drop._d.toISOString()
+                "last_drop" : last_drop._d.toISOString(),
+                'inventory_cap' : 40,
+                'display_cap' : 8,
+                'auction_cap' : 8,
             }
         };
 
@@ -95,7 +110,10 @@ Meteor.startup(function() {
                 "screen_name": "Buyer",
                 "user_type": "player",
                 "bank_balance" : 10000000,
-                "last_drop" : last_drop._d.toISOString()
+                "last_drop" : last_drop._d.toISOString(),
+                'inventory_cap' : 40,
+                'display_cap' : 8,
+                'auction_cap' : 8,
             }
         };
 
@@ -257,6 +275,9 @@ Meteor.setInterval((function() {
         var time_from_now = moment(expired_auctions[i].expiration_date) - moment();
         concludeAuctionOnTimeout(expired_auctions[i]._id, time_from_now);
     }
+
+    var creation_cutoff = moment().add(-5, 'minutes')._d;
+    items.remove({'status' : 'unclaimed', 'date_created' : {$lt : creation_cutoff}});
 
 }), check_frequency);
 

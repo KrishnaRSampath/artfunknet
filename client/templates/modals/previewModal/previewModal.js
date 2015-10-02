@@ -28,7 +28,10 @@ Template.previewModal.helpers({
 			var item_object = items.findOne(item_id);
 			var artwork_object = artworks.findOne(item_object.artwork_id);
 			var auction_object = auctions.findOne(Session.get('selectedAuction')); 
-			var biddable = (item_object.owner != Meteor.userId()) && (auction_object.bid_minimum <= Meteor.user().profile.bank_balance);
+			var biddable = 
+				(item_object.owner != Meteor.userId()) && 
+				(auction_object.bid_minimum <= Meteor.user().profile.bank_balance) &&
+				items.find({'owner' : Meteor.userId(), 'status' : {$ne : 'unclaimed'}}).count() < Meteor.user().profile.inventory_cap;
 
 			var max_dimension = 400;
 

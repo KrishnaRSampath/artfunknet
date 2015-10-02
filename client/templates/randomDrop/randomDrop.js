@@ -55,6 +55,20 @@ Template.randomDrop.helpers({
 			'crateCost' : "",
 			'enabled' : false
 		}
+	},
+
+	'full' : function() {
+		if (Meteor.userId())
+			return items.find({'owner' : Meteor.userId(), 'status' : {$ne : 'unclaimed'}}).count() >= Meteor.user().profile.inventory_cap;
+
+		else return false;
+	},
+
+	'bank_balance' : function() {
+		if (Meteor.userId())
+			return getCommaSeparatedValue(Meteor.user().profile.bank_balance);
+
+		else return 0;
 	}
 })
 
@@ -74,7 +88,7 @@ Template.randomDrop.events ({
 		})
 	},
 
-	'click .add-to-inventory' : function(element) {
+	'click .add-to-inventory.enabled' : function(element) {
 		var item_id = $(element.target).data('item_id');
 		Meteor.call('claimArtwork', Meteor.userId(), item_id, function(error) {
 			if (error)
@@ -96,10 +110,10 @@ Template.randomDrop.rendered = function() {
 };
 
 Template.randomDrop.destroyed = function() {
-	Meteor.call('clearUnclaimed', Meteor.userId());
+	//Meteor.call('clearUnclaimed', Meteor.userId());
 	Meteor.clearInterval(this.handle);
 };
 
 window.onbeforeunload = function(e) {
-	Meteor.call('clearUnclaimed', Meteor.userId());
+	//Meteor.call('clearUnclaimed', Meteor.userId());
 };

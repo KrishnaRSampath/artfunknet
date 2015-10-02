@@ -2,20 +2,39 @@
 	<div class="template-dashboard">
 		<div class="container">
 			{{#with userData}}
-			<h2 class="orange">{{profile.screen_name}}</h2>
-			<h4 class="orange">bank balance: ${{bank_balance}}</h4>
-			{{/with}}
+			<div class="row dash-section">
+				<h2 class="orange">{{screen_name}}</h2>
+				<h4>bank balance: <span class="orange">${{bank_balance}}</span></h4>
+				<h4>collection value: <span class="orange">${{collection_value}}</span></h4>
+				<h4>current exhibition value: <span class="orange">${{display_value}}</span></h4>
+				<h4>items exhibited: <span class="orange">{{display_count}}</span></h4>
+				<h4>paintings owned: <span class="orange">{{inventory_count}}</span></h4>
+				<h4>auctions active: <span class="orange">{{auction_count}}</span></h4>			
+			</div>
 
-			<div class="dash-section">
+			{{#if alert_count}}
+			<div class="row dash-section">
 				{{> alerts}}
 			</div>
+			{{/if}}
 
-			<div class="dash-section">
+			{{#if auction_count}}
+			<div class="row dash-section">
 				{{> activeAuctions}}
 			</div>
-			<div class="dash-section">
+			{{/if}}
+
+			{{#if inventory_count}}
+			<div class="row dash-section">
 				{{> inventory}}
 			</div>
+			{{else}}
+			<div class="row dash-section">
+				<h3>You have no items yet. Click <a href="/loot">here</a> to visit the store!</h3>
+			</div>
+			{{/if}}
+
+			{{/with}}
 		</div>
 	</div>
 </template>
