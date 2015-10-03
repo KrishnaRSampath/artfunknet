@@ -2,7 +2,8 @@ var drop_count = 10;
 // var drop_frequency = 86400000 //once per day
 //var drop_frequency = 60000 //once per minute
 //var drop_frequency = 3600000 //once per hour
-var drop_frequency = 7200000 //once every 2 hours
+//var drop_frequency = 7200000 //once every 2 hours
+var drop_frequency = 10800000 //once every 3 hours
 // var drop_frequency = 1000 //once per second
 
 Template.randomDrop.helpers({
@@ -31,7 +32,8 @@ Template.randomDrop.helpers({
 	},
 
 	'quality' : function() {
-		return ["bronze", "silver", "gold", "platinum", "diamond"];
+		return ["bronze", "silver", "gold", "platinum"];
+		//return ["bronze", "silver", "gold", "platinum", "diamond"];
 	},
 
 	'dropButton' : function(quality) {
@@ -75,8 +77,8 @@ Template.randomDrop.helpers({
 Template.randomDrop.events ({
 	'click #drop-button.enabled' :function() {
 		Modal.show("dropAnimationModal");
-		var now = moment().toISOString();
-		Meteor.users.update(Meteor.userId(), {$set: {'profile.last_drop' : now}});
+		// var now = moment().toISOString();
+		// Meteor.users.update(Meteor.userId(), {$set: {'profile.last_drop' : now}});
 	},
 
 	'click .crate-button.enabled' : function(element) {

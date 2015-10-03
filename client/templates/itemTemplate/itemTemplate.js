@@ -4,6 +4,12 @@ Template.itemInfo.helpers({
 			var item_object = items.findOne(item_id);
 			var artwork_object = artworks.findOne(item_object.artwork_id);
 
+			var displayed_attributes = [];
+			for(var i=0; i < item_object.attributes.length; i++) {
+				if (item_object.attributes[i].type != 'default')
+					displayed_attributes.push(item_object.attributes[i]);
+			}
+
 			var item_data_object = {
 				'title' : artwork_object.title,
 				'date' : artwork_object.date,
@@ -12,8 +18,9 @@ Template.itemInfo.helpers({
 				'medium' : artwork_object.medium,
 				'width' : artwork_object.width,
 				'height' : artwork_object.height,
-				'condition' : Math.floor(item_object.condition * 100) + '%',
-				'attirbutes' : item_object.attributes,
+				'condition_text' : Math.floor(item_object.condition * 100) + '%',
+				'condition' : item_object.condition,
+				'attribute' : displayed_attributes,
 				'item_id' : item_object._id
 			}
 
@@ -30,7 +37,7 @@ Template.itemInfo.helpers({
 				'width' : "",
 				'height' : "",
 				'condition' : "",
-				'attirbutes' : "",
+				'attribute' : "",
 				'item_id' : "",
 			}
 		}
@@ -48,6 +55,10 @@ Template.itemInfo.helpers({
 		})
 
 		return Session.get(item_id + '_value');
+	},
+
+	'attributeColor' : function(value) {
+		return 255 - Math.floor(value * 255);
 	}
 })
 

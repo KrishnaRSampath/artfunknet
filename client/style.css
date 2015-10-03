@@ -96,7 +96,7 @@ a {
 }
 
 .masterpiece {
-	color: teal;
+	color: #44DDDD;
 }
 
 .legendary {
@@ -154,6 +154,10 @@ a {
 
 .orange {
 	color: #FF6600;
+}
+
+.af-color {
+	color: #FF33CC
 }
 
 .blue {

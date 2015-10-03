@@ -31,10 +31,11 @@ Template.auctionTable.helpers({
 			{ 'text' : 'title', 'sort_id' : 'title', 'table_id' : table_data.table_id  },
 			{ 'text' : 'date', 'sort_id' : 'date', 'table_id' : table_data.table_id  },
 			{ 'text' : 'artist', 'sort_id' : 'artist', 'table_id' : table_data.table_id  },
-			{ 'text' : 'rarity', 'sort_id' : 'rarity', 'table_id' : table_data.table_id  },
+			{ 'text' : 'rarity', 'sort_id' : 'rarity_rank', 'table_id' : table_data.table_id  },
 			{ 'text' : 'dimensions', 'sort_id' : undefined, 'table_id' : table_data.table_id  },
 			{ 'text' : 'condition', 'sort_id' : 'condition', 'table_id' : table_data.table_id  },
-			{ 'text' : 'attributes', 'sort_id' : undefined, 'table_id' : table_data.table_id  },
+			{ 'text' : 'features', 'sort_id' : 'feature_count', 'table_id' : table_data.table_id  },
+			{ 'text' : 'xp rating', 'sort_id' : 'xp_rating', 'table_id' : table_data.table_id  },
 			{ 'text' : 'current bid', 'sort_id' : 'current_price', 'table_id' : table_data.table_id  },
 			{ 'text' : 'buy now', 'sort_id' : 'buy_now', 'table_id' : table_data.table_id  },
 			{ 'text' : 'actions', 'sort_id' : undefined, 'table_id' : table_data.table_id  },
@@ -81,8 +82,17 @@ Template.auctionTable.helpers({
 				}
 			}
 
-			list_object.condition = Math.floor((item_object.condition * 100)) + '%';
-			list_object.attributes = item_object.attributes;
+			var displayed_attributes = [];
+			//var base_attributes = [];
+			for(var i=0; i < item_object.attributes.length; i++) {
+				if (item_object.attributes[i].type != 'default')
+					displayed_attributes.push(item_object.attributes[i]);
+
+				//else base_attributes.push(item_object.attributes[i]);
+			}
+
+			list_object.condition_text = Math.floor((item_object.condition * 100)) + '%';
+			list_object.condition = item_object.condition;
 			list_object.auction_id = auction_object._id;
 			list_object.biddable = 
 				Meteor.userId() && 
@@ -97,6 +107,10 @@ Template.auctionTable.helpers({
 			list_object.seller = auction_object.seller;
 			list_object.item_id = item_object._id;
 			list_object.owned = items.find({'owner': Meteor.userId(), 'artwork_id': list_object._id}).count() > 0;
+			list_object.attribute = displayed_attributes;
+			//list_object.base_attribute = base_attributes;
+			list_object.xp_rating = item_object.xp_rating;
+			list_object.xp_rating_text = Math.floor(item_object.xp_rating * 100);
 
 			return list_object;
 		}
@@ -105,6 +119,10 @@ Template.auctionTable.helpers({
 			console.log(error.message);
 			return {};
 		}
+	},
+
+	'attributeColor' : function(value) {
+		return 255 - Math.floor(value * 255);
 	},
 
 	'thumbnailInfo' : function(item_id) {
@@ -178,6 +196,11 @@ Template.auctionTable.events({
 		Session.set('selectedAuction', auction_id);
 		Modal.show('previewModal');
 	},
+
+	'click .item-attribute' : function(element) {
+		var attribute_id = element.target.dataset.attribute_title;
+		console.log(attribute_id);
+	}
 })
 
 Template.auctionTable.created = function() {

@@ -10,11 +10,13 @@
 				<p><span class="{{rarity}}"><strong>{{rarity}}</strong></span></p>
 				<p>{{medium}}</p>
 				<p>{{height}} x {{width}}</p>
-				<p>condition: {{condition}}</p>
+				<p>condition: <span style="color: rgb({{attributeColor condition}}, 0, 0)">{{condition_text}}</span></p>
 				<p>estimated value: {{itemValue item_id}}</p>
-				{{#each attributes}}
-					<p class="item-attribute">{{text}}</p>
+				<p>
+				{{#each attribute}}
+					<i data-attribute_id="{{this._id}}" style="color: rgb({{attributeColor this.value}}, 0, 0)" class="item-attribute fa {{this.icon}}"></i>
 				{{/each}}
+				</p>
 
 				{{/with}}	
 			</div>		

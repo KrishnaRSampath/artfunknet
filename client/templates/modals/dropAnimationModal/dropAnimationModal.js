@@ -21,7 +21,14 @@ Template.dropAnimationModal.events({
 			Meteor.call('generateItems', Meteor.userId(), Session.get('rolledQuality'), drop_count, function(error, result) {
 				if (error)
 					console.log(error.message);
+
+				else {
+					var now = moment().toISOString();
+					Meteor.users.update(Meteor.userId(), {$set: {'profile.last_drop' : now}});
+				}
 			})
+
+
 		}, 3000);
 	},
 
@@ -47,7 +54,7 @@ Template.dropAnimationModal.rendered = function() {
 			'silver', 'silver', 'silver', 'silver',
 			'gold', 'gold', 'gold', 
 			'platinum', 'platinum', 
-			'diamond'
+			//'diamond'
 		];
 
 		Session.set('lotteryQuality', possible_qualities[Math.floor(Math.random() * possible_qualities.length)]);

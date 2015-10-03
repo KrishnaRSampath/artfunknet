@@ -10,6 +10,8 @@
 .template-itemTemplate .image-thumb {
 	margin: 24px auto;
 	text-align: center;
+	background-color: white;
+	opacity: .5;
 }
 
 .template-itemTemplate .card-container {
@@ -25,4 +27,8 @@
 
 .template-itemThumbnail .image-thumb:hover {
 	cursor: pointer;
+}
+
+.template-itemInfo .item-attribute {
+	color: black;
 }

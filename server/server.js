@@ -59,18 +59,6 @@ var updateContent = function() {
             artworks.update(db_object._id, {$set: {'date' : Number(new_date)}});
         }
     });
-
-    var users = Meteor.users.find();
-    users.forEach(function(db_object) {
-        if (db_object.profile.inventory_cap === undefined)
-            Meteor.users.update(db_object._id, {$set: {'profile.inventory_cap': 40}});
-
-        if (db_object.profile.auction_cap === undefined)
-            Meteor.users.update(db_object._id, {$set: {'profile.auction_cap': 8}});
-
-        if (db_object.profile.display_cap === undefined)
-            Meteor.users.update(db_object._id, {$set: {'profile.display_cap': 8}});
-    })
 }
 
 Meteor.startup(function() {

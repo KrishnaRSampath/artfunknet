@@ -28,12 +28,18 @@
 						<td>{{artist}}</td>
 						<td><span class="{{rarity}}"><strong>{{rarity}}</strong></span></td>
 						<td>{{height}} x {{width}}</td>
-						<td>{{condition}}</td>
+						<td style="color: rgb({{attributeColor condition}}, 0, 0)" >{{condition_text}}</td>
 						<td>
-						{{#each attributes}}
-							<p class="item-attribute">{{text}}</p>
+						{{#each attribute}}
+							<i data-attribute_title="{{this.description}}" data-attribute_value="{{this.value}}" style="color: rgb({{attributeColor this.value}}, 0, 0)" class="item-attribute fa {{this.icon}}"></i>
 						{{/each}}
 						</td>
+						<td style="color: rgb({{attributeColor xp_rating}}, 0, 0)" >{{xp_rating_text}}</td>
+						<!-- <td>
+						{{#each base_attribute}}
+							<i data-attribute_title="{{this.description}}" data-attribute_value="{{this.value}}" style="color: rgb({{attributeColor this.value}}, 0, 0)" class="item-attribute fa {{this.icon}}"></i>
+						{{/each}}
+						</td> -->
 						<td class="{{#if history}}highlight{{/if}}">{{current_bid auction_id}}</td>
 						<td>{{buy_now}}</td>
 						<td class="action-buttons">						

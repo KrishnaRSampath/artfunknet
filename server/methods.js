@@ -5,6 +5,18 @@ createAuction = function(item_id, starting, buy_now, duration) {
         var item_object = items.findOne(item_id);
         var artwork_object = artworks.findOne(item_object.artwork_id);
         var user_object = Meteor.users.findOne(item_object.owner);
+
+        var rarity_rank;
+
+        switch(artwork_object.rarity) {
+            case 'common' : rarity_rank = 0; break;
+            case 'uncommon' : rarity_rank = 1; break;
+            case 'rare' : rarity_rank = 2; break;
+            case 'legendary' : rarity_rank = 3; break;
+            case 'masterpiece' : rarity_rank = 4; break;
+            default: rarity_rank = 0; break;
+        }
+
         var auction_object = {
             'item_id': item_id,
             'bid_history': [],
@@ -19,7 +31,10 @@ createAuction = function(item_id, starting, buy_now, duration) {
             'medium': artwork_object.medium,
             'condition': item_object.condition,
             'seller': user_object.profile.screen_name,
-            'date': artwork_object.date
+            'date': artwork_object.date,
+            'xp_rating': item_object.xp_rating,
+            'feature_count': item_objects,
+            'rarity_rank' : rarity_rank
         };
 
         auctions.insert(auction_object);
@@ -386,17 +401,6 @@ Meteor.methods({
         }
     },
 
-    'updateAuctions' : function() {
-        var auction_objects = auctions.find();
-
-        auction_objects.forEach(function(db_object) {
-            var item_object = items.findOne(db_object.item_id);
-            var artwork_object = artworks.findOne(item_object.artwork_id);
-           
-            auctions.update(db_object._id, {$set: {'date' : artwork_object.date}});
-        }) 
-    },
-
     'alertAllUsers' : function(message) {
         var admin = Meteor.user().emails[0].address == "jpollack320@gmail.com";
         if (admin) {
@@ -415,6 +419,56 @@ Meteor.methods({
                 alerts.insert(alert_object);
             })
         }
+    },
+
+    //reserved for content update
+    'resetAttributes' : function() {
+        attributes.remove({});
+        for (var i=0; i < attribute_data.length; i++) {
+            attributes.insert(attribute_data[i]);
+        }
+
+        items.update({}, {$set : {'attributes' : []}}, {multi : true});
+    },
+
+    'setItemAttributes' : function() {
+        var item_objects = items.find();
+        item_objects.forEach(function(db_object) {
+            if (db_object.attributes.length == 0) {
+                var rarity = artworks.findOne(db_object.artwork_id).rarity;
+                var item_attributes = getRandomAttributes(rarity);
+                items.update(db_object._id, {$set : {'attributes' : item_attributes}});
+            }
+        });
+    },
+
+    'setItemXPLevel' : function() {
+        var item_objects = items.find();
+        item_objects.forEach(function(db_object) {
+            items.update(db_object._id, {$set: {'xp_rating' : Math.random()}});
+        })    
+    },
+
+    'updateAuctions' : function() {
+        //add feature_count
+        //add xp_rating
+        var auction_objects = auctions.find();
+        auction_objects.forEach(function(db_object) {
+            var item_object = items.findOne(db_object.item_id);
+            var rarity = db_object.rarity;
+            var rarity_rank;
+
+            switch(rarity) {
+                case 'common' : rarity_rank = 0; break;
+                case 'uncommon' : rarity_rank = 1; break;
+                case 'rare' : rarity_rank = 2; break;
+                case 'legendary' : rarity_rank = 3; break;
+                case 'masterpiece' : rarity_rank = 4; break;
+                default: rarity_rank = 0; break;
+            }
+
+            auctions.update(db_object._id, {$set : {'feature_count' : item_object.attributes.length, 'xp_rating' : item_object.xp_rating, 'rarity_rank' : rarity_rank}});
+        });
     }
 })
 
