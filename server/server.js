@@ -52,13 +52,11 @@ var generateContent = function() {
 }
 
 var updateContent = function() {
-    var artwork_objects = artworks.find();
-    artwork_objects.forEach(function(db_object) {
-        if (typeof(db_object.date) == "string") {
-            var new_date = db_object.date.replace("????", "");
-            artworks.update(db_object._id, {$set: {'date' : Number(new_date)}});
-        }
-    });
+    // var item_objects = items.find({'status' : 'auctioned'});
+    // item_objects.forEach(function(db_object) {
+    //     if (auctions.find({'item_id' : db_object._id}).count() == 0)
+    //         items.update(db_object._id, {$set : {'status' : 'claimed'}});
+    // });
 }
 
 Meteor.startup(function() {
@@ -69,6 +67,12 @@ Meteor.startup(function() {
 		generateContent();
 
     updateContent();
+
+    if (attributes.find().count() == 0) {
+        for (var i=0; i < attribute_data.length; i++) {
+            attributes.insert(attribute_data[i]);
+        }
+    }
 
     if (Meteor.users.find().count() == 0) {
         var last_drop = moment().add(-1, 'days');
@@ -85,6 +89,8 @@ Meteor.startup(function() {
                 'inventory_cap' : 40,
                 'display_cap' : 8,
                 'auction_cap' : 8,
+                'level' : 1,
+                'xp' : 0,
             }
         };
 
@@ -102,6 +108,8 @@ Meteor.startup(function() {
                 'inventory_cap' : 40,
                 'display_cap' : 8,
                 'auction_cap' : 8,
+                'level' : 1,
+                'xp' : 0,
             }
         };
 

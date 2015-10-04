@@ -170,8 +170,9 @@ getItemValue = function(item_id, type) {
     }
 
     catch(error) {
-        console.log(error.message);
+        console.log("getItemValue: " + error.message);
         console.log("item_id: " + item_id);
+        return undefined;
     }
 }
 
@@ -226,7 +227,8 @@ generateItems = function(user_id, quality, count) {
             'attributes' : getRandomAttributes(rarity_roll),
             'owner' : user_id,
             'status' : 'unclaimed',
-            'date_created' : new Date()
+            'date_created' : new Date(),
+            'xp_rating' : Math.random(),
         })
     }
 }

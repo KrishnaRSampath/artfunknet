@@ -3,13 +3,32 @@
 		<div class="container">
 			{{#with userData}}
 			<div class="row dash-section">
-				<h2 class="af-color">{{screen_name}}</h2>
-				<h4>bank balance: <span class="af-color">${{bank_balance}}</span></h4>
-				<h4>collection value: <span class="af-color">${{collection_value}}</span></h4>
-				<h4>current exhibition value: <span class="af-color">${{display_value}}</span></h4>
-				<h4>items exhibited: <span class="af-color">{{display_count}}</span></h4>
-				<h4>paintings owned: <span class="af-color">{{inventory_count}}</span></h4>
-				<h4>auctions active: <span class="af-color">{{auction_count}}</span></h4>			
+				<div class="row">
+					<h2 class="af-color">{{screen_name}}</h2>
+				</div>
+				<div class="row">
+					<div class="col-xs-6 no-padding">
+						<div class="xp-bar">
+							{{#with xpData}}
+							<div class="xp-level" style= "width : {{xp_completion}}%"></div>
+							<div class="level-text">
+								<p>level {{current_level}}</p>
+							</div>
+							<div class="goal-text">
+								<p>next level - <span class="highlight">{{xp_goal}}</span> xp</p>
+							</div>
+							{{/with}}
+						</div>
+					</div>
+				</div>
+				<div class="row player-info">
+					<h4>bank balance: <span class="af-color">${{bank_balance}}</span></h4>
+					<h4>collection value: <span class="af-color">${{collection_value}}</span></h4>
+					<h4>current exhibition value: <span class="af-color">${{display_value}}</span></h4>
+					<h4>items exhibited: <span class="af-color">{{display_count}}</span></h4>
+					<h4>paintings owned: <span class="af-color">{{inventory_count}}</span></h4>
+					<h4>auctions active: <span class="af-color">{{auction_count}}</span></h4>	
+				</div>		
 			</div>
 
 			{{#if alert_count}}

@@ -1,6 +1,6 @@
 Template.alerts.helpers({
 	'alert' : function() {
-		return alerts.find({'user_id' : Meteor.userId()}).fetch();
+		return alerts.find({'user_id' : Meteor.userId()}, {sort : {'time' : -1}}).fetch();
 	},
 
 	'timestamp' : function(alert_object) {

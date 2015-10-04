@@ -1,43 +1,49 @@
 createAuction = function(item_id, starting, buy_now, duration) {
-    if (auctions.find({'item_id': item_id}).count() == 0) {
-        var post_date = moment();
-        var expiration_date = moment(post_date).add(duration, 'minutes');
-        var item_object = items.findOne(item_id);
-        var artwork_object = artworks.findOne(item_object.artwork_id);
-        var user_object = Meteor.users.findOne(item_object.owner);
+    try {
+        if (auctions.find({'item_id': item_id}).count() == 0) {
+            var post_date = moment();
+            var expiration_date = moment(post_date).add(duration, 'minutes');
+            var item_object = items.findOne(item_id);
+            var artwork_object = artworks.findOne(item_object.artwork_id);
+            var user_object = Meteor.users.findOne(item_object.owner);
 
-        var rarity_rank;
+            var rarity_rank;
 
-        switch(artwork_object.rarity) {
-            case 'common' : rarity_rank = 0; break;
-            case 'uncommon' : rarity_rank = 1; break;
-            case 'rare' : rarity_rank = 2; break;
-            case 'legendary' : rarity_rank = 3; break;
-            case 'masterpiece' : rarity_rank = 4; break;
-            default: rarity_rank = 0; break;
+            switch(artwork_object.rarity) {
+                case 'common' : rarity_rank = 0; break;
+                case 'uncommon' : rarity_rank = 1; break;
+                case 'rare' : rarity_rank = 2; break;
+                case 'legendary' : rarity_rank = 3; break;
+                case 'masterpiece' : rarity_rank = 4; break;
+                default: rarity_rank = 0; break;
+            }
+
+            var auction_object = {
+                'item_id': item_id,
+                'bid_history': [],
+                'current_price': starting,
+                'buy_now': buy_now,
+                'bid_minimum' : Math.floor(starting * 1.05),
+                'date_posted': post_date,
+                'expiration_date': expiration_date,
+                'title': artwork_object.title,
+                'artist': artwork_object.artist,
+                'rarity': artwork_object.rarity,
+                'medium': artwork_object.medium,
+                'condition': item_object.condition,
+                'seller': user_object.profile.screen_name,
+                'date': artwork_object.date,
+                'xp_rating': item_object.xp_rating,
+                'feature_count': item_object.attributes.length,
+                'rarity_rank' : rarity_rank
+            };
+
+            auctions.insert(auction_object);
         }
+    }
 
-        var auction_object = {
-            'item_id': item_id,
-            'bid_history': [],
-            'current_price': starting,
-            'buy_now': buy_now,
-            'bid_minimum' : Math.floor(starting * 1.05),
-            'date_posted': post_date,
-            'expiration_date': expiration_date,
-            'title': artwork_object.title,
-            'artist': artwork_object.artist,
-            'rarity': artwork_object.rarity,
-            'medium': artwork_object.medium,
-            'condition': item_object.condition,
-            'seller': user_object.profile.screen_name,
-            'date': artwork_object.date,
-            'xp_rating': item_object.xp_rating,
-            'feature_count': item_objects,
-            'rarity_rank' : rarity_rank
-        };
-
-        auctions.insert(auction_object);
+    catch(error) {
+        console.log(error.message);
     }
 }
 
@@ -386,21 +392,6 @@ Meteor.methods({
         return "http://go-grafix.com/data/wallpapers/35/painting-626297-1920x1080-hq-dsk-wallpapers.jpg";
     },
 
-    'saveArtworkData' : function() {
-        try {
-            var file = new File("exported_artwork.txt");
-            var artwork_objects = artworks.find();
-            artwork_objects.forEach(function(db_object) {
-                file.writeln(db_object.title);
-                file.close();
-            })
-        }
-
-        catch(error) {
-            console.log(error.message);
-        }
-    },
-
     'alertAllUsers' : function(message) {
         var admin = Meteor.user().emails[0].address == "jpollack320@gmail.com";
         if (admin) {
@@ -442,6 +433,10 @@ Meteor.methods({
         });
     },
 
+    'setPlayerLevels' : function() {
+        Meteor.users.update({}, {$set : {'profile.level' : 1, 'profile.xp' : 0}}, {multi : true});
+    },
+
     'setItemXPLevel' : function() {
         var item_objects = items.find();
         item_objects.forEach(function(db_object) {
@@ -449,27 +444,34 @@ Meteor.methods({
         })    
     },
 
-    'updateAuctions' : function() {
-        //add feature_count
-        //add xp_rating
-        var auction_objects = auctions.find();
-        auction_objects.forEach(function(db_object) {
-            var item_object = items.findOne(db_object.item_id);
-            var rarity = db_object.rarity;
-            var rarity_rank;
-
-            switch(rarity) {
-                case 'common' : rarity_rank = 0; break;
-                case 'uncommon' : rarity_rank = 1; break;
-                case 'rare' : rarity_rank = 2; break;
-                case 'legendary' : rarity_rank = 3; break;
-                case 'masterpiece' : rarity_rank = 4; break;
-                default: rarity_rank = 0; break;
-            }
-
-            auctions.update(db_object._id, {$set : {'feature_count' : item_object.attributes.length, 'xp_rating' : item_object.xp_rating, 'rarity_rank' : rarity_rank}});
-        });
+    'getXPData' : function(current_level) {
+        return {
+            'chunk' : getXPChunk(current_level),
+            'goal' : getXPGoal(current_level)
+        }
     }
+
+    // 'updateAuctions' : function() {
+    //     //add feature_count
+    //     //add xp_rating
+    //     var auction_objects = auctions.find();
+    //     auction_objects.forEach(function(db_object) {
+    //         var item_object = items.findOne(db_object.item_id);
+    //         var rarity = db_object.rarity;
+    //         var rarity_rank;
+
+    //         switch(rarity) {
+    //             case 'common' : rarity_rank = 0; break;
+    //             case 'uncommon' : rarity_rank = 1; break;
+    //             case 'rare' : rarity_rank = 2; break;
+    //             case 'legendary' : rarity_rank = 3; break;
+    //             case 'masterpiece' : rarity_rank = 4; break;
+    //             default: rarity_rank = 0; break;
+    //         }
+
+    //         auctions.update(db_object._id, {$set : {'feature_count' : item_object.attributes.length, 'xp_rating' : item_object.xp_rating, 'rarity_rank' : rarity_rank}});
+    //     });
+    // }
 })
 
 var refundHighestBid = function(auction_id) {

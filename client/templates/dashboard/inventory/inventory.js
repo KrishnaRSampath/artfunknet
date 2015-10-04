@@ -1,5 +1,5 @@
 Template.inventory.helpers({
-	'owned': function() {
+	'owned': function() {	
 		return items.find({'owner': Meteor.userId(), 'status': {$in : ['claimed', 'displayed']}}, {sort: {'aftwork_id' : 1}}).fetch();
 	},
 

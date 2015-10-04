@@ -47,6 +47,8 @@ Template.registration.events({
                 'inventory_cap' : 40,
                 'display_cap' : 8,
                 'auction_cap' : 8,
+                'level' : 1,
+                'xp' : 0,
             }
         };
 

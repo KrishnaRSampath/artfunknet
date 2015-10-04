@@ -21,13 +21,16 @@ Template.itemInfo.helpers({
 				'condition_text' : Math.floor(item_object.condition * 100) + '%',
 				'condition' : item_object.condition,
 				'attribute' : displayed_attributes,
-				'item_id' : item_object._id
+				'item_id' : item_object._id,
+				'xp_rating' : item_object.xp_rating,
+				'xp_rating_text' : Math.floor(item_object.xp_rating * 100)
 			}
 
 			return item_data_object;
 		}
 
 		catch(error) {
+			console.log(error.message);
 			return {
 				'title' : "",
 				'date' : "",
@@ -39,6 +42,8 @@ Template.itemInfo.helpers({
 				'condition' : "",
 				'attribute' : "",
 				'item_id' : "",
+				'xp_rating' : "",
+				'xp_rating_text' : ""
 			}
 		}
 	},

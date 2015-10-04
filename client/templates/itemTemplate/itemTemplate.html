@@ -5,13 +5,13 @@
 				{{#with itemData this}}
 
 				<h4 class="{{rarity}}">{{title}}</h4>
-				<p>{{date}}</p>
-				<p>{{artist}}</p>
+				<p>{{artist}}, {{date}}</p>
 				<p><span class="{{rarity}}"><strong>{{rarity}}</strong></span></p>
 				<p>{{medium}}</p>
 				<p>{{height}} x {{width}}</p>
 				<p>condition: <span style="color: rgb({{attributeColor condition}}, 0, 0)">{{condition_text}}</span></p>
 				<p>estimated value: {{itemValue item_id}}</p>
+				<p>xp rating: <span style="color: rgb({{attributeColor xp_rating}}, 0, 0)">{{xp_rating_text}}</span></p>
 				<p>
 				{{#each attribute}}
 					<i data-attribute_id="{{this._id}}" style="color: rgb({{attributeColor this.value}}, 0, 0)" class="item-attribute fa {{this.icon}}"></i>
@@ -28,7 +28,9 @@
 	<div class="template-itemThumbnail">
 		{{#with imageInfo this}}
 		<div class="col-xs-12 no-padding no-margin img-container" style="padding-top: {{padding_top}}px">
-			<img class="image-thumb" data-item_id="{{item_id}}" src="/img/paintings/{{filename}}" width="{{image_width}}" height="{{image_height}}"/>
+			<div class="image-background">
+				<img class="image-thumb" data-item_id="{{item_id}}" src="/img/paintings/{{filename}}" width="{{image_width}}" height="{{image_height}}"/>
+			</div>
 		</div>
 		{{/with}}
 	</div>
