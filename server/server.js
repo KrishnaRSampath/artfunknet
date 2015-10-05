@@ -52,11 +52,15 @@ var generateContent = function() {
 }
 
 var updateContent = function() {
-    // var item_objects = items.find({'status' : 'auctioned'});
-    // item_objects.forEach(function(db_object) {
-    //     if (auctions.find({'item_id' : db_object._id}).count() == 0)
-    //         items.update(db_object._id, {$set : {'status' : 'claimed'}});
-    // });
+    items.update({}, {$set : {'roll_count' : 0}}, {multi : true});
+    auctions.update({}, {$set : {'roll_count' : 0}}, {multi : true});
+
+    var item_objects = items.find();
+    item_objects.forEach(function(db_object) {
+        var xp_rating = getXPRating();
+        items.update(db_object._id, {$set: {'xp_rating' : xp_rating}});
+        auctions.update({'item_id' : db_object._id}, {$set: {'xp_rating' : xp_rating}}, {multi : true});
+    })  
 }
 
 Meteor.startup(function() {

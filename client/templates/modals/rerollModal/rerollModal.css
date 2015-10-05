@@ -1,0 +1,80 @@
+.template-rerollModal .modal-dialog {
+	width: 900px;
+}
+
+.template-rerollModal .highlight {
+	font-weight: bold;
+}
+
+.template-rerollModal textarea  {
+	width: 100%;
+	height: 36px;
+	resize: none;
+	font-size: 1.2em;
+	text-align: center;
+}
+
+.template-rerollModal #duration  {
+	width: 50%;
+	height: 36px;
+	resize: none;
+	font-size: 1.2em;
+	text-align: center;
+}
+
+.template-rerollModal .modal-content {
+	padding-bottom: 48px;
+	text-align: center;
+}
+
+.template-rerollModal .reroll-info {
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+}
+
+.template-rerollModal .reroll-options {
+	border-bottom: 1px solid black;
+	margin-bottom: 24px;
+	padding: 24px;
+}
+
+.template-rerollModal .errors {
+	border-top: 1px solid black;
+	margin-top: 24px;
+	padding: 24px;
+}
+
+.template-rerollModal .error-text {
+	color: red;
+}
+
+.template-rerollModal .parameter {
+	margin-bottom: 12px;
+}
+
+.template-rerollModal .reroll-value-button, .template-rerollModal .reroll-attribute-button, .template-rerollModal .xp-reroll-button {
+	font-size: 1em;
+	width: 120px;
+	height: 24px;
+	margin-bottom: 12px;
+}
+
+.template-rerollModal .roll-description {
+	text-align: right;
+}
+
+.template-rerollModal button.disabled {
+	opacity: .5;
+}
+
+.template-rerollModal button.disabled:hover {
+	cursor: default;
+}
+
+.template-rerollModal .attribute-row {
+	padding: 8px;
+}
+
+.template-rerollModal .value-text {
+	font-size: 1.2em;
+}

@@ -13,5 +13,12 @@ Template.alerts.events({
 	'click .dismiss-alert' : function(element) {
 		var alert_id = $(element.target).closest('tr').data('alert_id');
 		alerts.remove(alert_id);
+	},
+
+	'click #clear-all' : function () {
+		Meteor.call('clearAlerts', function(error, result) {
+			if (error)
+				console.log(error.message);
+		});
 	}
 })

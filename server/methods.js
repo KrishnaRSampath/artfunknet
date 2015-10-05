@@ -35,7 +35,8 @@ createAuction = function(item_id, starting, buy_now, duration) {
                 'date': artwork_object.date,
                 'xp_rating': item_object.xp_rating,
                 'feature_count': item_object.attributes.length,
-                'rarity_rank' : rarity_rank
+                'rarity_rank' : rarity_rank,
+                'roll_count' : item_object.roll_count
             };
 
             auctions.insert(auction_object);
@@ -412,36 +413,97 @@ Meteor.methods({
         }
     },
 
-    //reserved for content update
-    'resetAttributes' : function() {
-        attributes.remove({});
-        for (var i=0; i < attribute_data.length; i++) {
-            attributes.insert(attribute_data[i]);
-        }
-
-        items.update({}, {$set : {'attributes' : []}}, {multi : true});
+    'clearAlerts' : function() {
+        alerts.remove({'user_id' : Meteor.userId()}, {multi : true});
     },
 
-    'setItemAttributes' : function() {
-        var item_objects = items.find();
-        item_objects.forEach(function(db_object) {
-            if (db_object.attributes.length == 0) {
-                var rarity = artworks.findOne(db_object.artwork_id).rarity;
-                var item_attributes = getRandomAttributes(rarity);
-                items.update(db_object._id, {$set : {'attributes' : item_attributes}});
+    'getRerollCost' : function(item_id) {
+        return getRerollCost(item_id);
+    },
+
+    'rerollXPRating' : function(item_id) {
+        var reroll_cost = getRerollCost(item_id);
+        if (reroll_cost <= Meteor.user().profile.bank_balance) {
+            var item_object = items.findOne(item_id);
+            if (item_object != undefined) {
+                var roll_count = item_object.roll_count;
+                items.update(item_id, {$set : {'xp_rating' : getXPRating()}});
+                items.update(item_id, {$set : {'roll_count' : roll_count + 1}});
+                chargeAccount(Meteor.userId(), reroll_cost);
             }
-        });
+        }
     },
 
-    'setPlayerLevels' : function() {
-        Meteor.users.update({}, {$set : {'profile.level' : 1, 'profile.xp' : 0}}, {multi : true});
+    'rerollAttributeValue' : function(item_id, attribute_id) {
+        var reroll_cost = getRerollCost(item_id);
+        if (reroll_cost <= Meteor.user().profile.bank_balance) {
+            var item_object = items.findOne(item_id);
+            if (item_object != undefined) {
+                var roll_count = item_object.roll_count;
+                var attribute_array = item_object.attributes;
+
+                for (var i=0; i < attribute_array.length; i++) {
+                    if (attribute_array[i]._id == attribute_id) {
+                        attribute_array[i].value = getAttributeValue();
+                        break;
+                    }
+                }
+
+                items.update(item_id, {$set: {'attributes' : attribute_array}});
+                items.update(item_id, {$set : {'roll_count' : roll_count + 1}});
+                chargeAccount(Meteor.userId(), reroll_cost);
+            }
+        }
     },
 
-    'setItemXPLevel' : function() {
+    'rerollAttribute' : function(item_id, attribute_id) {
+        var reroll_cost = getRerollCost(item_id);
+        var attribute_type = attributes.findOne(attribute_id).type;
+
+        if (reroll_cost <= Meteor.user().profile.bank_balance) {
+            var item_object = items.findOne(item_id);
+            if (item_object != undefined) {
+                var roll_count = item_object.roll_count;
+                var attribute_array = item_object.attributes;
+
+                var attribute_ids = []
+                for (var i=0; i < attribute_array.length; i++) 
+                    attribute_ids.push(attribute_array[i]._id);
+
+                var target_attribute_index;
+                for (var i=0; i < attribute_array.length; i++) {
+                    if (attribute_array[i]._id == attribute_id) {
+                        target_attribute_index = i;
+                        break;
+                    }
+                }
+
+                var remaining = attributes.find({'type' : attribute_type, '_id' : {$nin: attribute_ids}}).count();
+                var random_index = Math.floor(Math.random() * remaining);
+                var random_attribute = attributes.findOne({'type' : attribute_type, '_id' : {$nin: attribute_ids}}, {skip: random_index});
+
+                attribute_array[target_attribute_index] = random_attribute;
+                attribute_array[target_attribute_index].value = getAttributeValue();
+
+                items.update(item_id, {$set: {'attributes' : attribute_array}});
+                items.update(item_id, {$set : {'roll_count' : roll_count + 1}});
+                chargeAccount(Meteor.userId(), reroll_cost);
+            }
+        }
+    },
+
+    'resetXPRatings' : function() {
         var item_objects = items.find();
         item_objects.forEach(function(db_object) {
-            items.update(db_object._id, {$set: {'xp_rating' : Math.random()}});
+            var xp_rating = getXPRating();
+            items.update(db_object._id, {$set: {'xp_rating' : xp_rating}});
+            auctions.update({'item_id' : db_object._id}, {$set: {'xp_rating' : xp_rating}}, {multi : true});
         })    
+    },
+
+    'resetRollCounts' : function() {
+        items.update({}, {$set : {'roll_count' : 0}}, {multi : true});
+        auctions.update({}, {$set : {'roll_count' : 0}}, {multi : true});
     },
 
     'getXPData' : function(current_level) {
@@ -450,28 +512,6 @@ Meteor.methods({
             'goal' : getXPGoal(current_level)
         }
     }
-
-    // 'updateAuctions' : function() {
-    //     //add feature_count
-    //     //add xp_rating
-    //     var auction_objects = auctions.find();
-    //     auction_objects.forEach(function(db_object) {
-    //         var item_object = items.findOne(db_object.item_id);
-    //         var rarity = db_object.rarity;
-    //         var rarity_rank;
-
-    //         switch(rarity) {
-    //             case 'common' : rarity_rank = 0; break;
-    //             case 'uncommon' : rarity_rank = 1; break;
-    //             case 'rare' : rarity_rank = 2; break;
-    //             case 'legendary' : rarity_rank = 3; break;
-    //             case 'masterpiece' : rarity_rank = 4; break;
-    //             default: rarity_rank = 0; break;
-    //         }
-
-    //         auctions.update(db_object._id, {$set : {'feature_count' : item_object.attributes.length, 'xp_rating' : item_object.xp_rating, 'rarity_rank' : rarity_rank}});
-    //     });
-    // }
 })
 
 var refundHighestBid = function(auction_id) {

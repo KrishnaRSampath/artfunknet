@@ -1,14 +1,9 @@
 Template.itemInfo.helpers({
 	'itemData' : function(item_id) {
-		try {
-			var item_object = items.findOne(item_id);
+		var item_object = items.findOne(item_id);
+		if (item_object != undefined) {
+			
 			var artwork_object = artworks.findOne(item_object.artwork_id);
-
-			var displayed_attributes = [];
-			for(var i=0; i < item_object.attributes.length; i++) {
-				if (item_object.attributes[i].type != 'default')
-					displayed_attributes.push(item_object.attributes[i]);
-			}
 
 			var item_data_object = {
 				'title' : artwork_object.title,
@@ -20,7 +15,7 @@ Template.itemInfo.helpers({
 				'height' : artwork_object.height,
 				'condition_text' : Math.floor(item_object.condition * 100) + '%',
 				'condition' : item_object.condition,
-				'attribute' : displayed_attributes,
+				'attribute' : item_object.attributes,
 				'item_id' : item_object._id,
 				'xp_rating' : item_object.xp_rating,
 				'xp_rating_text' : Math.floor(item_object.xp_rating * 100)
@@ -29,8 +24,7 @@ Template.itemInfo.helpers({
 			return item_data_object;
 		}
 
-		catch(error) {
-			console.log(error.message);
+		else {
 			return {
 				'title' : "",
 				'date' : "",
@@ -39,6 +33,7 @@ Template.itemInfo.helpers({
 				'medium' : "",
 				'width' : "",
 				'height' : "",
+				'condition_text' : "",
 				'condition' : "",
 				'attribute' : "",
 				'item_id' : "",

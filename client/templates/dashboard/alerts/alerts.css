@@ -30,3 +30,10 @@
 	opacity: 1;
 	cursor: pointer;
 }
+
+.template-alerts #clear-all {
+	font-size: 1em;
+	width: 120px;
+	height: 24px;
+	margin-bottom: 12px;
+}

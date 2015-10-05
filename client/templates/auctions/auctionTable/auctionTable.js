@@ -32,10 +32,11 @@ Template.auctionTable.helpers({
 			{ 'text' : 'date', 'sort_id' : 'date', 'table_id' : table_data.table_id  },
 			{ 'text' : 'artist', 'sort_id' : 'artist', 'table_id' : table_data.table_id  },
 			{ 'text' : 'rarity', 'sort_id' : 'rarity_rank', 'table_id' : table_data.table_id  },
-			{ 'text' : 'dimensions', 'sort_id' : undefined, 'table_id' : table_data.table_id  },
+			// { 'text' : 'dimensions', 'sort_id' : undefined, 'table_id' : table_data.table_id  },
 			{ 'text' : 'condition', 'sort_id' : 'condition', 'table_id' : table_data.table_id  },
 			{ 'text' : 'features', 'sort_id' : 'feature_count', 'table_id' : table_data.table_id  },
 			{ 'text' : 'xp rating', 'sort_id' : 'xp_rating', 'table_id' : table_data.table_id  },
+			{ 'text' : 'roll count', 'sort_id' : 'roll_count', 'table_id' : table_data.table_id  },
 			{ 'text' : 'current bid', 'sort_id' : 'current_price', 'table_id' : table_data.table_id  },
 			{ 'text' : 'buy now', 'sort_id' : 'buy_now', 'table_id' : table_data.table_id  },
 			{ 'text' : 'actions', 'sort_id' : undefined, 'table_id' : table_data.table_id  },
@@ -111,6 +112,7 @@ Template.auctionTable.helpers({
 			//list_object.base_attribute = base_attributes;
 			list_object.xp_rating = item_object.xp_rating;
 			list_object.xp_rating_text = Math.floor(item_object.xp_rating * 100);
+			list_object.roll_count = item_object.roll_count;
 
 			return list_object;
 		}

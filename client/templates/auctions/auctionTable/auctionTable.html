@@ -27,7 +27,7 @@
 						<td>{{date}}</td>
 						<td>{{artist}}</td>
 						<td><span class="{{rarity}}"><strong>{{rarity}}</strong></span></td>
-						<td>{{height}} x {{width}}</td>
+						<!-- <td>{{height}} x {{width}}</td> -->
 						<td style="color: rgb({{attributeColor condition}}, 0, 0)" >{{condition_text}}</td>
 						<td>
 						{{#each attribute}}
@@ -35,6 +35,7 @@
 						{{/each}}
 						</td>
 						<td style="color: rgb({{attributeColor xp_rating}}, 0, 0)" >{{xp_rating_text}}</td>
+						<td>{{roll_count}}</td>
 						<!-- <td>
 						{{#each base_attribute}}
 							<i data-attribute_title="{{this.description}}" data-attribute_value="{{this.value}}" style="color: rgb({{attributeColor this.value}}, 0, 0)" class="item-attribute fa {{this.icon}}"></i>

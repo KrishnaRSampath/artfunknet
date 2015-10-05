@@ -1,0 +1,67 @@
+<template name="rerollModal">
+	<div class="template-rerollModal">
+	    <div style="z-index:9999999999999999;" class="modal fade">
+	        <div class="modal-dialog">
+	            <div class="modal-content container">
+	            	{{#with itemData}}
+	                <h4>Reroll attributes for <span class="highlight af-color">{{title}}</span> by <span class="highlight af-color">{{artist}}</span></h4>
+	                <div class="reroll-info">
+		                <div class="row">
+		                	<h4>bank balance: <span class="af-color">${{bankBalance}}</span></h4>
+		                	<h4>reroll cost: <span class="af-color">${{rerollCost}}</span></h4>
+		                	<h4>reroll count: <span class="af-color">{{roll_count}}</span></h4>
+				        </div>
+				    </div>
+
+				    <div class="reroll-options">
+				        <div class="row attribute-row no-padding no-margin">
+		                	<div class="col-xs-5">
+		                		<p class="roll-description">xp rating:</p>
+		                	</div>
+		                	<div class="col-xs-1">
+		                		<p class="af-color highlight value-text">{{xp_rating}}</p>
+		                	</div>
+		                	<div class="col-xs-3">
+		                		<button class="xp-reroll-button {{#if canReroll}}enabled{{else}}disabled{{/if}}">value</button>
+		                	</div>
+				        </div>
+
+				        {{#each attribute}}
+				         <div data-attribute_id="{{this._id}}" class="row attribute-row no-padding no-margin">
+		                	<div class="col-xs-1">
+		                		<i style="color: rgb({{valueColor this.value}}, 0, 0)" class="item-attribute fa {{this.icon}}"></i>
+		                	</div>
+		                	<div class="col-xs-4">
+		                		<p class="roll-description">{{this.description}}:</p>
+		                	</div>
+		                	<div class="col-xs-1">
+		                		<p class="af-color highlight value-text">{{attributeValueText this.value}}</p>
+		                	</div>
+		                	<div class="col-xs-3">
+		                		<button data-attribute_id="{{this._id}}" class="reroll-value-button {{#if canReroll}}enabled{{else}}disabled{{/if}}">value</button>
+		                	</div>
+		                	<div class="col-xs-3">
+		                		<button data-attribute_id="{{this._id}}" class="reroll-attribute-button {{#if canReroll}}enabled{{else}}disabled{{/if}}">attribute</button>
+		                	</div>
+				        </div>
+				        {{/each}}
+
+				    </div>
+                	
+		            <div class="row modal-buttons">
+			            <button id="cancel-modal" type="button" class="btn btn-default">close</button>
+			        </div>
+
+			        {{#if error}}
+			        <div class="errors">
+		            	{{#each error}}
+		            	<p class="error-text">{{this}}</p>
+		            	{{/each}}
+	            	</div>
+	            	{{/if}}
+			        {{/with}}
+	            </div>
+	        </div>
+	    </div>
+	</div>
+</template>

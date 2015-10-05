@@ -163,3 +163,7 @@ a {
 .blue {
 	color: #0066FF;
 }
+
+.modal-dialog {
+	border-radius: 0px;
+}

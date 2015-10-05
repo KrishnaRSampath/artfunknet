@@ -47,3 +47,74 @@
 	margin: 24px 24px;
 	background-color: #EEEEEE;
 }
+
+
+/*TABLE CSS*/
+.template-inventory table {
+	margin: auto;
+	width: 100%;
+	border: none;
+}
+
+.template-inventory td {
+	text-align: center;
+	border: none;
+}
+
+.template-inventory tr {
+	border: 1px solid gray;
+	height: 48px;
+}
+
+.template-inventory tr:nth-child(even) {
+	background-color: #EEEEEE;
+}
+
+.template-inventory tr:hover {
+	cursor: pointer;
+	background-color: #FFFFBB;
+}
+
+.template-inventory th {
+	background-color: black;
+	font-size: 1em;
+	color: white;
+	min-width: 120px;
+	text-align: center;
+	border-right: 1px solid white;
+	min-height: 80px;
+}
+
+.template-inventory th:hover {
+	background-color: #666666;
+	cursor: pointer;
+}
+
+.template-inventory .soon {
+	color: red;
+	font-weight: bold;
+}
+
+.template-inventory .action-buttons i {
+	color: black;
+	opacity: .5;
+	font-size: 1.2em;
+}
+
+.template-inventory .enabled i:hover {
+	opacity: 1;
+	cursor: pointer;
+}
+
+.template-inventory .disabled {
+	opacity: .2;
+	cursor: default;
+}
+
+.template-inventory .highlight {
+	font-weight: bold;
+}
+
+.template-inventory {
+	margin-bottom: 100px;
+}

@@ -65,33 +65,6 @@ rarity_values = {
     },
 }
 
-rarity_values = {
-    'common' : {
-        'min' : 5000,
-        'max' : 25000
-    },
-
-    'uncommon' : {
-        'min' : 25000,
-        'max' : 65000
-    },
-
-    'rare' : {
-        'min' : 65000,
-        'max' : 225000
-    },
-
-    'legendary' : {
-        'min' : 225000,
-        'max' : 1505000
-    },
-
-    'masterpiece' : {
-        'min' : 1505000,
-        'max' : 21985000
-    },
-}
-
 rarity_inflation_coefficient = {
     'bronze' : 1.2345,
     'silver' : 1.6049,
@@ -132,11 +105,25 @@ attribute_quantities = {
 }
 
 getCondition = function() {
-    return Math.random().toFixed(2);
+    var tier_map = {
+        0 : 2,
+        1 : 3,
+        2 : 3,
+        3 : 2,
+        4 : 1
+    };
+
+    var random_tier = Number(JepLoot.catRoll(tier_map));
+    var condition = (random_tier * 20) + (Math.random() * 20);
+    return Number((condition / 100).toFixed(2));
 }
 
-getAttributes = function(rarity) {
-    return [];
+var reroll_coefficients = {
+    'common' : 1.1,
+    'uncommon' : 1.11,
+    'rare' : 1.12,
+    'legendary' : 1.13,
+    'masterpiece' : 1.14
 }
 
 getItemValue = function(item_id, type) {
@@ -188,6 +175,26 @@ getRolledCrateQuality = function() {
     return JepLoot.catRoll(roll_quality_map);
 }
 
+getRerollCost = function(item_id) {
+    var item_object = items.findOne(item_id);
+
+    var roll_count;
+
+    if (item_object.roll_count == undefined) {
+        items.update(item_id, {$set : {'roll_count' : 0}});
+        roll_count = 0;
+    }
+
+    else roll_count = item_object.roll_count;
+
+    var rarity = artworks.findOne(item_object.artwork_id).rarity;
+    var reroll_coefficient = reroll_coefficients[rarity];
+    var average_value = Math.floor((rarity_values[rarity].max + rarity_values[rarity].min) / 2);
+
+    var reroll_cost = (rarity_values[rarity].min * .1) * Math.pow(reroll_coefficient, roll_count);
+    return Math.floor(reroll_cost);
+}
+
 //calculates crate costs based on rarity maps and qulity maps
 lookupCrateCost = function(quality, count) {
     var total_proportions = 0;
@@ -224,16 +231,17 @@ generateItems = function(user_id, quality, count) {
         var new_item_id = items.insert({
             'artwork_id' : possibilities[random_index]._id,
             'condition' : getCondition(),
-            'attributes' : getRandomAttributes(rarity_roll),
+            'attributes' : getAttributes(rarity_roll),
             'owner' : user_id,
             'status' : 'unclaimed',
             'date_created' : new Date(),
-            'xp_rating' : Math.random(),
+            'xp_rating' : getXPRating(),
+            'roll_count' : 0
         })
     }
 }
 
-getRandomAttributes = function(rarity) {
+getAttributes = function(rarity) {
     var primary_count = attribute_quantities[rarity].primary;
     var secondary_count = attribute_quantities[rarity].secondary;
     // var default_count = attributes.find({'type' : "default"}).count();
@@ -269,8 +277,36 @@ getRandomAttributes = function(rarity) {
     // all_attributes = all_attributes.concat(default_attributes);
 
     for (var i=0; i < all_attributes.length; i++) {
-        all_attributes[i].value = Number(Math.random().toFixed(2));
+        all_attributes[i].value = getAttributeValue();
     }
 
     return all_attributes;
+}
+
+getXPRating = function() {
+    var tier_map = {
+        0 : 2,
+        1 : 3,
+        2 : 3,
+        3 : 2,
+        4 : 1
+    };
+
+    var random_tier = Number(JepLoot.catRoll(tier_map));
+    var xp_rating = (random_tier * 20) + (Math.random() * 20);
+    return Number((xp_rating / 100).toFixed(2));
+}
+
+getAttributeValue = function() {
+    var tier_map = {
+        0 : 2,
+        1 : 3,
+        2 : 3,
+        3 : 2,
+        4 : 1
+    };
+
+    var random_tier = Number(JepLoot.catRoll(tier_map));
+    var attribute_rating = (random_tier * 20) + (Math.random() * 20);
+    return Number((attribute_rating / 100).toFixed(2));
 }

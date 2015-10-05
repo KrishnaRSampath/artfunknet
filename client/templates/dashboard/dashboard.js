@@ -30,7 +30,6 @@ Template.dashboard.helpers({
 			else {
 				var xp_data = result;
 				var completion = (Meteor.user().profile.xp / xp_data.goal) * 100;
-				console.log(completion);
 				var xp_object = {
 					'xp_completion' : Math.floor(completion) > 100 ? 100 : Math.floor(completion),
 					'xp_goal' : getCommaSeparatedValue(xp_data.goal),

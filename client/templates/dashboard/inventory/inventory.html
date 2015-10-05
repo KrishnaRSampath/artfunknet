@@ -1,7 +1,71 @@
 <template name="inventory">
 	<div class="template-inventory">
 		<h1>Inventory</h1>
-		{{#each owned}}
+		<h3 id="toggle-view" class="enabled"><i class="fa fa-list {{#if list_view}}af-color{{/if}}"></i></h3>
+		<div class="row">
+			{{#if list_view}}
+			<table class="auction-table" data-table_id="{{this.table_id}}">
+				<tr>
+				{{#each listHeader}}
+					{{> inventoryHeaderTemplate this}}
+				{{/each}}
+				</tr>
+
+				{{#each owned}}
+				<tr data-item_id="{{_id}}">
+					<td>
+						{{#with thumbnailInfo _id}}
+						<img class="image-thumb preview enabled" src="/img/paintings/{{filename}}" width="{{image_width}}" height="{{image_height}}"/>
+						{{/with}}
+					</td>
+					<td>{{title}}</td>
+					<td>{{date}}</td>
+					<td>{{artist}}</td>
+					<td><span class="{{rarity}}"><strong>{{rarity}}</strong></span></td>
+					<td>${{estimated_value_text}}</td>
+					<td>{{height}} x {{width}}</td>
+					<td style="color: rgb({{valueColor condition}}, 0, 0)" >{{condition_text}}</td>
+					<td>
+					{{#each attributes}}
+						<i data-attribute_title="{{this.description}}" data-attribute_value="{{this.value}}" style="color: rgb({{valueColor this.value}}, 0, 0)" class="item-attribute fa {{this.icon}}"></i>
+					{{/each}}
+					</td>
+					<td style="color: rgb({{valueColor xp_rating}}, 0, 0)" >{{xp_rating_text}}</td>
+					<td>{{roll_count}}</td>
+					<td class="action-buttons">						
+						{{#if onDisplay this._id}}
+						<div class="col-xs-12">
+							<span class="remaining-text">on display - {{time_remaining this._id}}</span>
+						</div>
+						{{else}}
+						<div class="col-xs-3">
+							<span class="quick-sell enabled"><i data-item_id="{{this._id}}" class="fa fa-usd"></i></span>
+						</div>
+						<div class="col-xs-3">
+							<span class="auction {{#if can_auction}}enabled{{else}}disabled{{/if}}"><i data-item_id="{{this._id}}" class="fa fa-gavel"></i></span>
+						</div>
+						<div class="col-xs-3">
+							<span class="display {{#if can_display this}}enabled{{else}}disabled{{/if}}"><i data-item_id="{{this._id}}" class="fa fa-picture-o"></i></span>
+						</div>
+						<div class="col-xs-3">
+							<span class="reroll {{#if can_reroll this}}enabled{{else}}disabled{{/if}}"><i data-item_id="{{this._id}}" class="fa fa-magic"></i></span>
+						</div>
+						{{/if}}
+					</td>
+				</tr>
+				{{/each}}
+			</table>
+			{{else}}
+
+			<table class="auction-table" data-table_id="{{this.table_id}}">
+				<tr>
+				{{#each sortHeader}}
+					{{> inventoryHeaderTemplate this}}
+				{{/each}}
+				</tr>
+			</table>
+
+			{{#each owned}}
 			<div class="item-card" data-painting-id="{{this._id}}">
 				<div class="row no-padding no-margin">
 					<div class="col-xs-7 no-padding no-margin">
@@ -18,14 +82,17 @@
 									<span class="remaining-text">on display - {{time_remaining this._id}}</span>
 								</div>
 								{{else}}
-								<div class="col-xs-4">
+								<div class="col-xs-3">
 									<span class="quick-sell enabled"><i data-item_id="{{this._id}}" class="fa fa-usd"></i></span>
 								</div>
-								<div class="col-xs-4">
+								<div class="col-xs-3">
 									<span class="auction {{#if can_auction}}enabled{{else}}disabled{{/if}}"><i data-item_id="{{this._id}}" class="fa fa-gavel"></i></span>
 								</div>
-								<div class="col-xs-4">
-									<span class="display {{#if can_display}}enabled{{else}}disabled{{/if}}"><i data-item_id="{{this._id}}" class="fa fa-picture-o"></i></span>
+								<div class="col-xs-3">
+									<span class="display {{#if can_display this}}enabled{{else}}disabled{{/if}}"><i data-item_id="{{this._id}}" class="fa fa-picture-o"></i></span>
+								</div>
+								<div class="col-xs-3">
+									<span class="reroll {{#if can_reroll this}}enabled{{else}}disabled{{/if}}"><i data-item_id="{{this._id}}" class="fa fa-magic"></i></span>
 								</div>
 								{{/if}}
 							</div>
@@ -33,6 +100,22 @@
 					</div>
 				</div>
 			</div>
-		{{/each}}
+			{{/each}}
+
+			{{/if}}
+		</div>
 	</div>
+</template>
+
+<template name="inventoryHeaderTemplate">
+	<th class="table-header" data-sort="{{sort_id}}" data-table_id="{{table_id}}">
+		<div class="row no-margin">
+			<div class="col-xs-8">
+				<p>{{text}}</p>
+			</div>
+			<div class="col-xs-4">
+				{{#with sorted this}}{{#if sort}}{{#if ascending}}<i class="fa fa-caret-up"></i>{{else}}<i class="fa fa-caret-down"></i>{{/if}}{{else}} {{/if}}{{/with}}
+			</div>
+		</div>
+	</th>
 </template>

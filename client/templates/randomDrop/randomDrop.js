@@ -60,14 +60,14 @@ Template.randomDrop.helpers({
 	},
 
 	'full' : function() {
-		if (Meteor.userId())
+		if (Meteor.userId() && Meteor.user())
 			return items.find({'owner' : Meteor.userId(), 'status' : {$ne : 'unclaimed'}}).count() >= Meteor.user().profile.inventory_cap;
 
 		else return false;
 	},
 
 	'bank_balance' : function() {
-		if (Meteor.userId())
+		if (Meteor.userId() && Meteor.user())
 			return getCommaSeparatedValue(Meteor.user().profile.bank_balance);
 
 		else return 0;
@@ -83,7 +83,6 @@ Template.randomDrop.events ({
 
 	'click .crate-button.enabled' : function(element) {
 		var quality = $(element.target).data('button_quality');
-		console.log(quality);
 		Meteor.call('openCrate', Meteor.userId(), quality, drop_count, function(error, result) {
 			if (error)
 				console.log(error.message);
