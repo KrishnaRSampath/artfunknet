@@ -52,15 +52,14 @@ var generateContent = function() {
 }
 
 var updateContent = function() {
-    items.update({}, {$set : {'roll_count' : 0}}, {multi : true});
-    auctions.update({}, {$set : {'roll_count' : 0}}, {multi : true});
-
-    var item_objects = items.find();
-    item_objects.forEach(function(db_object) {
-        var xp_rating = getXPRating();
-        items.update(db_object._id, {$set: {'xp_rating' : xp_rating}});
-        auctions.update({'item_id' : db_object._id}, {$set: {'xp_rating' : xp_rating}}, {multi : true});
-    })  
+    Meteor.users.update({}, {$set : {
+        'profile.pc_cap' : 5, 
+        'profile.level' : 0, 
+        'profile.inventory_cap' : 9, 
+        'profile.auction_cap' : 5,
+        'profile.display_cap' : 5,
+        'profile.xp' : 0,
+    }}, {multi : true});
 }
 
 Meteor.startup(function() {
@@ -203,6 +202,7 @@ function concludeAuction(auction_id) {
             'time' : moment()
         };
         alerts.insert(alert_sale_object);
+        addXPChunkPercentage(item_object.owner, .5);
 
         var win_message = "You have won " + auction_object.title + " by " + auction_object.artist + " in the auction house for $" + getCommaSeparatedValue(auction_object.current_price);
         var alert_win_object = {
@@ -214,6 +214,7 @@ function concludeAuction(auction_id) {
             'time' : moment()
         };
         alerts.insert(alert_win_object);
+        addXPChunkPercentage(item_object.owner, .5);
 
         addFunds(item_object.owner, highest_bid.amount);
         

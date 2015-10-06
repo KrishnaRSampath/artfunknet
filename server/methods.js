@@ -511,6 +511,14 @@ Meteor.methods({
             'chunk' : getXPChunk(current_level),
             'goal' : getXPGoal(current_level)
         }
+    },
+
+    'levelUp' : function() {
+        levelUp(Meteor.userId());
+    },
+
+    'addXP' : function(amount) {
+        addXP(Meteor.userId(), amount);
     }
 })
 

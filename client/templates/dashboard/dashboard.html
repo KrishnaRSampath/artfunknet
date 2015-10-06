@@ -15,19 +15,20 @@
 								<p>level {{current_level}}</p>
 							</div>
 							<div class="goal-text">
-								<p>next level - <span class="highlight">{{xp_goal}}</span> xp</p>
+								<p>remaining - <span class="highlight">{{xp_remaining}}</span> xp</p>
 							</div>
 							{{/with}}
 						</div>
 					</div>
 				</div>
 				<div class="row player-info">
-					<h4>bank balance: <span class="af-color">${{bank_balance}}</span></h4>
-					<h4>collection value: <span class="af-color">${{collection_value}}</span></h4>
-					<h4>current exhibition value: <span class="af-color">${{display_value}}</span></h4>
-					<h4>items exhibited: <span class="af-color">{{display_count}}</span></h4>
-					<h4>paintings owned: <span class="af-color">{{inventory_count}}</span></h4>
-					<h4>auctions active: <span class="af-color">{{auction_count}}</span></h4>	
+					<h4>bank balance: <span class="highlight af-color">${{bank_balance}}</span></h4>
+					<h4>collection value: <span class="highlight af-color">${{collection_value}}</span></h4>
+					<h4>current exhibition value: <span class="highlight af-color">${{display_value}}</span></h4>
+					<h4>items exhibited: <span class="highlight af-color">{{display_count}}</span><span class="af-color"> ({{display_max}})</span></h4>
+					<h4>paintings owned: <span class="highlight af-color">{{inventory_count}}</span><span class="af-color"> ({{inventory_max}})</span></h4>
+					<h4>auctions active: <span class="highlight af-color">{{auction_count}}</span><span class="af-color"> ({{auction_max}})</span></h4>	
+					<h4>private collection: <span class="highlight af-color">{{private_count}}</span><span class="af-color"> ({{private_max}})</span></h4>
 				</div>		
 			</div>
 

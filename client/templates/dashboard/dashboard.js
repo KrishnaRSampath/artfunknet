@@ -14,6 +14,11 @@ Template.dashboard.helpers({
 				'inventory_count' : items.find({'owner' : Meteor.userId(), 'status' : {$ne : 'unclaimed'}}).count(),
 				'auction_count' : items.find({'owner' : Meteor.userId(), 'status' : 'auctioned'}).count(),
 				'alert_count' : alerts.find({'user_id' : Meteor.userId()}).count(),
+				'private_count' : 0,
+				'display_max' : Meteor.user().profile.display_cap,
+				'inventory_max' : Meteor.user().profile.inventory_cap,
+				'auction_max' : Meteor.user().profile.auction_cap,
+				'private_max' : Meteor.user().profile.pc_cap,
 			}
 
 			return data_object;
@@ -32,7 +37,7 @@ Template.dashboard.helpers({
 				var completion = (Meteor.user().profile.xp / xp_data.goal) * 100;
 				var xp_object = {
 					'xp_completion' : Math.floor(completion) > 100 ? 100 : Math.floor(completion),
-					'xp_goal' : getCommaSeparatedValue(xp_data.goal),
+					'xp_remaining' : getCommaSeparatedValue(xp_data.goal - Meteor.user().profile.xp),
 					'current_level' : Meteor.user().profile.level
 				};
 
@@ -45,7 +50,7 @@ Template.dashboard.helpers({
 
 		else return {
 			'xp_completion' : 0,
-			'xp_goal' : 0,
+			'xp_remaining' : 0,
 			'current_level' : 0
 		}
 	},
