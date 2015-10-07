@@ -241,6 +241,26 @@ generateItems = function(user_id, quality, count) {
     }
 }
 
+generateItemsFromRarity = function(user_id, rarity, count) {
+    if (Meteor.user().emails[0].address == "jpollack320@gmail.com") {
+        var possibilities = artworks.find({'rarity': rarity}).fetch();
+        for (var i=0; i < parseInt(count); i++) {
+            var random_index = Math.floor(Math.random() * possibilities.length);
+
+            var new_item_id = items.insert({
+                'artwork_id' : possibilities[random_index]._id,
+                'condition' : getCondition(),
+                'attributes' : getAttributes(rarity),
+                'owner' : user_id,
+                'status' : 'unclaimed',
+                'date_created' : new Date(),
+                'xp_rating' : getXPRating(),
+                'roll_count' : 0
+            });
+        }
+    }
+}
+
 getAttributes = function(rarity) {
     var primary_count = attribute_quantities[rarity].primary;
     var secondary_count = attribute_quantities[rarity].secondary;

@@ -51,6 +51,8 @@ var generateContent = function() {
     }
 }
 
+var exeption_list = [];
+
 var updateContent = function() {
     Meteor.users.update({}, {$set : {
         'profile.pc_cap' : 5, 
@@ -63,7 +65,7 @@ var updateContent = function() {
 }
 
 Meteor.startup(function() {
-    //setupMail();
+    setupMail();
     fs = Npm.require('fs');
     
 	if (artists.find({}).count() == 0 && artworks.find({}).count() == 0)
@@ -202,29 +204,47 @@ function concludeAuction(auction_id) {
             'time' : moment()
         };
         alerts.insert(alert_sale_object);
-        addXPChunkPercentage(item_object.owner, .5);
 
-        var win_message = "You have won " + auction_object.title + " by " + auction_object.artist + " in the auction house for $" + getCommaSeparatedValue(auction_object.current_price);
-        var alert_win_object = {
-            'user_id' : highest_bid.user_id,
-            'message' : win_message,
-            'link' : '/',
-            'icon' : 'fa-gavel',
-            'sentiment' : "good",
-            'time' : moment()
-        };
-        alerts.insert(alert_win_object);
-        addXPChunkPercentage(item_object.owner, .5);
+        if (highest_bid.user_id != "auction_bot") {
+            var win_message = "You have won " + auction_object.title + " by " + auction_object.artist + " in the auction house for $" + getCommaSeparatedValue(auction_object.current_price);
+            var alert_win_object = {
+                'user_id' : highest_bid.user_id,
+                'message' : win_message,
+                'link' : '/',
+                'icon' : 'fa-gavel',
+                'sentiment' : "good",
+                'time' : moment()
+            };
+            alerts.insert(alert_win_object);
+        }
+
+        var XPChunkValue;
+
+        switch(auction_object.rarity) {
+            case 'common' : XPChunkValue = .5; break;
+            case 'uncommon' : XPChunkValue = .6; break;
+            case 'rare' : XPChunkValue = .7; break;
+            case 'legendary' : XPChunkValue = .8; break;
+            case 'masterpiece' : XPChunkValue = 1; break;
+            default: break;
+        }
+
+        addXPChunkPercentage(item_object.owner, XPChunkValue);
+
+        if (highest_bid.user_id != "auction_bot")
+            addXPChunkPercentage(highest_bid.user_id, XPChunkValue);
 
         addFunds(item_object.owner, highest_bid.amount);
         
-        items.update(item_object._id, {$set: {'status' : 'claimed', 'owner': highest_bid.user_id}});
+        if (highest_bid.user_id != "auction_bot")
+            items.update(item_object._id, {$set: {'status' : 'claimed', 'owner': highest_bid.user_id}});
+
+        else items.remove(item_object._id);
+
         auctions.remove({'_id': auction_id}, function(error) {
             if (error)
                 console.log(error.message);
         });
-
-        Meteor.call('alertUserOfWin', highest_bid.user_id, item_object._id);
     }
 }
 
@@ -281,6 +301,42 @@ Meteor.setInterval((function() {
     items.remove({'status' : 'unclaimed', 'date_created' : {$lt : creation_cutoff}});
 
 }), check_frequency);
+
+var auction_bot_frequency = 3600000;
+// var auction_bot_frequency = 10000;
+var max_bot_auctions = 2;
+Meteor.setInterval((function() {
+    if (auctions.find({'bid_history.user_id' : "auction_bot"}).count() < max_bot_auctions) {
+        var potential_auctions = auctions.find({'bid_history' : [], 'rarity' : {$nin : ['legendary', 'masterpiece']}}).fetch();
+        var qualifying_auctions = [];
+
+        for (var i=0; i < potential_auctions.length; i++) {
+            var item_object = items.findOne(potential_auctions[i].item_id);
+            var actual_value = getItemValue(item_object._id, 'actual');
+            var asking_value = potential_auctions[i].current_price;
+            var difference = Math.abs(actual_value - asking_value);
+            if (difference / actual_value < .5)
+                qualifying_auctions.push(potential_auctions[i]);
+        }
+        
+        if (qualifying_auctions.length > 0) {
+            var random_auction = qualifying_auctions[Math.floor(Math.random() * (qualifying_auctions.length))];
+
+            var bid_object = {
+                'user_id': "auction_bot",
+                'amount' : random_auction.bid_minimum,
+                'date' : moment(),
+            }
+
+            auctions.update(
+                random_auction._id, {
+                    $push: {'bid_history' : bid_object}, 
+                    $set: {'current_price' : random_auction.bid_minimum, 'bid_minimum' : Math.floor(random_auction.bid_minimum * 1.05)}
+                }
+            );
+        }
+    }
+}), auction_bot_frequency)
 
 function concludeDisplayOnTimeout(item_id, time_offset) {
     Meteor.setTimeout(function() {

@@ -10,9 +10,17 @@ setupMail = function() {
         return 'Thank you for registering with Artfunkel! Please <a href="' + url + '">click here</a> to verify your account. Alternatively, you can copy and paste the link below into your browser.<br><br>' + url;
     };
 
+    Accounts.emailTemplates.resetPassword.subject = function(user) {
+        return user.profile.first_name + ', Here is Your Reset Password Link!'
+    }
+
+    Accounts.emailTemplates.resetPassword.html = function(user, url) {
+        return '<h2>Hello ' + user.profile.first_name + ',</h2> <p>Here is a link to reset your password for artfunkel.meteor.com:</p> <a href="' + url + '">Click here to reset your password</a> <p>If you did not request your password to be reset, you may safely ignore this email.</p>';
+    }
+
     var smtp = {
         username: 'artfunkelgame@gmail.com', 
-        password:  '1amtehartfunkel',   
+        password:  '4rtfunk3l',   
         server:   'smtp.gmail.com',
         port: 465
     }
@@ -20,38 +28,38 @@ setupMail = function() {
 };
 
 Meteor.methods({
-    sendVEmail: function (uId) {
-        check([uId], [String]);
+    sendVEmail: function (user_id) {
+        check([user_id], [String]);
         // Let other method calls from the same client start running,
         // without waiting for the email sending to complete.
         this.unblock();
         //actual email sending method
-        Accounts.sendVerificationEmail(uId);  
+        Accounts.sendVerificationEmail(user_id);  
      },
 
-    rsPassword: function (uId,newpassword) {
-        check([uId,newpassword], [String]);
+    rsPassword: function (user_id, newpassword) {
+        check([user_id, newpassword], [String]);
         // Let other method calls from the same client start running,
         // without waiting for the email sending to complete.
         this.unblock();
         
-        Accounts.setPassword(uId, newpassword,{logout: false});
+        Accounts.setPassword(user_id, newpassword,{logout: false});
      },
 
-    changeScreen: function (uId,screenname) {
-        check([uId,screenname], [String]);
+    changeScreen: function (user_id, screenname) {
+        check([user_id,screenname], [String]);
         // Let other method calls from the same client start running,
         // without waiting for the email sending to complete.
         this.unblock();
         
-        Meteor.users.update({_id : uId}, {$set:{"username":screenname}});
+        Meteor.users.update({_id : user_id}, {$set:{"username":screenname}});
      },
 
-    changeMEmail: function (uId,emailAdd) {
+    changeMEmail: function (user_id, emailAdd) {
       // Let other method calls from the same client start running,
         // without waiting for the email sending to complete.
         this.unblock();
   
-        Meteor.users.update({_id : uId}, {$set:{'emails.0.address':emailAdd}});
+        Meteor.users.update({_id : user_id}, {$set:{'emails.0.address':emailAdd}});
      } 
 });

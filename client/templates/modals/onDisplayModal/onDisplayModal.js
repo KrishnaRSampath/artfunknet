@@ -64,7 +64,7 @@ Template.onDisplayModal.helpers({
 		if (Session.get('display_duration') && Session.get('display_duration') != 'default' && Session.get('display_details')) {
 			var details = {
 				'money' : "$" + getCommaSeparatedValue(Session.get('display_details').money),
-				'xp' : Session.get('display_details').xp,
+				'xp' : getCommaSeparatedValue(Session.get('display_details').xp),
 				'end' : getTimeString(moment(Session.get('display_details').end)),
 			}
 

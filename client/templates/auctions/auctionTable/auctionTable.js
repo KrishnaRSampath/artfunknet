@@ -118,7 +118,6 @@ Template.auctionTable.helpers({
 		}
 
 		catch(error) {
-			console.log(error.message);
 			return {};
 		}
 	},
@@ -162,7 +161,6 @@ Template.auctionTable.helpers({
 		}
 
 		catch(error) {
-			console.log(error.message);
 			return {
 				'image_width' : 0,
 				'image_height' : 0,

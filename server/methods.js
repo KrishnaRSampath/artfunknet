@@ -122,6 +122,10 @@ Meteor.methods({
         }
     },
 
+    'generateItemsFromRarity' : function(user_id, rarity, count) {
+        generateItemsFromRarity(user_id, rarity, count);
+    },
+
     'claimArtwork' : function(user_id, item_id) {
         if (Meteor.userId() && Meteor.userId() == user_id) {
             items.update({'_id': item_id}, {$set: {'status' : 'claimed'}});
@@ -275,7 +279,7 @@ Meteor.methods({
                 refundHighestBid(auction_id);
 
                 var highest_bidder = getHighestBidder(auction_id);
-                if (highest_bidder) {
+                if (highest_bidder && highest_bidder != "auction_bot") {
                     var message = "Someone has outbid you on one of your watched items: " + auction_object.title + " by " + auction_object.artist;
                     var alert_object = {
                         'user_id' : highest_bidder,
@@ -519,7 +523,18 @@ Meteor.methods({
 
     'addXP' : function(amount) {
         addXP(Meteor.userId(), amount);
-    }
+    },
+
+    'sendResetPasswordEmail': function(email_address) {
+        var user = Meteor.users.findOne({"emails.0.address": email_address});
+        
+        if (user) {
+            Accounts.sendResetPasswordEmail(user._id);
+            return true;
+        } 
+        
+        else return null;
+    },
 })
 
 var refundHighestBid = function(auction_id) {
@@ -584,25 +599,31 @@ var getDisplayDetails = function(item_id, duration) {
     // 12 hours 
     // 1 day
     var actual_amount = getItemValue(item_id, 'actual');
+    var xp_chunk = getXPChunk(Meteor.user().profile.level);
 
     //add bonuses from attributes
 
-    var money;
+    var money, xp;
     switch(Number(duration)) {
         case 1: 
-            money = actual_amount * .0001 * duration; 
+            money = actual_amount * .0001 * duration;
+            xp = xp_chunk * .0001 * duration;
             break;
         case 60: 
             money = actual_amount * .00025 * duration; 
+            xp = xp_chunk * .00025 * duration;
             break;
         case 360: 
             money = actual_amount * .0004 * duration; 
+            xp = xp_chunk * .0004 * duration;
             break;
         case 720: 
             money = actual_amount * .00055 * duration; 
+            xp = xp_chunk * .00055 * duration;
             break;
         case 1440: 
             money = actual_amount * .0007 * duration; 
+            xp = xp_chunk * .0007 * duration;
             break;
         default: 
             money = 0; 
@@ -612,7 +633,7 @@ var getDisplayDetails = function(item_id, duration) {
     var end = moment().add(duration, 'minutes')._d.toISOString();
     var display_details = {
         'money' : money.toFixed(2),
-        'xp' : 0,
+        'xp' : Math.floor(xp),
         'end' :end
     }
 

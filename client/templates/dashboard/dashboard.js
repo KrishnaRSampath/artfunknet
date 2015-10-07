@@ -38,7 +38,9 @@ Template.dashboard.helpers({
 				var xp_object = {
 					'xp_completion' : Math.floor(completion) > 100 ? 100 : Math.floor(completion),
 					'xp_remaining' : getCommaSeparatedValue(xp_data.goal - Meteor.user().profile.xp),
-					'current_level' : Meteor.user().profile.level
+					'current_level' : Meteor.user().profile.level,
+					'current_xp' : getCommaSeparatedValue(Meteor.user().profile.xp),
+					'xp_goal' : getCommaSeparatedValue(xp_data.goal)
 				};
 
 				Session.set('xp_data', xp_object);
