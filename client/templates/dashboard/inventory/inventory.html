@@ -32,23 +32,26 @@
 					</td>
 					<td style="color: rgb({{valueColor xp_rating}}, 0, 0)" >{{xp_rating_text}}</td>
 					<td>{{roll_count}}</td>
-					<td class="action-buttons">						
+					<td class="action-buttons no-padding">						
 						{{#if onDisplay this._id}}
-						<div class="col-xs-12">
+						<div class="col-xs-12 no-padding">
 							<span class="remaining-text">on display - {{time_remaining this._id}}</span>
 						</div>
 						{{else}}
-						<div class="col-xs-3">
-							<span class="quick-sell enabled"><i data-item_id="{{this._id}}" class="fa fa-usd"></i></span>
+						<div class="col-xs-2 no-padding">
+							<span class="quick-sell {{#if can_sell this}}enabled{{else}}disabled{{/if}}"><i data-item_id="{{this._id}}" class="fa fa-usd"></i></span>
 						</div>
-						<div class="col-xs-3">
-							<span class="auction {{#if can_auction}}enabled{{else}}disabled{{/if}}"><i data-item_id="{{this._id}}" class="fa fa-gavel"></i></span>
+						<div class="col-xs-2 no-padding">
+							<span class="auction {{#if can_auction this}}enabled{{else}}disabled{{/if}}"><i data-item_id="{{this._id}}" class="fa fa-gavel"></i></span>
 						</div>
-						<div class="col-xs-3">
+						<div class="col-xs-2 no-padding">
 							<span class="display {{#if can_display this}}enabled{{else}}disabled{{/if}}"><i data-item_id="{{this._id}}" class="fa fa-picture-o"></i></span>
 						</div>
-						<div class="col-xs-3">
+						<div class="col-xs-2 no-padding">
 							<span class="reroll {{#if can_reroll this}}enabled{{else}}disabled{{/if}}"><i data-item_id="{{this._id}}" class="fa fa-magic"></i></span>
+						</div>
+						<div class="col-xs-3 col-xs-offset-1 no-padding">
+							<span class="perm-collection {{#if permanent this._id}}active af-color{{else}}inactive{{/if}}"><i data-item_id="{{this._id}}" class="fa fa-heart"></i></span>
 						</div>
 						{{/if}}
 					</td>
@@ -78,21 +81,24 @@
 						<div class="col-xs-12">
 							<div class="row button-area">
 								{{#if onDisplay this._id}}
-								<div class="col-xs-12">
+								<div class="col-xs-12 no-padding">
 									<span class="remaining-text">on display - {{time_remaining this._id}}</span>
 								</div>
 								{{else}}
-								<div class="col-xs-3">
-									<span class="quick-sell enabled"><i data-item_id="{{this._id}}" class="fa fa-usd"></i></span>
+								<div class="col-xs-2 no-padding">
+									<span class="quick-sell {{#if can_sell this}}enabled{{else}}disabled{{/if}}"><i data-item_id="{{this._id}}" class="fa fa-usd"></i></span>
 								</div>
-								<div class="col-xs-3">
-									<span class="auction {{#if can_auction}}enabled{{else}}disabled{{/if}}"><i data-item_id="{{this._id}}" class="fa fa-gavel"></i></span>
+								<div class="col-xs-2 no-padding">
+									<span class="auction {{#if can_auction this}}enabled{{else}}disabled{{/if}}"><i data-item_id="{{this._id}}" class="fa fa-gavel"></i></span>
 								</div>
-								<div class="col-xs-3">
+								<div class="col-xs-2 no-padding">
 									<span class="display {{#if can_display this}}enabled{{else}}disabled{{/if}}"><i data-item_id="{{this._id}}" class="fa fa-picture-o"></i></span>
 								</div>
-								<div class="col-xs-3">
+								<div class="col-xs-2 no-padding">
 									<span class="reroll {{#if can_reroll this}}enabled{{else}}disabled{{/if}}"><i data-item_id="{{this._id}}" class="fa fa-magic"></i></span>
+								</div>
+								<div class="col-xs-3 col-xs-offset-1">
+									<span class="perm-collection {{#if can_permanent this}}{{#if permanent this._id}}active af-color{{else}}inactive{{/if}}{{else}}disabled{{/if}}"><i data-item_id="{{this._id}}" class="fa fa-heart"></i></span>
 								</div>
 								{{/if}}
 							</div>

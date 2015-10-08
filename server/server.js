@@ -54,14 +54,7 @@ var generateContent = function() {
 var exeption_list = [];
 
 var updateContent = function() {
-    Meteor.users.update({}, {$set : {
-        'profile.pc_cap' : 5, 
-        'profile.level' : 0, 
-        'profile.inventory_cap' : 9, 
-        'profile.auction_cap' : 5,
-        'profile.display_cap' : 5,
-        'profile.xp' : 0,
-    }}, {multi : true});
+   Meteor.users.update({}, {$set: {'profile.ticket_cap' : 5 }}, {multi : true});
 }
 
 Meteor.startup(function() {
@@ -87,15 +80,19 @@ Meteor.startup(function() {
             "email": "jpollack320@gmail.com",
             "password": "password",
             "profile": {
-                "screen_name": "EindacorDS",
-                "user_type": "player",
-                "bank_balance" : 1000000,
-                "last_drop" : last_drop._d.toISOString(),
-                'inventory_cap' : 40,
-                'display_cap' : 8,
-                'auction_cap' : 8,
-                'level' : 1,
+                'screen_name': "EindacorDS",
+                'user_type': "player",
+                'bank_balance' : 1000000,
+                'last_drop' : last_drop._d.toISOString(),
+                'inventory_cap' : 9,
+                'display_cap' : 5,
+                'auction_cap' :5,
+                'ticket_cap' : 5,
+                'pc_cap' : 5,
+                'level' : 0,
                 'xp' : 0,
+                'entry_fee' : 0,
+                'gallery_tickets' : []
             }
         };
 
@@ -106,22 +103,25 @@ Meteor.startup(function() {
             "email": "player@email.com",
             "password": "password",
             "profile": {
-                "screen_name": "Buyer",
-                "user_type": "player",
-                "bank_balance" : 10000000,
-                "last_drop" : last_drop._d.toISOString(),
-                'inventory_cap' : 40,
-                'display_cap' : 8,
-                'auction_cap' : 8,
-                'level' : 1,
+                'screen_name': "Buyer",
+                'user_type': "player",
+                'bank_balance' : 10000000,
+                'last_drop' : last_drop._d.toISOString(),
+                'inventory_cap' : 9,
+                'display_cap' : 5,
+                'auction_cap' : 5,
+                'ticket_cap' : 5,
+                'pc_cap' : 5,
+                'level' : 0,
                 'xp' : 0,
+                'entry_fee' : 0,
+                'gallery_tickets' : []
             }
         };
 
         createUser(player_object);
     }
 })
-
 
 Accounts.onCreateUser(function(options, user) {
     if (options.profile){
@@ -267,6 +267,7 @@ function concludeDisplay(item_id) {
     alerts.insert(alert_win_object);
 
     addFunds(user_id, money_earned);
+    addXP(user_id, xp_earned);
     
     var null_display_details = {
         'money' : 0,
@@ -280,7 +281,7 @@ function concludeDisplay(item_id) {
     });
 }
 
-var check_frequency = 30000
+var check_frequency = 30000;
 Meteor.setInterval((function() {
     var next_check = moment().add(check_frequency, 'milliseconds');
     var next_string = next_check._d.toISOString();
@@ -302,7 +303,7 @@ Meteor.setInterval((function() {
 
 }), check_frequency);
 
-var auction_bot_frequency = 3600000;
+var auction_bot_frequency = 3600000; //once per hour
 // var auction_bot_frequency = 10000;
 var max_bot_auctions = 2;
 Meteor.setInterval((function() {
@@ -349,3 +350,45 @@ function concludeAuctionOnTimeout(auction_id, time_offset) {
         concludeAuction(auction_id);
     }, time_offset);
 }
+
+var permanent_collection_xp_frequency = 3600000;  //once per hour
+Meteor.setInterval((function() {
+    var permanent_items = items.find({'status' : 'permanent'}).fetch();
+    for (var i=0; i < permanent_items.length; i++) {
+        var time_displayed = moment() - moment(permanent_items[i].permanent_post);
+
+        var periods_displayed = Math.floor(time_displayed / permanent_collection_xp_frequency);
+
+        var xp_max_percentage = .6;
+        var xp_increment = .05;
+        var percentage = periods_displayed * xp_increment <= xp_max_percentage ? periods_displayed * xp_increment : xp_max_percentage;
+
+        var time_til_next_xp = (permanent_collection_xp_frequency * (periods_displayed + 1)) - time_displayed;
+
+        giveXPOnTimeout(permanent_items[i].owner, percentage * permanent_items[i].xp_rating, time_til_next_xp);
+    }
+}), permanent_collection_xp_frequency);
+
+function giveXPOnTimeout(user_id, percentage, time_offset) {
+    Meteor.setTimeout(function() {
+        addXPChunkPercentage(user_id, percentage);
+    }, time_offset);
+}
+
+// var expire_ticket_frequency = 3600000;
+// Meteor.setInterval((function() {
+//     var next_check = moment().add(expire_ticket_frequency, 'milliseconds');
+//     var next_string = next_check._d.toISOString();
+//     var now = moment();
+//     var ticket_holders = Meteor.users.find({'profile.tickets' : {$ne : undefined}}).fetch();
+//     for (var i=0; i < ticket_holders.length; i++) {
+//         var ticket_ids = Object.keys(ticket_holders[i].profile.tickets);
+//         var time_from_now = moment(finishing_displays[i].display_details.end) - moment();
+//     }
+// }), expire_ticket_frequency);
+
+// function expireTicketOnTimeout(user_id, gallery_owner_id, time_offset) {
+//     Meteor.setTimeout(function() {
+        
+//     }, time_offset);
+// }

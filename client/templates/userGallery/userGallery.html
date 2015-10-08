@@ -1,6 +1,8 @@
 <template name="userGallery">
 	<div class="template-userGallery">
 		<div class="container">
+			{{#with entryInfo screen_name}}
+			{{#if paid}}
 			<h2>{{screen_name}} - Featured Works</h2>
 			{{#each displayed screen_name}}
 				<div class="item-card" data-painting-id="{{this._id}}">
@@ -21,6 +23,16 @@
 					</div>
 				</div>
 			{{/each}}
+
+			{{else}}
+			<div class="col-xs-12">
+				<div class="row">
+					<h4>entry fee: <span class="highlight af-color">{{entry_fee_text}}</span></h4>
+					<button class="{{#if pay_fee_enabled}}enabled{{else}}disabled{{/if}}" id="enter-button" data-owner_id="{{owner_id}}">pay fee</button>
+				</div>
+			</div>
+			{{/if}}
+			{{/with}}
 		</div>
 	</div>
 </template>

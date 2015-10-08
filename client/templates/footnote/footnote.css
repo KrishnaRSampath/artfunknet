@@ -1,0 +1,11 @@
+.template-footnote #footnote-area { 
+    height: 64px; 
+    position: fixed; 
+    bottom:0%;
+    width:100%; 
+    background-color: #FF33CC; 
+    opacity: .9;
+    color: white;
+    font-size: 1.2em;
+    padding: 8px 120px;
+}

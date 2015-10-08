@@ -43,3 +43,13 @@
 .template-dashboard .player-info {
 	margin-top: 24px;
 }
+
+.template-dashboard .ticket-button {
+	font-size: 3em;
+	color: #777777;
+	opacity: .5;
+}
+
+.template-dashboard .ticket-button:hover {
+	opacity: 1;
+}

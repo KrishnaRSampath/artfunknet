@@ -54,3 +54,11 @@
 .template-userGallery .item-card {
 	border: 1px solid black;
 }
+
+.template-userGallery #enter-button.disabled {
+	opacity: .5;
+}
+
+.template-userGallery #enter-button.disabled:hover {
+	cursor: default;
+}

@@ -1,4 +1,4 @@
-var starting_max_chunk = .8;
+var starting_max_chunk = 1;
 var chunk_exponent = .9;
 var starting_xp  = 100;
 var xp_exponent = 1.3;

@@ -217,7 +217,7 @@ Meteor.methods({
         var user_object = Meteor.users.findOne({'profile.screen_name' : screen_name});
 
         if (user_object)
-            return items.find({'owner': user_object._id, 'status': 'displayed'}).fetch();
+            return items.find({'owner': user_object._id, 'status': {$in : ['displayed', 'permanent']}}).fetch();
 
         else return [];
     },
@@ -535,6 +535,38 @@ Meteor.methods({
         
         else return null;
     },
+
+    'purchaseTicket' : function(buyer_id, owner_id) {
+        // var ticket_duration = 10000;
+        var ticket_duration = 3600000;
+        var ticket_expiration = moment().add(ticket_duration, 'milliseconds')._d.toISOString();
+        var entry_fee = Meteor.users.findOne(owner_id).profile.entry_fee;
+        var current_tickets = Meteor.users.findOne(buyer_id).profile.tickets;
+        
+        if (current_tickets == undefined) {
+            var ticket_object = {};
+            ticket_object[owner_id] = ticket_expiration;
+            Meteor.users.update(buyer_id, {$set: {'profile.tickets' : ticket_object}});
+        }
+
+        else {
+            if (Object.keys(current_tickets).length >= Meteor.users.findOne(buyer_id).profile.ticket_cap)
+                return;
+
+            current_tickets[owner_id] = ticket_expiration;
+            Meteor.users.update(buyer_id, {$set: {'profile.tickets' : current_tickets}});
+        }
+
+        Meteor.setTimeout(function() {
+            var buyer_object = Meteor.users.findOne(buyer_id);
+            var current_tickets = buyer_object.profile.tickets;
+            delete current_tickets[owner_id];
+            Meteor.users.update(buyer_id, {$set: {'profile.tickets' : current_tickets}});
+        }, ticket_duration);
+
+        addFunds(owner_id, entry_fee);
+        chargeAccount(buyer_id, entry_fee);
+    }
 })
 
 var refundHighestBid = function(auction_id) {
@@ -600,6 +632,8 @@ var getDisplayDetails = function(item_id, duration) {
     // 1 day
     var actual_amount = getItemValue(item_id, 'actual');
     var xp_chunk = getXPChunk(Meteor.user().profile.level);
+    var xp_rating = items.findOne(item_id).xp_rating;
+    var xp_value = (xp_chunk * .5) + (xp_chunk * .5 * xp_rating);
 
     //add bonuses from attributes
 
@@ -607,23 +641,23 @@ var getDisplayDetails = function(item_id, duration) {
     switch(Number(duration)) {
         case 1: 
             money = actual_amount * .0001 * duration;
-            xp = xp_chunk * .0001 * duration;
+            xp = xp_value * .001 * duration;
             break;
         case 60: 
             money = actual_amount * .00025 * duration; 
-            xp = xp_chunk * .00025 * duration;
+            xp = xp_value * .0012 * duration;
             break;
         case 360: 
             money = actual_amount * .0004 * duration; 
-            xp = xp_chunk * .0004 * duration;
+            xp = xp_value * .0013 * duration;
             break;
         case 720: 
             money = actual_amount * .00055 * duration; 
-            xp = xp_chunk * .00055 * duration;
+            xp = xp_value * .0014 * duration;
             break;
         case 1440: 
             money = actual_amount * .0007 * duration; 
-            xp = xp_chunk * .0007 * duration;
+            xp = xp_value * .0015 * duration;
             break;
         default: 
             money = 0; 
@@ -635,6 +669,7 @@ var getDisplayDetails = function(item_id, duration) {
         'money' : money.toFixed(2),
         'xp' : Math.floor(xp),
         'end' :end
+        // 'end' : moment().add(1, 'minutes')._d.toISOString()
     }
 
     return display_details;

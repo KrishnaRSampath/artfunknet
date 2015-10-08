@@ -44,11 +44,15 @@ Template.registration.events({
                 "user_type": "player",
                 "bank_balance" : 1000000,
                 "last_drop" : last_drop._d.toISOString(),
-                'inventory_cap' : 40,
-                'display_cap' : 8,
-                'auction_cap' : 8,
-                'level' : 1,
+                'inventory_cap' : 9,
+                'display_cap' : 5,
+                'auction_cap' :5,
+                'ticket_cap' : 5,
+                'pc_cap' : 5,
+                'level' : 0,
                 'xp' : 0,
+                'entry_fee' : 0,
+                'gallery_tickets' : []
             }
         };
 

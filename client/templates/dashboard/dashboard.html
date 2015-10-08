@@ -29,7 +29,13 @@
 					<h4>paintings owned: <span class="highlight af-color">{{inventory_count}}</span><span class="af-color"> ({{inventory_max}})</span></h4>
 					<h4>auctions active: <span class="highlight af-color">{{auction_count}}</span><span class="af-color"> ({{auction_max}})</span></h4>	
 					<h4>private collection: <span class="highlight af-color">{{private_count}}</span><span class="af-color"> ({{private_max}})</span></h4>
+					<h4>gallery entry fee: <span class="highlight af-color">{{entry_fee}}</span></h4>
 				</div>		
+				<div class="row ticket-info">
+					{{#each ticket}}
+					<a href="/user/{{screen_name}}" class="ticket-button"><i data-owner_name="{{screen_name}}" class="fa fa-ticket"></i></a>
+					{{/each}}
+				</div>
 			</div>
 
 			{{#if alert_count}}

@@ -5,8 +5,6 @@ Template.dashboard.helpers({
 		if (Meteor.user()) {
 			var user_object = Meteor.user();
 
-
-
 			var data_object = {
 				'screen_name' : user_object.profile.screen_name,
 				'bank_balance' : getCommaSeparatedValue(user_object.profile.bank_balance),
@@ -14,11 +12,12 @@ Template.dashboard.helpers({
 				'inventory_count' : items.find({'owner' : Meteor.userId(), 'status' : {$ne : 'unclaimed'}}).count(),
 				'auction_count' : items.find({'owner' : Meteor.userId(), 'status' : 'auctioned'}).count(),
 				'alert_count' : alerts.find({'user_id' : Meteor.userId()}).count(),
-				'private_count' : 0,
-				'display_max' : Meteor.user().profile.display_cap,
-				'inventory_max' : Meteor.user().profile.inventory_cap,
-				'auction_max' : Meteor.user().profile.auction_cap,
-				'private_max' : Meteor.user().profile.pc_cap,
+				'private_count' : items.find({'owner' : Meteor.userId(), 'status' : 'permanent'}).count(),
+				'display_max' : user_object.profile.display_cap,
+				'inventory_max' : user_object.profile.inventory_cap,
+				'auction_max' : user_object.profile.auction_cap,
+				'private_max' : user_object.profile.pc_cap,
+				'entry_fee' : "$" + getCommaSeparatedValue(user_object.profile.entry_fee)
 			}
 
 			return data_object;
@@ -83,5 +82,31 @@ Template.dashboard.helpers({
 			return getCommaSeparatedValue(Session.get('display_value'));
 
 		else return "";
+	},
+
+	'ticket' : function() {
+		var tickets = Meteor.users.findOne(Meteor.userId()).profile.tickets;
+		if (tickets != undefined) {
+			var ticket_ids = Object.keys(tickets);
+			var ticket_array = [];
+			for (var i=0; i < ticket_ids.length; i++) {
+				var ticket_object = {
+					'screen_name' : Meteor.users.findOne(ticket_ids[i]).profile.screen_name,
+					'owner_id' : ticket_ids[i]
+				}
+				ticket_array.push(ticket_object);
+			}
+
+			return ticket_array;
+		}
+
+		else return [];
+	}
+})
+
+Template.dashboard.events({
+	'mouseover .ticket-button i' : function(element) {
+		var owner_name = element.target.dataset.owner_name;
+		setFootnote("Visit gallery of " + owner_name, Math.floor(Math.random() * 100000));
 	}
 })

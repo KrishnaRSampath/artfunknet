@@ -9,7 +9,7 @@ var setEstimatedValue = function(item_id) {
 
 Template.inventory.helpers({
 	'owned': function() {	
-		var owned_items = items.find({'owner': Meteor.userId(), 'status': {$in : ['claimed', 'displayed']}}, {sort: {'aftwork_id' : 1}}).fetch();
+		var owned_items = items.find({'owner': Meteor.userId(), 'status': {$in : ['claimed', 'displayed', 'permanent']}}, {sort: {'aftwork_id' : 1}}).fetch();
 
 		//create list object and add rarity_rank, feature_count, artist, title, date
 		var display_objects = [];
@@ -74,6 +74,10 @@ Template.inventory.helpers({
 		else return false;
 	},
 
+	'permanent' : function(item_id) {
+		return items.findOne(item_id).status == 'permanent';
+	},
+
 	'time_remaining': function(item_id) {
 		var item_object = items.findOne(item_id);
 
@@ -90,22 +94,35 @@ Template.inventory.helpers({
 	},
 
 	'can_display' : function(display_object) {
-		if (Meteor.userId())
+		if (Meteor.userId()) {
 			return items.find({'owner' : Meteor.userId(), 'status' : 'displayed'}).count() < Meteor.user().profile.display_cap && 
-						items.find({'owner' : Meteor.userId(), 'status' : 'displayed', 'artwork_id' : display_object.artwork_id}).count() == 0;
+				items.find({'owner' : Meteor.userId(), 'status' : 'displayed', 'artwork_id' : display_object.artwork_id}).count() == 0 &&
+				display_object.status != 'permanent';
+		}
 
 		else return false;
 	},
 
-	'can_auction' : function() {
-		if (Meteor.userId())
-			return items.find({'owner' : Meteor.userId(), 'status' : 'auctioned'}).count() < Meteor.user().profile.auction_cap;
+	'can_auction' : function(display_object) {
+		if (Meteor.userId()) {
+			return items.find({'owner' : Meteor.userId(), 'status' : 'auctioned'}).count() < Meteor.user().profile.auction_cap &&
+				display_object.status != 'permanent';
+		}
 
 		else return false;
 	},
 
 	'can_reroll' : function(display_object) {
-		return true;
+		return display_object.status != 'permanent';
+	},
+
+	'can_sell' : function(display_object) {
+		return display_object.status != 'permanent';
+	},
+
+	'can_permanent' : function(display_object) {
+		return items.find({'owner' : Meteor.userId(), 'status' : 'permanent'}).count() < Meteor.user().profile.pc_cap ||
+			display_object.status == 'permanent';
 	},
 
 	'list_view' : function() {
@@ -229,6 +246,18 @@ Template.inventory.events ({
 		var item_id = $(element.target).data('item_id');
 		Session.set('selectedItem', item_id);
 		Modal.show('rerollModal');
+	},
+
+	'click .perm-collection.inactive' : function(element) {
+		var item_id = $(element.target).data('item_id');
+		items.update(item_id, {$set: {'status' : 'permanent'}});
+		items.update(item_id, {$set: {'permanent_post' : moment()._d.toISOString()}});
+	},
+
+	'click .perm-collection.active' : function(element) {
+		var item_id = $(element.target).data('item_id');
+		items.update(item_id, {$set: {'status' : 'claimed'}});
+		items.update(item_id, {$unset: {'permanent_post' : ""}});
 	}
 })
 

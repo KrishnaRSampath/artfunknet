@@ -27,6 +27,26 @@ Template.userGallery.helpers({
 
 		else return "";
 	},
+
+	'entryInfo' : function(screen_name) {
+		//move to server-side
+		if (Meteor.user()) {
+			var user_object = Meteor.users.findOne({'profile.screen_name' : screen_name});
+			var viewer_object = Meteor.user();
+			var tickets_maxed = viewer_object.profile.tickets != undefined && Object.keys(viewer_object.profile.tickets).length >= viewer_object.profile.ticket_cap;
+			var insufficient_funds = user_object.profile.entry_fee > viewer_object.profile.bank_balance;
+
+			return {
+				'paid' : viewer_object.profile.screen_name == screen_name || (viewer_object.profile.tickets != undefined && viewer_object.profile.tickets[user_object._id] != undefined),
+				'pay_fee_enabled' : !insufficient_funds && !tickets_maxed,
+				'entry_fee_text' : "$" + getCommaSeparatedValue(user_object.profile.entry_fee),
+				'screen_name' : screen_name,
+				'owner_id' : user_object._id
+			}
+		}
+
+		else return {};
+	}
 })
 
 Template.userGallery.events ({
@@ -47,6 +67,14 @@ Template.userGallery.events ({
 	// 	Session.set('selectedItem', item_id);
 	// 	Modal.show('onDisplayModal');
 	// }
+
+	'click #enter-button' : function(element) {
+		var owner_id = element.target.dataset.owner_id;
+		Meteor.call('purchaseTicket', Meteor.userId(), owner_id, function(error) {
+			if (error)
+				console.log(error.message);
+		})
+	}
 })
 
 Template.userGallery.created = function() {
