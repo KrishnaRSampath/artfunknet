@@ -1,10 +1,7 @@
 Template.dashboard.helpers({
 	'userData' : function() {
-		//return Meteor.user();
-
 		if (Meteor.user()) {
 			var user_object = Meteor.user();
-
 			var data_object = {
 				'screen_name' : user_object.profile.screen_name,
 				'bank_balance' : getCommaSeparatedValue(user_object.profile.bank_balance),
@@ -109,4 +106,4 @@ Template.dashboard.events({
 		var owner_name = element.target.dataset.owner_name;
 		setFootnote("Visit gallery of " + owner_name, Math.floor(Math.random() * 100000));
 	}
-})
+});

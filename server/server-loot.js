@@ -101,7 +101,7 @@ attribute_quantities = {
     'masterpiece' : {
         'primary' : 5,
         'secondary' : 3
-    } 
+    }
 }
 
 getCondition = function() {
@@ -151,7 +151,7 @@ getItemValue = function(item_id, type) {
             case "sell": return sell_value;
             case "purchase": return purchase_value;
             case "actual": return actual_value;
-            case "auction_min": return auction_min; 
+            case "auction_min": return auction_min;
             default: return undefined;
         }
     }
@@ -224,7 +224,6 @@ generateItems = function(user_id, quality, count) {
             rarity_roll = "masterpiece";
 
         else rarity_roll = JepLoot.catRoll(rarity_map);
-
         var possibilities = artworks.find({'rarity': rarity_roll}).fetch();
         var random_index = Math.floor(Math.random() * possibilities.length);
 
@@ -237,7 +236,7 @@ generateItems = function(user_id, quality, count) {
             'date_created' : new Date(),
             'xp_rating' : getXPRating(),
             'roll_count' : 0
-        })
+        });
     }
 }
 

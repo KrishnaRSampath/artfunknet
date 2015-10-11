@@ -21,7 +21,7 @@ Template.randomDrop.helpers({
 	},
 
 	'dailyDropText' : function(enabled) {
-		if (enabled) 
+		if (enabled)
 			return "get daily drop!";
 
 		else if (Meteor.user()) {
@@ -43,7 +43,7 @@ Template.randomDrop.helpers({
 
 			else Session.set(quality + 'Cost', Math.floor(result))
 		})
-		
+
 		if (Session.get(quality + 'Cost') && Meteor.user()) {
 			return {
 				'buttonQuality' : quality,
@@ -95,7 +95,7 @@ Template.randomDrop.events ({
 			if (error)
 				console.log(error.message);
 		});
-	}, 
+	},
 
 	'click .quick-sell' : function(element) {
 		var item_id = $(element.target).data('item_id');
@@ -113,8 +113,4 @@ Template.randomDrop.rendered = function() {
 Template.randomDrop.destroyed = function() {
 	//Meteor.call('clearUnclaimed', Meteor.userId());
 	Meteor.clearInterval(this.handle);
-};
-
-window.onbeforeunload = function(e) {
-	//Meteor.call('clearUnclaimed', Meteor.userId());
 };
