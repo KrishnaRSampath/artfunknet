@@ -210,7 +210,7 @@ Template.inventory.helpers({
 
 	'valueColor' : function(value) {
 		return 255 - Math.floor(value * 255);
-	}
+	},
 })
 
 Template.inventory.events ({
@@ -258,6 +258,12 @@ Template.inventory.events ({
 		var item_id = $(element.target).data('item_id');
 		items.update(item_id, {$set: {'status' : 'claimed'}});
 		items.update(item_id, {$unset: {'permanent_post' : ""}});
+	},
+
+	'mouseover .list-item-attribute' : function(element) {
+		var value = Math.floor(Number(element.target.dataset.attribute_value) * 100);
+		var description = element.target.dataset.attribute_title;
+		setFootnote("level " + value + " " + description, Math.floor(Math.random() * 100000));
 	}
 })
 

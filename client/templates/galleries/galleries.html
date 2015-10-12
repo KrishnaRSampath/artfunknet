@@ -1,0 +1,57 @@
+<template name="galleries">
+	<div class="template-galleries">
+		<div class="container">
+			<h1>Galleries</h1>
+			{{>galleryTable}}
+		</div>
+	</div>
+</template>
+
+<template name="galleryTable">
+	<div class="template-galleryTable">
+		{{#with galleryData}}
+		<div class="col-xs-12 no-padding">
+			<table class="gallery-table" data-table_id="{{table_data.table_id}}">
+				<tr>
+				{{#each header table_data}}
+					{{> galleryHeaderTemplate this}}
+				{{/each}}
+				</tr>
+				{{#each table_data.gallery}}
+					{{#with galleryInfo this}}
+					<tr data-user_id="{{_id}}">
+						<td><a href="/user/{{profile.screen_name}}">{{profile.screen_name}}</a></td>
+						<td>
+						{{#each attribute}}
+							<i data-attribute_description="{{description}}" data-attribute_value="{{value}}" data-attribute_id="{{_id}}" style="color: rgb({{getRatingColor value}}, 0, 0)" class="gallery-attribute fa {{icon}}"></i>
+						{{/each}}
+						</td>
+						<td>${{entry_fee}}</td>
+						<td>{{current_visitors}}</td>
+					</tr>
+					{{/with}}
+				{{/each}}
+			</table>
+		</div>
+
+		<div class="col-xs-12 no-padding">
+			<div class="gallery-pages">
+				{{>pagination pageData}}
+			</div>
+		</div>
+		{{/with}}
+	</div>
+</template>
+
+<template name="galleryHeaderTemplate">
+	<th class="table-header" data-sort="{{sort_id}}" data-table_id="{{table_id}}">
+		<div class="row no-margin">
+			<div class="col-xs-8">
+				<p>{{text}}</p>
+			</div>
+			<div class="col-xs-4">
+				{{#with sorted this}}{{#if sort}}{{#if ascending}}<i class="fa fa-caret-up"></i>{{else}}<i class="fa fa-caret-down"></i>{{/if}}{{else}} {{/if}}{{/with}}
+			</div>
+		</div>
+	</th>
+</template>

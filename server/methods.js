@@ -138,7 +138,12 @@ Meteor.methods({
         if (Meteor.userId() && Meteor.userId() == user_id) {
             var end = moment().add(duration, 'minutes');
             var display_details = getDisplayDetails(item_id, duration);
-            items.update({'_id': item_id}, {$set: {'status' : 'displayed', 'display_details' : display_details}});
+            items.update({'_id': item_id}, {$set: {'status' : 'displayed', 'display_details' : display_details}}, function(error) {
+                if (error)
+                    console.log(error.message);
+
+                else updateGalleryDetails(user_id);
+            });
         }
 
         else throw "current userId does not match item's owner";
@@ -565,6 +570,7 @@ Meteor.methods({
         }, ticket_duration);
 
         addFunds(owner_id, entry_fee);
+        addXPChunkPercentage(owner_id, .02);
         chargeAccount(buyer_id, entry_fee);
     }
 })
@@ -673,4 +679,31 @@ var getDisplayDetails = function(item_id, duration) {
     }
 
     return display_details;
+}
+
+updateGalleryDetails = function(user_id) {
+    var items_on_display = items.find({'owner' : user_id, 'status' : 'displayed'}).fetch();
+    var attribute_totals = {};
+    for (var i=0; i < items_on_display.length; i++) {
+        var item_attributes = items_on_display[i].attributes;
+        for (var n=0; n < item_attributes.length; n++) {
+            var attribute_id = item_attributes[n]._id;
+            var attribute_value = item_attributes[n].value;
+            if (attribute_totals[attribute_id] === undefined)
+                attribute_totals[attribute_id] = attribute_value;
+
+            else attribute_totals[attribute_id] += attribute_value;
+        }
+    }
+
+    var display_cap = Meteor.users.findOne(user_id).profile.display_cap;
+    var attribute_ids = Object.keys(attribute_totals);
+    var attribute_values = {};
+
+    for (var i=0; i < attribute_ids.length; i++) {
+        var attribute_id = attribute_ids[i];
+        attribute_values[attribute_id] = attribute_totals[attribute_id] / display_cap;
+    }
+
+    Meteor.users.update(user_id, {$set: {'profile.gallery_details' : attribute_values}});
 }

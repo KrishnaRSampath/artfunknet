@@ -62,6 +62,16 @@ Template.itemInfo.helpers({
 	}
 })
 
+Template.itemInfo.events({
+	'mouseover .item-attribute' : function(element) {
+		var attribute_id = element.target.dataset.attribute_id;
+		var value = Math.floor(Number(element.target.dataset.attribute_value) * 100);
+		var description = element.target.dataset.attribute_description;
+		var hover_string = "level " + value + " " + description;
+		setFootnote(hover_string, 4);
+	}
+})
+
 Template.itemThumbnail.helpers({
 	'imageInfo' : function(item_id) {
 		try {

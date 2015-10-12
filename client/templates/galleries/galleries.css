@@ -1,0 +1,65 @@
+.template-galleryTable table {
+	margin: auto;
+	width: 100%;
+	border: none;
+}
+
+.template-galleryTable td {
+	text-align: center;
+	border: none;
+}
+
+.template-galleryTable tr {
+	border: 1px solid gray;
+	height: 48px;
+}
+
+.template-galleryTable tr:nth-child(even) {
+	background-color: #EEEEEE;
+}
+
+.template-galleryTable tr:hover {
+	cursor: pointer;
+	background-color: #FFFFBB;
+}
+
+.template-galleryTable th {
+	background-color: black;
+	font-size: 1em;
+	color: white;
+	min-width: 120px;
+	text-align: center;
+	border-right: 1px solid white;
+	min-height: 80px;
+}
+
+.template-galleryTable th:hover {
+	background-color: #666666;
+	cursor: pointer;
+}
+
+.template-galleryTable .soon {
+	color: red;
+	font-weight: bold;
+}
+
+.template-galleryTable .action-buttons i {
+	color: black;
+	opacity: .5;
+	font-size: 1.2em;
+}
+
+.template-galleryTable .enabled i:hover {
+	opacity: 1;
+	cursor: pointer;
+}
+
+.template-galleryTable .disabled {
+	opacity: .2;
+	cursor: default;
+}
+
+.template-galleryTable .highlight {
+	font-weight: bold;
+	color: black;
+}

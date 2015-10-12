@@ -200,6 +200,12 @@ Template.auctionTable.events({
 	'click .item-attribute' : function(element) {
 		var attribute_id = element.target.dataset.attribute_title;
 		console.log(attribute_id);
+	},
+
+	'mouseover .item-attribute' : function(element) {
+		var value = Math.floor(Number(element.target.dataset.attribute_value) * 100);
+		var description = element.target.dataset.attribute_title;
+		setFootnote("level " + value + " " + description, Math.floor(Math.random() * 100000));
 	}
 })
 

@@ -10,3 +10,7 @@ Template.footnote.helpers({
 		else $('#footnote-area').hide();
 	}
 })
+
+Template.footnote.rendered = function() {
+	$('#footnote-area').hide();
+}

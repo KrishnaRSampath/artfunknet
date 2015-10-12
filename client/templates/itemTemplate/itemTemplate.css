@@ -32,3 +32,7 @@
 .template-itemInfo .item-attribute {
 	color: black;
 }
+
+.template-itemInfo .item-attribute:hover {
+	cursor: default;
+}

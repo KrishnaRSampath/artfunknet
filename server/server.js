@@ -54,7 +54,11 @@ var generateContent = function() {
 var exeption_list = [];
 
 var updateContent = function() {
-   Meteor.users.update({}, {$set: {'profile.ticket_cap' : 5 }}, {multi : true});
+    var user_objects = Meteor.users.find().fetch();
+    for (var i=0; i < user_objects.length; i++) {
+        if (user_objects[i].profile.gallery_details === undefined)
+            Meteor.users.update(user_objects[i]._id, {$set: {'profile.gallery_details' : {} }});
+    }
 }
 
 Meteor.startup(function() {
@@ -92,7 +96,8 @@ Meteor.startup(function() {
                 'level' : 0,
                 'xp' : 0,
                 'entry_fee' : 0,
-                'gallery_tickets' : []
+                'gallery_tickets' : [],
+                'gallery_details' : {}
             }
         };
 
@@ -115,7 +120,8 @@ Meteor.startup(function() {
                 'level' : 0,
                 'xp' : 0,
                 'entry_fee' : 0,
-                'gallery_tickets' : []
+                'gallery_tickets' : [],
+                'gallery_details' : {}
             }
         };
 
@@ -278,6 +284,8 @@ function concludeDisplay(item_id) {
     items.update(item_id, {$set: {'status' : 'claimed', 'display_details' : null_display_details}}, function(error) {
         if (error)
             console.log(error.message);
+
+        else updateGalleryDetails(items.findOne(item_id).owner);
     });
 }
 
@@ -351,7 +359,7 @@ function concludeAuctionOnTimeout(auction_id, time_offset) {
     }, time_offset);
 }
 
-var permanent_collection_xp_frequency = 3600000;  //once per hour
+var permanent_collection_xp_frequency = 3600000; //once per hour
 Meteor.setInterval((function() {
     var permanent_items = items.find({'status' : 'permanent'}).fetch();
     for (var i=0; i < permanent_items.length; i++) {
@@ -375,20 +383,22 @@ function giveXPOnTimeout(user_id, percentage, time_offset) {
     }, time_offset);
 }
 
-// var expire_ticket_frequency = 3600000;
-// Meteor.setInterval((function() {
-//     var next_check = moment().add(expire_ticket_frequency, 'milliseconds');
-//     var next_string = next_check._d.toISOString();
-//     var now = moment();
-//     var ticket_holders = Meteor.users.find({'profile.tickets' : {$ne : undefined}}).fetch();
-//     for (var i=0; i < ticket_holders.length; i++) {
-//         var ticket_ids = Object.keys(ticket_holders[i].profile.tickets);
-//         var time_from_now = moment(finishing_displays[i].display_details.end) - moment();
-//     }
-// }), expire_ticket_frequency);
-
-// function expireTicketOnTimeout(user_id, gallery_owner_id, time_offset) {
-//     Meteor.setTimeout(function() {
-        
-//     }, time_offset);
-// }
+var expire_ticket_frequency = 3600000; //once per hour
+// expire_ticket_frequency = 10000;
+Meteor.setInterval((function() {
+    var next_check = moment().add(expire_ticket_frequency, 'milliseconds');
+    var next_string = next_check._d.toISOString();
+    var now = moment();
+    var ticket_holders = Meteor.users.find({'profile.tickets' : {$ne : undefined}}).fetch();
+    for (var i=0; i < ticket_holders.length; i++) {
+        var ticket_ids = Object.keys(ticket_holders[i].profile.tickets);
+        for (var n=0; n < ticket_ids.length; n++) {
+            var owner_id = ticket_ids[n];
+            if (moment(ticket_holders[i].profile.tickets[owner_id]) < now) {
+                var ticket_unsetter = {};
+                ticket_unsetter[owner_id] = "";
+                Meteor.users.update(ticket_holders[i]._id, {$unset : {'profile.tickets' : ticket_unsetter}});
+            }
+        }
+    }
+}), expire_ticket_frequency);

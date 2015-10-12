@@ -52,7 +52,8 @@ Template.registration.events({
                 'level' : 0,
                 'xp' : 0,
                 'entry_fee' : 0,
-                'gallery_tickets' : []
+                'gallery_tickets' : [],
+                'gallery_details' : {}
             }
         };
 
