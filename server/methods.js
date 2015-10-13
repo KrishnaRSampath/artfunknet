@@ -543,7 +543,7 @@ Meteor.methods({
 
     'purchaseTicket' : function(buyer_id, owner_id) {
         // var ticket_duration = 10000;
-        var ticket_duration = 3600000;
+        var ticket_duration = 1800000;
         var ticket_expiration = moment().add(ticket_duration, 'milliseconds')._d.toISOString();
         var entry_fee = Meteor.users.findOne(owner_id).profile.entry_fee;
         var current_tickets = Meteor.users.findOne(buyer_id).profile.tickets;
@@ -572,6 +572,11 @@ Meteor.methods({
         addFunds(owner_id, entry_fee);
         addXPChunkPercentage(owner_id, .02);
         chargeAccount(buyer_id, entry_fee);
+    },
+
+    'updateEntryFee' : function(value) {
+        Meteor.users.update(Meteor.userId(), {$set: {'profile.entry_fee' : value}});
+        galleries.update({'owner_id' : Meteor.userId()}, {$set: {'entry_fee' : value}});
     }
 })
 
@@ -700,10 +705,32 @@ updateGalleryDetails = function(user_id) {
     var attribute_ids = Object.keys(attribute_totals);
     var attribute_values = {};
 
+    if (attribute_ids.length == 0) {
+        var gallery_object = galleries.findOne({'owner_id' : user_id});
+        if (gallery_object != undefined)
+            galleries.remove(gallery_object._id);
+
+        return;
+    }
+
     for (var i=0; i < attribute_ids.length; i++) {
         var attribute_id = attribute_ids[i];
         attribute_values[attribute_id] = attribute_totals[attribute_id] / display_cap;
     }
 
     Meteor.users.update(user_id, {$set: {'profile.gallery_details' : attribute_values}});
+
+    if (galleries.findOne({"owner_id" : user_id}) == undefined) {
+        var user_object = Meteor.users.findOne(user_id);
+        if (user_object != undefined) {
+            galleries.insert({
+                'owner_id' : user_id,
+                'owner' : user_object.profile.screen_name,
+                'attribute_values' : attribute_values,
+                'entry_fee' : user_object.profile.entry_fee,
+            });
+        }
+    }
+
+    else galleries.update({'owner_id' : user_id}, {$set: {'attribute_values' : attribute_values}});
 }

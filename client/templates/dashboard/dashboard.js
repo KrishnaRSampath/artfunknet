@@ -92,7 +92,8 @@ Template.dashboard.helpers({
 			for (var i=0; i < ticket_ids.length; i++) {
 				var ticket_object = {
 					'screen_name' : Meteor.users.findOne(ticket_ids[i]).profile.screen_name,
-					'owner_id' : ticket_ids[i]
+					'owner_id' : ticket_ids[i],
+					'expiration_string' : getTimeString(moment(tickets[ticket_ids[i]]))
 				}
 				ticket_array.push(ticket_object);
 			}
@@ -107,6 +108,11 @@ Template.dashboard.helpers({
 Template.dashboard.events({
 	'mouseover .ticket-button i' : function(element) {
 		var owner_name = element.target.dataset.owner_name;
-		setFootnote("Visit gallery of " + owner_name, Math.floor(Math.random() * 100000));
+		var expiration_string = element.target.dataset.expiration_string;
+		setFootnote("Visit gallery of " + owner_name + ". Expires " + expiration_string + ".", Math.floor(Math.random() * 100000));
+	},
+
+	'click #edit-fee' : function() {
+		Modal.show('entryFeeModal');
 	}
 })

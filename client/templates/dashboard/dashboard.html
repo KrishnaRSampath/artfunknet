@@ -22,18 +22,37 @@
 					</div>
 				</div>
 				<div class="row player-info">
-					<h4>bank balance: <span class="highlight af-color">${{bank_balance}}</span></h4>
-					<h4>collection value: <span class="highlight af-color">${{collection_value}}</span></h4>
-					<h4>current exhibition value: <span class="highlight af-color">${{display_value}}</span></h4>
-					<h4>items exhibited: <span class="highlight af-color">{{display_count}}</span><span class="af-color"> ({{display_max}})</span></h4>
-					<h4>paintings owned: <span class="highlight af-color">{{inventory_count}}</span><span class="af-color"> ({{inventory_max}})</span></h4>
-					<h4>auctions active: <span class="highlight af-color">{{auction_count}}</span><span class="af-color"> ({{auction_max}})</span></h4>	
-					<h4>private collection: <span class="highlight af-color">{{private_count}}</span><span class="af-color"> ({{private_max}})</span></h4>
-					<h4>gallery entry fee: <span class="highlight af-color">{{entry_fee}}</span></h4>
+					<div class="col-xs-12">
+						<div class="row">
+							<p>bank balance: <span class="highlight af-color">${{bank_balance}}</span></p>
+						</div>
+						<div class="row">
+							<p>collection value: <span class="highlight af-color">${{collection_value}}</span></p>
+						</div>
+						<div class="row">
+							<p>current exhibition value: <span class="highlight af-color">${{display_value}}</span></p>
+						</div>
+						<div class="row">
+							<p>items exhibited: <span class="highlight af-color">{{display_count}}</span><span class="af-color"> ({{display_max}})</span></p>
+						</div>
+						<div class="row">
+							<p>paintings owned: <span class="highlight af-color">{{inventory_count}}</span><span class="af-color"> ({{inventory_max}})</span></p>
+						</div>
+						<div class="row">
+							<p>auctions active: <span class="highlight af-color">{{auction_count}}</span><span class="af-color"> ({{auction_max}})</span></p>
+						</div>
+						<div class="row">	
+							<p>private collection: <span class="highlight af-color">{{private_count}}</span><span class="af-color"> ({{private_max}})</span></p>
+						</div>
+						<div class="row">
+							<p>gallery entry fee: <span class="highlight af-color">{{entry_fee}}</span> <i id="edit-fee" class="fa fa-pencil-square-o"></i>
+</p>
+						</div>
+	            	</div>
 				</div>		
 				<div class="row ticket-info">
 					{{#each ticket}}
-					<a href="/user/{{screen_name}}" class="ticket-button"><i data-owner_name="{{screen_name}}" class="fa fa-ticket"></i></a>
+					<a href="/user/{{screen_name}}" class="ticket-button"><i data-expiration_string="{{expiration_string}}" data-owner_name="{{screen_name}}" class="fa fa-ticket"></i></a>
 					{{/each}}
 				</div>
 			</div>

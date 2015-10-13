@@ -1,9 +1,9 @@
 Template.galleryTable.helpers({
 	'header' : function(table_data) {
 		var header_array = [
-			{ 'text' : 'owner', 'sort_id' : 'profile.screen_name', 'table_id' : table_data.table_id  },
+			{ 'text' : 'owner', 'sort_id' : 'owner', 'table_id' : table_data.table_id  },
 			{ 'text' : 'attributes', 'sort_id' : undefined, 'table_id' : table_data.table_id  },
-			{ 'text' : 'entry fee', 'sort_id' : 'profile.entry_fee', 'table_id' : table_data.table_id  },
+			{ 'text' : 'entry fee', 'sort_id' : 'entry_fee', 'table_id' : table_data.table_id  },
 			{ 'text' : 'current visitors', 'sort_id' : undefined, 'table_id' : table_data.table_id  },
 		];
 
@@ -35,7 +35,8 @@ Template.galleryTable.helpers({
 
 		var skip_amount = Number(pageData.resultsPerPage * Session.get(pagination_id + '_current'));
 
-		var gallery_array = Meteor.users.find( {}, { sort: sort_query, skip: skip_amount, limit: pageData.resultsPerPage } ).fetch();
+		//var gallery_array = Meteor.users.find( {}, { sort: sort_query, skip: skip_amount, limit: pageData.resultsPerPage } ).fetch();
+		var gallery_array = galleries.find( {}, { sort: sort_query, skip: skip_amount, limit: pageData.resultsPerPage } ).fetch();
 
 		if (gallery_array.length < Number(pageData.resultsPerPage * Session.get(pagination_id + '_current')))
 			Session.set('pagination_id' + '_current', Session.get(pagination_id + '_current') - 1);
@@ -49,26 +50,22 @@ Template.galleryTable.helpers({
 		}
 	},
 
-	'galleryInfo' : function(user_object) {
+	'galleryInfo' : function(gallery_object) {
 		try {
-			var gallery_object = user_object;
 			gallery_object.current_visitors = 10;
-			gallery_object.entry_fee = getCommaSeparatedValue(user_object.profile.entry_fee);
 
 			var attribute_array = [];
-			var gallery_details = user_object.profile.gallery_details;
-			if (gallery_details === undefined)
-				updateGalleryDetails(user_object._id);
-
-			var attribute_ids = Object.keys(gallery_details);
+			var gallery_details = gallery_object.attribute_values;
+			var attribute_ids = Object.keys(gallery_object.attribute_values);
 
 			for (var i=0; i < attribute_ids.length; i++) {
 				var attribute_object = attributes.findOne(attribute_ids[i]);
-				attribute_object.value = user_object.profile.gallery_details[attribute_ids[i]];
+				attribute_object.value = gallery_object.attribute_values[attribute_ids[i]];
 				attribute_array.push(attribute_object);
 			}
 
 			gallery_object.attribute = attribute_array;
+			gallery_object.fee_text = getCommaSeparatedValue(gallery_object.entry_fee);
 			return gallery_object;
 		}
 

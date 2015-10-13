@@ -1,0 +1,9 @@
+.template-entryFeeModal .modal-content {
+	padding-bottom: 48px;
+	text-align: center;
+}
+
+.template-entryFeeModal .fee-info {
+	margin: 24px auto;
+	font-size: 1.5em;
+}

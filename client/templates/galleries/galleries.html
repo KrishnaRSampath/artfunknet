@@ -20,13 +20,13 @@
 				{{#each table_data.gallery}}
 					{{#with galleryInfo this}}
 					<tr data-user_id="{{_id}}">
-						<td><a href="/user/{{profile.screen_name}}">{{profile.screen_name}}</a></td>
+						<td><a href="/user/{{owner}}">{{owner}}</a></td>
 						<td>
 						{{#each attribute}}
 							<i data-attribute_description="{{description}}" data-attribute_value="{{value}}" data-attribute_id="{{_id}}" style="color: rgb({{getRatingColor value}}, 0, 0)" class="gallery-attribute fa {{icon}}"></i>
 						{{/each}}
 						</td>
-						<td>${{entry_fee}}</td>
+						<td>${{fee_text}}</td>
 						<td>{{current_visitors}}</td>
 					</tr>
 					{{/with}}

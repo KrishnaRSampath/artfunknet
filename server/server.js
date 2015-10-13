@@ -402,3 +402,31 @@ Meteor.setInterval((function() {
         }
     }
 }), expire_ticket_frequency);
+
+
+// 'owner_id' : user_id,
+// 'owner' : user_object.profile.screen_name,
+// 'attribute_values' : attribute_values,
+// 'entry_fee' : user_object.profile.entry_fee,
+
+var npc_spawn_frequency = 600000;
+Meteor.setInterval((function() {
+    var default_spawn_chance = .25;
+
+    var gallery_objects = galleries.find();
+    gallery_objects.forEach(function(db_object) {
+        var attribute_values = db_object.attribute_values;
+        var attribute_ids = Object.keys(attribute_values);
+        for (var i=0; i < attribute_ids.length; i++) {
+            var proc_chance = default_spawn_chance * attribute_values[attribute_ids[i]];
+            var description = attributes.findOne(attribute_ids[i]).description;           
+            var proc = JepLoot.booRoll(proc_chance);
+            if (proc) {
+                console.log(description + ": " + proc + "(" + proc_chance.toFixed(2) + ")");
+            }
+
+            //create NPC, then set a timeout function to run automatically on expiration
+        }
+    });
+
+}), npc_spawn_frequency);

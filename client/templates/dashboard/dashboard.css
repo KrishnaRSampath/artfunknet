@@ -41,13 +41,27 @@
 }
 
 .template-dashboard .player-info {
-	margin-top: 24px;
+	margin-top: 40px;
 }
 
 .template-dashboard .ticket-button {
 	font-size: 3em;
 	color: #777777;
 	opacity: .5;
+}
+
+.template-dashboard .player-info p {
+	font-size: 1.2em;
+}
+
+.template-dashboard #edit-fee {
+	font-size: 1em;
+}
+
+.template-dashboard #edit-fee:hover {
+	color: black;
+	opacity: 1em;
+	cursor: pointer;
 }
 
 .template-dashboard .ticket-button:hover {
