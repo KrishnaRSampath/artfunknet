@@ -59,6 +59,29 @@
 	opacity: .5;
 }
 
+.template-userGallery .npc-area {
+	text-align: center;
+	height: 48px;
+}
+
+.template-userGallery .npc {
+	font-size : 3em;
+	margin: 0px 12px;
+}
+
+.template-userGallery .npc.enabled {
+	opacity: .8;
+}
+
+.template-userGallery .npc.enabled:hover {
+	opacity: 1;
+	cursor: pointer;
+}
+
+.template-userGallery .npc.disabled {
+	opacity: .4;
+}
+
 .template-userGallery #enter-button.disabled:hover {
 	cursor: default;
 }

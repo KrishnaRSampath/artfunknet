@@ -14,57 +14,60 @@ getXPGoal = function(current_level) {
 }
 
 levelUp = function(user_id) {
-	var current_level = Meteor.users.findOne(user_id).profile.level;
-	var level_hit = current_level + 1;
-	Meteor.users.update(user_id, {$set : {'profile.level' : level_hit}});
+	try {
+		var current_level = Meteor.users.findOne(user_id).profile.level;
+		var level_hit = current_level + 1;
+		Meteor.users.update(user_id, {$set : {'profile.level' : level_hit}});
 
-	var level_message = "You have reached level " + level_hit + "! ";
+		var level_message = "You have reached level " + level_hit + "! ";
 
-	switch(level_hit % 10) {
-		case 0: 
-			Meteor.users.update(user_id, {$set : {'profile.inventory_cap' : Meteor.users.findOne(user_id).profile.inventory_cap + 2}}); 
-			level_message += "Your inventory has been increased by 2.";
-			break;
-		case 1: 
-		case 4:
-		case 7: 
-			Meteor.users.update(user_id, {$set : {'profile.pc_cap' : Meteor.users.findOne(user_id).profile.pc_cap + 1}}); 
-			level_message += "Your private collection limit has been increased by 1.";
-			break;
-		case 3: 
-		case 9: 
-			Meteor.users.update(user_id, {$set : {'profile.auction_cap' : Meteor.users.findOne(user_id).profile.auction_cap + 1}}); 
-			level_message += "Your active auction limit has been increased by 1.";
-			break;
-		case 2:
-		case 5:
-		case 8: 
-			Meteor.users.update(user_id, {$set : {'profile.inventory_cap' : Meteor.users.findOne(user_id).profile.inventory_cap + 1}});
-			level_message += "Your inventory has been increased by 1.";
-			break;
-		case 6: 
-			Meteor.users.update(user_id, {$set : {'profile.display_cap' : Meteor.users.findOne(user_id).profile.display_cap + 1}}); 
-			level_message += "Your display capacity has been increased by 1.";
-			break;
-		default: break;
+		switch(level_hit % 10) {
+			case 0: 
+				Meteor.users.update(user_id, {$set : {'profile.inventory_cap' : Meteor.users.findOne(user_id).profile.inventory_cap + 2}}); 
+				level_message += "Your inventory has been increased by 2.";
+				break;
+			case 1: 
+			case 4:
+			case 7: 
+				Meteor.users.update(user_id, {$set : {'profile.pc_cap' : Meteor.users.findOne(user_id).profile.pc_cap + 1}}); 
+				level_message += "Your private collection limit has been increased by 1.";
+				break;
+			case 3: 
+			case 9: 
+				Meteor.users.update(user_id, {$set : {'profile.auction_cap' : Meteor.users.findOne(user_id).profile.auction_cap + 1}}); 
+				level_message += "Your active auction limit has been increased by 1.";
+				break;
+			case 2:
+			case 5:
+			case 8: 
+				Meteor.users.update(user_id, {$set : {'profile.inventory_cap' : Meteor.users.findOne(user_id).profile.inventory_cap + 1}});
+				level_message += "Your inventory has been increased by 1.";
+				break;
+			case 6: 
+				Meteor.users.update(user_id, {$set : {'profile.display_cap' : Meteor.users.findOne(user_id).profile.display_cap + 1}}); 
+				level_message += "Your display capacity has been increased by 1.";
+				break;
+			default: break;
+		}
+
+		var alert_object = {
+	        'user_id' : user_id,
+	        'message' : level_message,
+	        'link' : '/',
+	        'icon' : 'fa-star',
+	        'sentiment' : "good",
+	        'time' : moment()
+	    };
+
+	    alerts.insert(alert_object, function(error) {
+	    	if(error)
+	    		console.log(error.message);
+	    });
 	}
 
-	// console.log("level: " + level_hit);
-	// console.log("inventory: " + Meteor.users.findOne(user_id).profile.inventory_cap);
-	// console.log("permanent collection: " + Meteor.users.findOne(user_id).profile.pc_cap);
-	// console.log("auctions: " + Meteor.users.findOne(user_id).profile.auction_cap);
-	// console.log("display spaces: " + Meteor.users.findOne(user_id).profile.display_cap);
-
-	var alert_object = {
-        'user_id' : user_id,
-        'message' : level_message,
-        'link' : '/',
-        'icon' : 'fa-star',
-        'sentiment' : "good",
-        'time' : moment()
-    };
-
-    alerts.insert(alert_object);
+	catch(error) {
+		console.log(error.message);
+	}
 }
 
 addXP = function(user_id, xp) {

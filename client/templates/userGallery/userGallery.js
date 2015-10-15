@@ -46,6 +46,20 @@ Template.userGallery.helpers({
 		}
 
 		else return {};
+	},
+
+	'npc' : function(owner_id) {
+		var primary_attributes = attributes.find({'type' : "primary"}).fetch();
+		var primary_ids = [];
+		primary_attributes.forEach(function(db_object) {
+			primary_ids.push(db_object._id);
+		});
+
+		return npcs.find({'owner_id' : owner_id, 'attribute_id' : {$in : primary_ids}});
+	},
+
+	'unmet' : function(npc_id) {
+		return npcs.findOne(npc_id).players_met.indexOf(Meteor.userId()) == -1;
 	}
 })
 
@@ -73,6 +87,19 @@ Template.userGallery.events ({
 		Meteor.call('purchaseTicket', Meteor.userId(), owner_id, function(error) {
 			if (error)
 				console.log(error.message);
+		})
+	},
+
+	'click .npc.enabled' : function(element) {
+		var npc_id = element.target.dataset.npc_id;
+		Meteor.call('interactWithNPC', npc_id, function(error, interaction_object) {
+			if (error)
+				console.log(error.message);
+
+			else {
+				Session.set('npc_interaction', interaction_object);
+				Modal.show("standardNPCMessageModal");
+			}
 		})
 	}
 })

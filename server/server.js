@@ -70,6 +70,13 @@ Meteor.startup(function() {
 
     updateContent();
 
+    npcs.remove({});
+
+    //clear out expired tickets
+    //conclude expired auctions
+    //conclude expired displays
+    //clear out expired npcs
+
     if (attributes.find().count() == 0) {
         for (var i=0; i < attribute_data.length; i++) {
             attributes.insert(attribute_data[i]);
@@ -410,8 +417,9 @@ Meteor.setInterval((function() {
 // 'entry_fee' : user_object.profile.entry_fee,
 
 var npc_spawn_frequency = 600000;
+npc_spawn_frequency = 30000;
 Meteor.setInterval((function() {
-    var default_spawn_chance = .25;
+    var default_spawn_chance = 1;
 
     var gallery_objects = galleries.find();
     gallery_objects.forEach(function(db_object) {
@@ -421,12 +429,42 @@ Meteor.setInterval((function() {
             var proc_chance = default_spawn_chance * attribute_values[attribute_ids[i]];
             var description = attributes.findOne(attribute_ids[i]).description;           
             var proc = JepLoot.booRoll(proc_chance);
-            if (proc) {
-                console.log(description + ": " + proc + "(" + proc_chance.toFixed(2) + ")");
-            }
-
-            //create NPC, then set a timeout function to run automatically on expiration
+            if (proc)
+                createNPC(db_object, attribute_ids[i], npc_spawn_frequency);
         }
     });
 
 }), npc_spawn_frequency);
+
+
+var npc_quality_map = {
+    'bronze' : 8,
+    'silver' : 4,
+    'gold' : 2,
+    'platinum' : 1
+}
+
+function createNPC(gallery_object, attribute_id, duration) {
+    //var attribute_object = attributes.findOne(attribute_id);
+    var npc_quality = JepLoot.catRoll(npc_quality_map);
+
+    var npc_object = {
+        'quality' : npc_quality,
+        'attribute_id' : attribute_id,
+        'owner_id' : gallery_object.owner_id,
+        'expiration' : moment().add(duration, 'milliseconds')._d.toISOString(),
+        'players_met' : [],
+        'icon' : attributes.findOne(attribute_id).icon
+    }
+
+    npcs.insert(npc_object, function(error, inserted_id) {
+        if (error)
+            console.log(error.message)
+
+        else {
+            Meteor.setTimeout(function() {
+                npcs.remove(inserted_id);
+            }, duration);
+        }
+    })
+}
