@@ -47,7 +47,7 @@ Template.registration.events({
                 'inventory_cap' : 9,
                 'display_cap' : 5,
                 'auction_cap' :5,
-                'ticket_cap' : 5,
+                'ticket_cap' : 8,
                 'pc_cap' : 5,
                 'level' : 0,
                 'xp' : 0,

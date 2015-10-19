@@ -98,7 +98,7 @@ Meteor.startup(function() {
                 'inventory_cap' : 9,
                 'display_cap' : 5,
                 'auction_cap' :5,
-                'ticket_cap' : 5,
+                'ticket_cap' : 8,
                 'pc_cap' : 5,
                 'level' : 0,
                 'xp' : 0,
@@ -122,7 +122,7 @@ Meteor.startup(function() {
                 'inventory_cap' : 9,
                 'display_cap' : 5,
                 'auction_cap' : 5,
-                'ticket_cap' : 5,
+                'ticket_cap' : 8,
                 'pc_cap' : 5,
                 'level' : 0,
                 'xp' : 0,
@@ -410,14 +410,8 @@ Meteor.setInterval((function() {
     }
 }), expire_ticket_frequency);
 
-
-// 'owner_id' : user_id,
-// 'owner' : user_object.profile.screen_name,
-// 'attribute_values' : attribute_values,
-// 'entry_fee' : user_object.profile.entry_fee,
-
 var npc_spawn_frequency = 600000;
-npc_spawn_frequency = 30000;
+// npc_spawn_frequency = 30000;
 Meteor.setInterval((function() {
     var default_spawn_chance = .5;
 
