@@ -1,7 +1,8 @@
 Template.galleryItemInfo.helpers({
 	'itemData' : function(item_id) {
-		try {
-			var item_object = items.findOne(item_id);
+		var item_object = items.findOne(item_id);
+		if (item_object != undefined) {
+			
 			var artwork_object = artworks.findOne(item_object.artwork_id);
 
 			var item_data_object = {
@@ -12,15 +13,18 @@ Template.galleryItemInfo.helpers({
 				'medium' : artwork_object.medium,
 				'width' : artwork_object.width,
 				'height' : artwork_object.height,
-				'condition' : Math.floor(item_object.condition * 100) + '%',
-				'attirbutes' : item_object.attributes,
-				'item_id' : item_object._id
+				'condition_text' : Math.floor(item_object.condition * 100) + '%',
+				'condition' : item_object.condition,
+				'attribute' : item_object.attributes,
+				'item_id' : item_object._id,
+				'xp_rating' : item_object.xp_rating,
+				'xp_rating_text' : Math.floor(item_object.xp_rating * 100)
 			}
 
 			return item_data_object;
 		}
 
-		catch(error) {
+		else {
 			return {
 				'title' : "",
 				'date' : "",
@@ -29,9 +33,12 @@ Template.galleryItemInfo.helpers({
 				'medium' : "",
 				'width' : "",
 				'height' : "",
+				'condition_text' : "",
 				'condition' : "",
-				'attirbutes' : "",
+				'attribute' : "",
 				'item_id' : "",
+				'xp_rating' : "",
+				'xp_rating_text' : ""
 			}
 		}
 	},
@@ -104,5 +111,15 @@ Template.galleryItemThumbnail.events({
 		var item_id = $(element.target).data('item_id');
 		Session.set('selectedItem', item_id);
 		Modal.show('fullViewModal');
-	},
+	}
+})
+
+Template.galleryItemInfo.events({
+	'mouseover .item-attribute' : function(element) {
+		var attribute_id = element.target.dataset.attribute_id;
+		var value = Math.floor(Number(element.target.dataset.attribute_value) * 100);
+		var description = element.target.dataset.attribute_description;
+		var hover_string = "level " + value + " " + description;
+		setFootnote(hover_string, Math.floor(Math.random() * 1000));
+	}
 })

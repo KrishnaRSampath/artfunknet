@@ -23,10 +23,10 @@ gold_rarity_map = {
 }
 
 platinum_rarity_map = {
-    'common': 2000,
-    'uncommon': 4000,
-    'rare': 12000,
-    'legendary': 50,
+    'common': 100,
+    'uncommon': 200,
+    'rare': 600,
+    'legendary': 10,
     'masterpiece': 1
 }
 

@@ -68,7 +68,7 @@ Template.itemInfo.events({
 		var value = Math.floor(Number(element.target.dataset.attribute_value) * 100);
 		var description = element.target.dataset.attribute_description;
 		var hover_string = "level " + value + " " + description;
-		setFootnote(hover_string, 4);
+		setFootnote(hover_string, Math.floor(Math.random() * 1000));
 	}
 })
 

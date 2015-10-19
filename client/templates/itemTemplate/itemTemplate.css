@@ -31,6 +31,11 @@
 
 .template-itemInfo .item-attribute {
 	color: black;
+	font-size: 1.5em;
+}
+
+.template-itemInfo .item-attributes {
+	margin-top: 12px;
 }
 
 .template-itemInfo .item-attribute:hover {

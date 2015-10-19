@@ -78,6 +78,10 @@
 	cursor: pointer;
 }
 
+.template-userGallery .npc.disabled:hover {
+	cursor: default;
+}
+
 .template-userGallery .npc.disabled {
 	opacity: .4;
 }

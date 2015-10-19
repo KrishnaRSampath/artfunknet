@@ -1,4 +1,4 @@
-var drop_count = 10;
+var drop_count = 6;
 // var drop_frequency = 86400000 //once per day
 //var drop_frequency = 60000 //once per minute
 //var drop_frequency = 3600000 //once per hour

@@ -12,7 +12,7 @@
 				<p>condition: <span style="color: rgb({{attributeColor condition}}, 0, 0)">{{condition_text}}</span></p>
 				<p>estimated value: {{itemValue item_id}}</p>
 				<p>xp rating: <span style="color: rgb({{attributeColor xp_rating}}, 0, 0)">{{xp_rating_text}}</span></p>
-				<p>
+				<p class="item-attributes">
 				{{#each attribute}}
 					<i data-attribute_description="{{this.description}}" data-attribute_value="{{this.value}}" style="color: rgb({{attributeColor this.value}}, 0, 0)" class="item-attribute fa {{this.icon}}"></i>
 				{{/each}}

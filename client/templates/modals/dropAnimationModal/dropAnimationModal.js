@@ -1,4 +1,4 @@
-var drop_count = 10;
+var drop_count = 6;
 
 Template.dropAnimationModal.helpers({
 	'quality' : function() {
