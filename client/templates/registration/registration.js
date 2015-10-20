@@ -42,7 +42,7 @@ Template.registration.events({
             "profile": {
                 "screen_name": template.find('#screen_name').value,
                 "user_type": "player",
-                "bank_balance" : 1000000,
+                "bank_balance" : 100000,
                 "last_drop" : last_drop._d.toISOString(),
                 'inventory_cap' : 9,
                 'display_cap' : 5,

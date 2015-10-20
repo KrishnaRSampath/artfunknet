@@ -93,7 +93,7 @@ Meteor.startup(function() {
             "profile": {
                 'screen_name': "EindacorDS",
                 'user_type': "player",
-                'bank_balance' : 1000000,
+                'bank_balance' : 100000,
                 'last_drop' : last_drop._d.toISOString(),
                 'inventory_cap' : 9,
                 'display_cap' : 5,
@@ -115,12 +115,12 @@ Meteor.startup(function() {
             "profile": {
                 'screen_name': "PMoons",
                 'user_type': "player",
-                'bank_balance' : 1000000,
+                'bank_balance' : 100000,
                 'last_drop' : last_drop._d.toISOString(),
                 'inventory_cap' : 9,
                 'display_cap' : 5,
                 'auction_cap' :5,
-                'ticket_cap' : 5,
+                'ticket_cap' : 8,
                 'pc_cap' : 5,
                 'level' : 0,
                 'xp' : 0,

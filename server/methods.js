@@ -110,32 +110,20 @@ Meteor.methods({
         return Meteor.users.find({'emails.0.address': email_address}).count() > 0;
     },
 
-    'generateItems': function(userId, quality, count) {
-        try {
-            if (Meteor.userId() && Meteor.userId() == userId) {
-                generateItems(userId, quality, count);
-            }
-        }
-
-        catch(error) {
-            console.log(error.message);
-        }
-    },
-
     'generateItemsFromRarity' : function(user_id, rarity, count) {
         generateItemsFromRarity(user_id, rarity, count);
     },
 
     'claimArtwork' : function(user_id, item_id) {
-        if (Meteor.userId() && Meteor.userId() == user_id) {
+        if (Meteor.userId() && Meteor.userId() == user_id && !inventoryIsFull()) {
             items.update({'_id': item_id}, {$set: {'status' : 'claimed'}});
         }
 
-        else throw "current userId does not match item's owner";
+        else throw "access denied";
     },
 
     'displayArtwork' : function(user_id, item_id, duration) {
-        if (Meteor.userId() && Meteor.userId() == user_id) {
+        if (Meteor.userId() && Meteor.userId() == user_id && canDisplay()) {
             var end = moment().add(duration, 'minutes');
             var display_details = getDisplayDetails(item_id, duration);
             items.update({'_id': item_id}, {$set: {'status' : 'displayed', 'display_details' : display_details}}, function(error) {
@@ -152,7 +140,10 @@ Meteor.methods({
     'sellArtwork' : function(user_id, item_id) {
         try {
             var item_object = items.findOne(item_id);
-            if (Meteor.userId() && Meteor.userId() == user_id && item_object.owner == Meteor.userId()) {
+            if (Meteor.userId() && Meteor.userId() == user_id && 
+                    item_object.owner == Meteor.userId() && 
+                    (item_object.status != 'claimed' && item_object.status != 'unclaimed') 
+                ) {
                 var value = getItemValue(item_id, 'sell');
                 if (isNaN(value))
                     throw "invalid amount";
@@ -193,7 +184,8 @@ Meteor.methods({
     },
 
     'auctionArtwork' : function(user_id, item_id, starting, buy_now, duration) {
-        if (Meteor.userId() && Meteor.userId() == user_id) {
+        if (Meteor.userId() && Meteor.userId() == user_id && items.findOne(item_id).owner == Meteor.userId() && canAuction()) {
+
             items.update({'_id': item_id}, {$set: {'status' : 'auctioned'}}, function() {
                 createAuction(item_id, starting, buy_now, duration);
             });
@@ -234,6 +226,9 @@ Meteor.methods({
 
             if (item_object == undefined)
                 throw "cannot find item";
+
+            if (inventoryIsFull())
+                throw "inventory is full";
 
             if (amount < auction_object.bid_minimum && (amount < auction_object.buy_now && auction_object.buy_now != -1))
                 throw "invalid amount";
@@ -380,22 +375,8 @@ Meteor.methods({
         return getDisplayDetails(item_id, duration);
     },
 
-    'getCrateQuality' : function() {
-        return getRolledCrateQuality();
-    },
-
     'lookupCrateCost' : function(quality, count) {
         return lookupCrateCost(quality, count);
-    },
-
-    'openCrate' : function(user_id, quality, count) {
-        var cost = lookupCrateCost(quality, count);
-        if (Meteor.userId() && Meteor.userId() == user_id && cost < Meteor.user().profile.bank_balance) {
-            generateItems(user_id, quality, count);
-            chargeAccount(user_id, cost);
-        }
-
-        else console.log("insufficient funds");
     },
 
     'getItemImageURL' : function(item_id) {
@@ -431,21 +412,19 @@ Meteor.methods({
     },
 
     'rerollXPRating' : function(item_id) {
-        var reroll_cost = getRerollCost(item_id);
-        if (reroll_cost <= Meteor.user().profile.bank_balance) {
+        if (canRerollItem(item_id)) {
             var item_object = items.findOne(item_id);
             if (item_object != undefined) {
                 var roll_count = item_object.roll_count;
                 items.update(item_id, {$set : {'xp_rating' : getXPRating()}});
                 items.update(item_id, {$set : {'roll_count' : roll_count + 1}});
-                chargeAccount(Meteor.userId(), reroll_cost);
+                chargeAccount(Meteor.userId(), getRerollCost(item_id));
             }
         }
     },
 
     'rerollAttributeValue' : function(item_id, attribute_id) {
-        var reroll_cost = getRerollCost(item_id);
-        if (reroll_cost <= Meteor.user().profile.bank_balance) {
+        if (canRerollItem(item_id)) {
             var item_object = items.findOne(item_id);
             if (item_object != undefined) {
                 var roll_count = item_object.roll_count;
@@ -460,16 +439,14 @@ Meteor.methods({
 
                 items.update(item_id, {$set: {'attributes' : attribute_array}});
                 items.update(item_id, {$set : {'roll_count' : roll_count + 1}});
-                chargeAccount(Meteor.userId(), reroll_cost);
+                chargeAccount(Meteor.userId(), getRerollCost(item_id));
             }
         }
     },
 
     'rerollAttribute' : function(item_id, attribute_id) {
-        var reroll_cost = getRerollCost(item_id);
-        var attribute_type = attributes.findOne(attribute_id).type;
-
-        if (reroll_cost <= Meteor.user().profile.bank_balance) {
+        if (canRerollItem(item_id)) {
+            var attribute_type = attributes.findOne(attribute_id).type;
             var item_object = items.findOne(item_id);
             if (item_object != undefined) {
                 var roll_count = item_object.roll_count;
@@ -496,7 +473,7 @@ Meteor.methods({
 
                 items.update(item_id, {$set: {'attributes' : attribute_array}});
                 items.update(item_id, {$set : {'roll_count' : roll_count + 1}});
-                chargeAccount(Meteor.userId(), reroll_cost);
+                chargeAccount(Meteor.userId(), getRerollCost(item_id));
             }
         }
     },
@@ -546,6 +523,10 @@ Meteor.methods({
         var ticket_duration = 1800000;
         var ticket_expiration = moment().add(ticket_duration, 'milliseconds')._d.toISOString();
         var entry_fee = Meteor.users.findOne(owner_id).profile.entry_fee;
+
+        if (entry_fee > Meteor.user().profile.bank_balance)
+            return;
+
         var current_tickets = Meteor.users.findOne(buyer_id).profile.tickets;
 
         if (current_tickets == undefined) {
@@ -575,6 +556,9 @@ Meteor.methods({
     },
 
     'updateEntryFee' : function(value) {
+        if (value < 0)
+            return;
+        
         Meteor.users.update(Meteor.userId(), {$set: {'profile.entry_fee' : value}});
         galleries.update({'owner_id' : Meteor.userId()}, {$set: {'entry_fee' : value}});
     }

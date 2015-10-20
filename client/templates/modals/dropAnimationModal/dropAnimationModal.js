@@ -15,38 +15,29 @@ Template.dropAnimationModal.events({
 		$('.reward').show();
 		$('.pick-section').hide();
 
-		setTimeout(function() {
-			Modal.hide("dropAnimationModal");
+		Meteor.call('giveDailyDrop', function(error, returned_rarity) {
+			if (error)
+				console.log(error.message);
 
-			Meteor.call('generateItems', Meteor.userId(), Session.get('rolledQuality'), drop_count, function(error, result) {
-				if (error)
-					console.log(error.message);
+			else {
+				Session.set('rolledQuality', returned_rarity);
 
-				else {
-					var now = moment().toISOString();
-					Meteor.users.update(Meteor.userId(), {$set: {'profile.last_drop' : now}});
-				}
-			})
+				setTimeout(function() {
+					Modal.hide("dropAnimationModal");		
+				}, 3000);
+			}
+		})
 
-
-		}, 3000);
 	},
 
 	'crateQuality' : function() {
-		return Session.get('rolledQuality') ? Session.get('rolledQuality') : "";
+		return Session.get('rolledQuality');
 	}
 })
 
 Template.dropAnimationModal.rendered = function() {
 	$('.pick-section').show();
 	$('.reward').hide();
-
-	Meteor.call('getCrateQuality', function(error, result) {
-		if (error)
-			console.log(error.message);
-
-		else Session.set('rolledQuality', result);
-	});
 
 	this.handle = Meteor.setInterval((function() {
 		var possible_qualities = [

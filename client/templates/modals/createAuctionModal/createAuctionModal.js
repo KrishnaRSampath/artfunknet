@@ -17,6 +17,7 @@ Template.createAuctionModal.events ({
 			var starting = getAmountFromInput(template.find('#starting-amount').value);
 			var buy_now = getAmountFromInput(template.find('#buy-now-amount').value);
 			var duration = template.find('#duration').value;
+			var item_object = items.findOne(item_id);
 
 			if (isNaN(starting))
 				errors.push("invalid starting value");
@@ -31,7 +32,10 @@ Template.createAuctionModal.events ({
 				errors.push("invalid item");
 
 			else {
-				var item_object = items.findOne(item_id);
+				if (items.find({'owner' : Meteor.userId(), 'status' : 'auctioned'}).count() >= Meteor.user().profile.auction_cap ||
+					item_object.status == 'permanent';)
+					errors.push("invalid command");
+			
 				var minimum = Session.get('auctionMin');
 				if (Number(starting) < minimum)
 					errors.push("starting value must be greater than $" + getCommaSeparatedValue(minimum));

@@ -1,3 +1,5 @@
+var daily_drop_count = 6;
+
 bronze_rarity_map = {
     'common': 60,
     'uncommon': 12,
@@ -329,3 +331,29 @@ getAttributeValue = function() {
     var attribute_rating = (random_tier * 20) + (Math.random() * 20);
     return Number((attribute_rating / 100).toFixed(2));
 }
+
+Meteor.methods({
+    'giveDailyDrop' : function() {
+        if (Meteor.user() && dailyDropIsEnabled()) {
+            var rolled_rarity = getRolledCrateQuality();
+            generateItems(Meteor.userId(), rolled_rarity, daily_drop_count);
+   
+            var now = moment().toISOString();
+            Meteor.users.update(Meteor.userId(), {$set: {'profile.last_drop' : now}});
+
+            return rolled_rarity;    
+        }
+
+        else return undefined;
+    },
+
+    'openCrate' : function(user_id, quality, count) {
+        var cost = lookupCrateCost(quality, count);
+        if (Meteor.userId() && Meteor.userId() == user_id && cost < Meteor.user().profile.bank_balance) {
+            generateItems(user_id, quality, count);
+            chargeAccount(user_id, cost);
+        }
+
+        else console.log("insufficient funds");
+    },
+})

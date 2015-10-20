@@ -64,24 +64,6 @@ Template.userGallery.helpers({
 })
 
 Template.userGallery.events ({
-	// 'click .quick-sell.enabled' : function(element) {
-	// 	var item_id = $(element.target).data('item_id');
-	// 	Session.set('selectedItem', item_id);
-	// 	Modal.show('quickSellModal');
-	// },
-
-	// 'click .auction.enabled' : function(element) {
-	// 	var item_id = $(element.target).data('item_id');
-	// 	Session.set('selectedItem', item_id);
-	// 	Modal.show('createAuctionModal');
-	// },
-
-	// 'click .display.enabled' : function(element, template) {
-	// 	var item_id = $(element.target).data('item_id');
-	// 	Session.set('selectedItem', item_id);
-	// 	Modal.show('onDisplayModal');
-	// }
-
 	'click #enter-button' : function(element) {
 		var owner_id = element.target.dataset.owner_id;
 		Meteor.call('purchaseTicket', Meteor.userId(), owner_id, function(error) {
@@ -92,15 +74,17 @@ Template.userGallery.events ({
 
 	'click .npc.enabled' : function(element) {
 		var npc_id = element.target.dataset.npc_id;
-		Meteor.call('interactWithNPC', npc_id, function(error, interaction_object) {
-			if (error)
-				console.log(error.message);
+		if (npcs.findOne(npc_id).players_met.indexOf(Meteor.userId()) == -1) {
+			Meteor.call('interactWithNPC', npc_id, function(error, interaction_object) {
+				if (error)
+					console.log(error.message);
 
-			else {
-				Session.set('npc_interaction', interaction_object);
-				Modal.show("standardNPCMessageModal");
-			}
-		})
+				else {
+					Session.set('npc_interaction', interaction_object);
+					Modal.show("standardNPCMessageModal");
+				}
+			})
+		}
 	},
 
 	'mouseover .npc' : function(element) {
