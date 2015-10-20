@@ -1,10 +1,7 @@
 Template.dashboard.helpers({
 	'userData' : function() {
-		//return Meteor.user();
-
 		if (Meteor.user()) {
 			var user_object = Meteor.user();
-
 			var data_object = {
 				'screen_name' : user_object.profile.screen_name,
 				'bank_balance' : getCommaSeparatedValue(user_object.profile.bank_balance),
@@ -115,4 +112,4 @@ Template.dashboard.events({
 	'click #edit-fee' : function() {
 		Modal.show('entryFeeModal');
 	}
-})
+});

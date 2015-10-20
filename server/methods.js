@@ -52,11 +52,11 @@ Meteor.methods({
 	'registerUser': function(user) {
 		var emailExists = !! Meteor.users.findOne({ emails: { $elemMatch: { address: user.email } } });
         var screenNameExists;
-        
+
         // TODO: Compare screennames and emails by case
-        if(user.profile.screen_name.length == 0) {
+        if (user.profile.screen_name.length == 0) {
             screenNameExists = false;
-        } 
+        }
 
         else {
             screenNameExists = !! Meteor.users.findOne({'profile.screen_name': user.profile.screen_name });
@@ -64,11 +64,11 @@ Meteor.methods({
 
         if (emailExists){
             throw new Meteor.Error("Email already exists");
-        } 
+        }
 
         else if (screenNameExists) {
             throw new Meteor.Error("Screen Name already exists");
-        } 
+        }
 
         else {
             createUser(user);
@@ -95,7 +95,7 @@ Meteor.methods({
                 errors.push("A user with that email address already exists");
 
             if (errors.length == 0) {
-                createUser(user_object);          
+                createUser(user_object);
             }
 
             return errors;
@@ -238,7 +238,7 @@ Meteor.methods({
             if (amount < auction_object.bid_minimum && (amount < auction_object.buy_now && auction_object.buy_now != -1))
                 throw "invalid amount";
 
-            else if (! !!Meteor.userId() || Meteor.userId() != user_id) 
+            else if (! !!Meteor.userId() || Meteor.userId() != user_id)
                 throw "invalid user";
 
             if (amount >= auction_object.buy_now && auction_object.buy_now != -1) {
@@ -307,7 +307,7 @@ Meteor.methods({
 
             auctions.update(
                 auction_id, {
-                    $push: {'bid_history' : bid_object}, 
+                    $push: {'bid_history' : bid_object},
                     $set: {'current_price' : amount, 'bid_minimum' : Math.floor(amount * 1.05)}
                 }
             );
@@ -476,7 +476,7 @@ Meteor.methods({
                 var attribute_array = item_object.attributes;
 
                 var attribute_ids = []
-                for (var i=0; i < attribute_array.length; i++) 
+                for (var i=0; i < attribute_array.length; i++)
                     attribute_ids.push(attribute_array[i]._id);
 
                 var target_attribute_index;
@@ -507,7 +507,7 @@ Meteor.methods({
             var xp_rating = getXPRating();
             items.update(db_object._id, {$set: {'xp_rating' : xp_rating}});
             auctions.update({'item_id' : db_object._id}, {$set: {'xp_rating' : xp_rating}}, {multi : true});
-        })    
+        })
     },
 
     'resetRollCounts' : function() {
@@ -532,12 +532,12 @@ Meteor.methods({
 
     'sendResetPasswordEmail': function(email_address) {
         var user = Meteor.users.findOne({"emails.0.address": email_address});
-        
+
         if (user) {
             Accounts.sendResetPasswordEmail(user._id);
             return true;
-        } 
-        
+        }
+
         else return null;
     },
 
@@ -547,7 +547,7 @@ Meteor.methods({
         var ticket_expiration = moment().add(ticket_duration, 'milliseconds')._d.toISOString();
         var entry_fee = Meteor.users.findOne(owner_id).profile.entry_fee;
         var current_tickets = Meteor.users.findOne(buyer_id).profile.tickets;
-        
+
         if (current_tickets == undefined) {
             var ticket_object = {};
             ticket_object[owner_id] = ticket_expiration;
@@ -639,7 +639,7 @@ chargeAccount = function(user_id, amount) {
 var getDisplayDetails = function(item_id, duration) {
     // 1 hour
     // 6 hours
-    // 12 hours 
+    // 12 hours
     // 1 day
     var actual_amount = getItemValue(item_id, 'actual');
     var xp_chunk = getXPChunk(Meteor.user().profile.level);
@@ -650,28 +650,28 @@ var getDisplayDetails = function(item_id, duration) {
 
     var money, xp;
     switch(Number(duration)) {
-        case 1: 
+        case 1:
             money = actual_amount * .0001 * duration;
             xp = xp_value * .001 * duration;
             break;
-        case 60: 
-            money = actual_amount * .00025 * duration; 
+        case 60:
+            money = actual_amount * .00025 * duration;
             xp = xp_value * .0012 * duration;
             break;
-        case 360: 
-            money = actual_amount * .0004 * duration; 
+        case 360:
+            money = actual_amount * .0004 * duration;
             xp = xp_value * .0013 * duration;
             break;
-        case 720: 
-            money = actual_amount * .00055 * duration; 
+        case 720:
+            money = actual_amount * .00055 * duration;
             xp = xp_value * .0014 * duration;
             break;
-        case 1440: 
-            money = actual_amount * .0007 * duration; 
+        case 1440:
+            money = actual_amount * .0007 * duration;
             xp = xp_value * .0015 * duration;
             break;
-        default: 
-            money = 0; 
+        default:
+            money = 0;
             break;
     }
 

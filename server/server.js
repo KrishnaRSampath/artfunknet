@@ -64,7 +64,7 @@ var updateContent = function() {
 Meteor.startup(function() {
     setupMail();
     fs = Npm.require('fs');
-    
+
 	if (artists.find({}).count() == 0 && artworks.find({}).count() == 0)
 		generateContent();
 
@@ -108,8 +108,30 @@ Meteor.startup(function() {
             }
         };
 
-        createUser(admin_object);
+        var admin_object_2 = {
+            "username": "peter.mooney90@gmail.com",
+            "email": "peter.mooney90@gmail.com",
+            "password": "Password123!",
+            "profile": {
+                'screen_name': "PMoons",
+                'user_type': "player",
+                'bank_balance' : 1000000,
+                'last_drop' : last_drop._d.toISOString(),
+                'inventory_cap' : 9,
+                'display_cap' : 5,
+                'auction_cap' :5,
+                'ticket_cap' : 5,
+                'pc_cap' : 5,
+                'level' : 0,
+                'xp' : 0,
+                'entry_fee' : 0,
+                'gallery_tickets' : []
+            }
+        }
 
+        createUser(admin_object);
+        createUser(admin_object_2);
+        
         var player_object = {
             "username": "player@email.com",
             "email": "player@email.com",
@@ -158,18 +180,18 @@ function waitForUserAdded(userId, attempts){
     if (Meteor.users.findOne(userId) && Meteor.users.findOne(userId).emails[0] && !Meteor.users.findOne(userId).emails[0].verified){
         // console.log("Sending verification for user " + userId);
         // Accounts.sendVerificationEmail(userId);
-    } 
+    }
 
     else if (Meteor.users.findOne(userId) && !Meteor.users.findOne(userId).emails[0]) {
         console.log("No email for user " + userId);
-    } 
+    }
 
     else if (!Meteor.users.findOne(userId) && (attempts > 0)){
         Meteor.setTimeout(function() {
             console.log(attempts + " more attempts to find user " + userId + " after insert...");
             waitForUserAdded(userId, attempts - 1);
-        }, 2000);   
-    } 
+        }, 2000);
+    }
 
     else if (!Meteor.users.findOne(userId)){
         console.log("Could not find user " + userId);
@@ -248,7 +270,7 @@ function concludeAuction(auction_id) {
             addXPChunkPercentage(highest_bid.user_id, XPChunkValue);
 
         addFunds(item_object.owner, highest_bid.amount);
-        
+
         if (highest_bid.user_id != "auction_bot")
             items.update(item_object._id, {$set: {'status' : 'claimed', 'owner': highest_bid.user_id}});
 
@@ -281,7 +303,7 @@ function concludeDisplay(item_id) {
 
     addFunds(user_id, money_earned);
     addXP(user_id, xp_earned);
-    
+
     var null_display_details = {
         'money' : 0,
         'xp' : 0,
@@ -334,7 +356,7 @@ Meteor.setInterval((function() {
             if (difference / actual_value < .5)
                 qualifying_auctions.push(potential_auctions[i]);
         }
-        
+
         if (qualifying_auctions.length > 0) {
             var random_auction = qualifying_auctions[Math.floor(Math.random() * (qualifying_auctions.length))];
 
@@ -346,7 +368,7 @@ Meteor.setInterval((function() {
 
             auctions.update(
                 random_auction._id, {
-                    $push: {'bid_history' : bid_object}, 
+                    $push: {'bid_history' : bid_object},
                     $set: {'current_price' : random_auction.bid_minimum, 'bid_minimum' : Math.floor(random_auction.bid_minimum * 1.05)}
                 }
             );
