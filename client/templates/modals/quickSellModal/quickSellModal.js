@@ -93,7 +93,7 @@ Template.quickSellModal.events({
 	},
 
 	'click #sell-artwork' : function() {
-		Meteor.call('sellArtwork', Meteor.userId(), Session.get('selectedItem'), function(error) {
+		Meteor.call('sellArtwork', Session.get('selectedItem'), function(error) {
 			if (error)
 				console.log(error.message);
 		});

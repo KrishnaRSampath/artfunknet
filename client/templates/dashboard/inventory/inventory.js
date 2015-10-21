@@ -68,14 +68,13 @@ Template.inventory.helpers({
 	},
 
 	'onDisplay' : function(item_id) {
-		if (items.findOne(item_id))
-			return items.findOne(item_id).status == 'displayed';
-
-		else return false;
+		var item_object = items.findOne(item_id);
+		return item_object && item_object.status == 'displayed';
 	},
 
 	'permanent' : function(item_id) {
-		return items.findOne(item_id).status == 'permanent';
+		var item_object = items.findOne(item_id);
+		return item_object && item_object.status == 'permanent';
 	},
 
 	'time_remaining': function(item_id) {
@@ -250,14 +249,18 @@ Template.inventory.events ({
 
 	'click .perm-collection.inactive' : function(element) {
 		var item_id = $(element.target).data('item_id');
-		items.update(item_id, {$set: {'status' : 'permanent'}});
-		items.update(item_id, {$set: {'permanent_post' : moment()._d.toISOString()}});
+		Meteor.call('setItemPermanentCollectionStatus' , item_id, true, function(error) {
+			if (error)
+				console.log(error.message)
+		})
 	},
 
 	'click .perm-collection.active' : function(element) {
 		var item_id = $(element.target).data('item_id');
-		items.update(item_id, {$set: {'status' : 'claimed'}});
-		items.update(item_id, {$unset: {'permanent_post' : ""}});
+		Meteor.call('setItemPermanentCollectionStatus' , item_id, false, function(error) {
+			if (error)
+				console.log(error.message)
+		})
 	},
 
 	'mouseover .list-item-attribute' : function(element) {

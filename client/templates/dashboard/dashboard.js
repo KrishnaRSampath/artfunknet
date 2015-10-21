@@ -82,17 +82,20 @@ Template.dashboard.helpers({
 	},
 
 	'ticket' : function() {
-		var tickets = Meteor.users.findOne(Meteor.userId()).profile.tickets;
+		var tickets = Meteor.user().profile.tickets;
 		if (tickets != undefined) {
 			var ticket_ids = Object.keys(tickets);
 			var ticket_array = [];
 			for (var i=0; i < ticket_ids.length; i++) {
-				var ticket_object = {
-					'screen_name' : Meteor.users.findOne(ticket_ids[i]).profile.screen_name,
-					'owner_id' : ticket_ids[i],
-					'expiration_string' : getTimeString(moment(tickets[ticket_ids[i]]))
+				var gallery_object = galleries.findOne({'owner_id' : ticket_ids[i]});
+				if (gallery_object) {
+					var ticket_object = {
+						'screen_name' : gallery_object.owner,
+						'owner_id' : ticket_ids[i],
+						'expiration_string' : getTimeString(moment(tickets[ticket_ids[i]]))
+					}
+					ticket_array.push(ticket_object);
 				}
-				ticket_array.push(ticket_object);
 			}
 
 			return ticket_array;

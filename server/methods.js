@@ -114,64 +114,6 @@ Meteor.methods({
         generateItemsFromRarity(user_id, rarity, count);
     },
 
-    'claimArtwork' : function(user_id, item_id) {
-        if (Meteor.userId() && Meteor.userId() == user_id && !inventoryIsFull()) {
-            items.update({'_id': item_id}, {$set: {'status' : 'claimed'}});
-        }
-
-        else throw "access denied";
-    },
-
-    'displayArtwork' : function(user_id, item_id, duration) {
-        if (Meteor.userId() && Meteor.userId() == user_id && canDisplay()) {
-            var end = moment().add(duration, 'minutes');
-            var display_details = getDisplayDetails(item_id, duration);
-            items.update({'_id': item_id}, {$set: {'status' : 'displayed', 'display_details' : display_details}}, function(error) {
-                if (error)
-                    console.log(error.message);
-
-                else updateGalleryDetails(user_id);
-            });
-        }
-
-        else throw "current userId does not match item's owner";
-    },
-
-    'sellArtwork' : function(user_id, item_id) {
-        try {
-            var item_object = items.findOne(item_id);
-            if (Meteor.userId() && Meteor.userId() == user_id && 
-                    item_object.owner == Meteor.userId() && 
-                    (item_object.status != 'claimed' && item_object.status != 'unclaimed') 
-                ) {
-                var value = getItemValue(item_id, 'sell');
-                if (isNaN(value))
-                    throw "invalid amount";
-
-                addFunds(user_id, value);
-                items.remove({'_id': item_id});
-            }
-
-            else throw "current userId does not match item's owner'";
-        }
-
-        catch(error) {
-            console.log('in sellArtwork');
-            console.log('user_id: ' + user_id);
-            console.log('item_id: ' + item_id);
-            console.log(error.message);
-        }
-    },
-
-    'deleteArtwork' : function(user_id, item_id) {
-        console.log(item_id);
-        if (Meteor.userId() && Meteor.userId() == user_id) {
-            items.remove({'_id': item_id});
-        }
-
-        else throw "current userId does not match item's owner'";
-    },
-
     'getInventory' : function() {
         var owned = items.find({'owner': Meteor.userId(), 'status': 'claimed'});
         var owned_array = [];
@@ -181,17 +123,6 @@ Meteor.methods({
         });
 
         return owned_array;
-    },
-
-    'auctionArtwork' : function(user_id, item_id, starting, buy_now, duration) {
-        if (Meteor.userId() && Meteor.userId() == user_id && items.findOne(item_id).owner == Meteor.userId() && canAuction()) {
-
-            items.update({'_id': item_id}, {$set: {'status' : 'auctioned'}}, function() {
-                createAuction(item_id, starting, buy_now, duration);
-            });
-        }
-
-        else throw "current userId does not match item's owner'";
     },
 
     'getAuctions' : function(sorter, ascending) {
@@ -233,8 +164,11 @@ Meteor.methods({
             if (amount < auction_object.bid_minimum && (amount < auction_object.buy_now && auction_object.buy_now != -1))
                 throw "invalid amount";
 
-            else if (! !!Meteor.userId() || Meteor.userId() != user_id)
+            if (! !!Meteor.userId() || Meteor.userId() != user_id)
                 throw "invalid user";
+
+            if (amount > Meteor.user().profile.bank_balance)
+                throw "invalid amount";
 
             if (amount >= auction_object.buy_now && auction_object.buy_now != -1) {
                 refundHighestBid(auction_id);
@@ -346,10 +280,6 @@ Meteor.methods({
         console.log("diamond: " + roll_map.diamond);
     },
 
-    'getItemValue' : function(item_id, type) {
-        return getItemValue(item_id, type);
-    },
-
     'getCollectionValue' : function(user_id) {
         var collection_total = 0;
         var item_objects = items.find({'owner' : user_id, 'status' : {$ne: 'unclaimed'}});
@@ -379,10 +309,6 @@ Meteor.methods({
         return lookupCrateCost(quality, count);
     },
 
-    'getItemImageURL' : function(item_id) {
-        return "http://go-grafix.com/data/wallpapers/35/painting-626297-1920x1080-hq-dsk-wallpapers.jpg";
-    },
-
     'alertAllUsers' : function(message) {
         var admin = Meteor.user().emails[0].address == "jpollack320@gmail.com";
         if (admin) {
@@ -407,71 +333,12 @@ Meteor.methods({
         alerts.remove({'user_id' : Meteor.userId()}, {multi : true});
     },
 
-    'getRerollCost' : function(item_id) {
-        return getRerollCost(item_id);
-    },
-
     'rerollXPRating' : function(item_id) {
         if (canRerollItem(item_id)) {
             var item_object = items.findOne(item_id);
             if (item_object != undefined) {
                 var roll_count = item_object.roll_count;
                 items.update(item_id, {$set : {'xp_rating' : getXPRating()}});
-                items.update(item_id, {$set : {'roll_count' : roll_count + 1}});
-                chargeAccount(Meteor.userId(), getRerollCost(item_id));
-            }
-        }
-    },
-
-    'rerollAttributeValue' : function(item_id, attribute_id) {
-        if (canRerollItem(item_id)) {
-            var item_object = items.findOne(item_id);
-            if (item_object != undefined) {
-                var roll_count = item_object.roll_count;
-                var attribute_array = item_object.attributes;
-
-                for (var i=0; i < attribute_array.length; i++) {
-                    if (attribute_array[i]._id == attribute_id) {
-                        attribute_array[i].value = getAttributeValue();
-                        break;
-                    }
-                }
-
-                items.update(item_id, {$set: {'attributes' : attribute_array}});
-                items.update(item_id, {$set : {'roll_count' : roll_count + 1}});
-                chargeAccount(Meteor.userId(), getRerollCost(item_id));
-            }
-        }
-    },
-
-    'rerollAttribute' : function(item_id, attribute_id) {
-        if (canRerollItem(item_id)) {
-            var attribute_type = attributes.findOne(attribute_id).type;
-            var item_object = items.findOne(item_id);
-            if (item_object != undefined) {
-                var roll_count = item_object.roll_count;
-                var attribute_array = item_object.attributes;
-
-                var attribute_ids = []
-                for (var i=0; i < attribute_array.length; i++)
-                    attribute_ids.push(attribute_array[i]._id);
-
-                var target_attribute_index;
-                for (var i=0; i < attribute_array.length; i++) {
-                    if (attribute_array[i]._id == attribute_id) {
-                        target_attribute_index = i;
-                        break;
-                    }
-                }
-
-                var remaining = attributes.find({'type' : attribute_type, '_id' : {$nin: attribute_ids}}).count();
-                var random_index = Math.floor(Math.random() * remaining);
-                var random_attribute = attributes.findOne({'type' : attribute_type, '_id' : {$nin: attribute_ids}}, {skip: random_index});
-
-                attribute_array[target_attribute_index] = random_attribute;
-                attribute_array[target_attribute_index].value = getAttributeValue();
-
-                items.update(item_id, {$set: {'attributes' : attribute_array}});
                 items.update(item_id, {$set : {'roll_count' : roll_count + 1}});
                 chargeAccount(Meteor.userId(), getRerollCost(item_id));
             }
@@ -618,56 +485,6 @@ chargeAccount = function(user_id, amount) {
     var current_balance = Number(Meteor.users.findOne({'_id': user_id}).profile.bank_balance).toFixed(2);
     var new_balance = Math.ceil((Number(current_balance) - Number(actual_amount)) * 100) / 100;
     Meteor.users.update(user_id, {$set: {"profile.bank_balance" : new_balance}});
-}
-
-var getDisplayDetails = function(item_id, duration) {
-    // 1 hour
-    // 6 hours
-    // 12 hours
-    // 1 day
-    var actual_amount = getItemValue(item_id, 'actual');
-    var xp_chunk = getXPChunk(Meteor.user().profile.level);
-    var xp_rating = items.findOne(item_id).xp_rating;
-    var xp_value = (xp_chunk * .5) + (xp_chunk * .5 * xp_rating);
-
-    //add bonuses from attributes
-
-    var money, xp;
-    switch(Number(duration)) {
-        case 1:
-            money = actual_amount * .0001 * duration;
-            xp = xp_value * .001 * duration;
-            break;
-        case 60:
-            money = actual_amount * .00025 * duration;
-            xp = xp_value * .0012 * duration;
-            break;
-        case 360:
-            money = actual_amount * .0004 * duration;
-            xp = xp_value * .0013 * duration;
-            break;
-        case 720:
-            money = actual_amount * .00055 * duration;
-            xp = xp_value * .0014 * duration;
-            break;
-        case 1440:
-            money = actual_amount * .0007 * duration;
-            xp = xp_value * .0015 * duration;
-            break;
-        default:
-            money = 0;
-            break;
-    }
-
-    var end = moment().add(duration, 'minutes')._d.toISOString();
-    var display_details = {
-        'money' : money.toFixed(2),
-        'xp' : Math.floor(xp),
-        'end' :end
-        // 'end' : moment().add(1, 'minutes')._d.toISOString()
-    }
-
-    return display_details;
 }
 
 updateGalleryDetails = function(user_id) {

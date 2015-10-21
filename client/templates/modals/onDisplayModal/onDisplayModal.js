@@ -12,7 +12,7 @@ Template.onDisplayModal.events ({
     	}
 
 		else {
-			Meteor.call('displayArtwork', Meteor.userId(), Session.get('selectedItem'), Session.get('display_duration'), function(error) {
+			Meteor.call('displayArtwork', Session.get('selectedItem'), Session.get('display_duration'), function(error) {
 				if (error)
 					console.log(error.message);
 

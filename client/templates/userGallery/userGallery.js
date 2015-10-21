@@ -16,7 +16,7 @@ Template.userGallery.helpers({
 	'time_remaining': function(item_id) {
 		var item_object = items.findOne(item_id);
 
-		if (item_object.status == 'displayed') {
+		if (item_object && item_object.status == 'displayed') {
 			var expiration = moment(item_object.display_details.end);
 			var now = moment(Session.get('gallery_now'));
 			var remaining = expiration - now;
@@ -29,19 +29,19 @@ Template.userGallery.helpers({
 	},
 
 	'entryInfo' : function(screen_name) {
-		//move to server-side
-		if (Meteor.user()) {
-			var user_object = Meteor.users.findOne({'profile.screen_name' : screen_name});
+		var gallery_object = galleries.findOne({'owner': screen_name});
+
+		if (Meteor.user() && gallery_object) {
 			var viewer_object = Meteor.user();
 			var tickets_maxed = viewer_object.profile.tickets != undefined && Object.keys(viewer_object.profile.tickets).length >= viewer_object.profile.ticket_cap;
-			var insufficient_funds = user_object.profile.entry_fee > viewer_object.profile.bank_balance;
+			var insufficient_funds = gallery_object.entry_fee > viewer_object.profile.bank_balance;
 
 			return {
-				'paid' : viewer_object.profile.screen_name == screen_name || (viewer_object.profile.tickets != undefined && viewer_object.profile.tickets[user_object._id] != undefined),
+				'paid' : viewer_object.profile.screen_name == screen_name || (viewer_object.profile.tickets != undefined && viewer_object.profile.tickets[gallery_object.owner_id] != undefined),
 				'pay_fee_enabled' : !insufficient_funds && !tickets_maxed,
-				'entry_fee_text' : "$" + getCommaSeparatedValue(user_object.profile.entry_fee),
+				'entry_fee_text' : "$" + getCommaSeparatedValue(gallery_object.entry_fee),
 				'screen_name' : screen_name,
-				'owner_id' : user_object._id
+				'owner_id' : gallery_object.owner_id
 			}
 		}
 

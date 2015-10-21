@@ -33,7 +33,7 @@ Template.createAuctionModal.events ({
 
 			else {
 				if (items.find({'owner' : Meteor.userId(), 'status' : 'auctioned'}).count() >= Meteor.user().profile.auction_cap ||
-					item_object.status == 'permanent';)
+					item_object.status == 'permanent')
 					errors.push("invalid command");
 			
 				var minimum = Session.get('auctionMin');
@@ -53,7 +53,7 @@ Template.createAuctionModal.events ({
 				if (buy_now == "")
 					buy_now = -1;
 
-		    	Meteor.call('auctionArtwork', Meteor.userId(), item_id, Number(starting), Number(buy_now), duration, function(error) {
+		    	Meteor.call('auctionArtwork', item_id, Number(starting), Number(buy_now), duration, function(error) {
 					if (error)
 						console.log(error.message);
 

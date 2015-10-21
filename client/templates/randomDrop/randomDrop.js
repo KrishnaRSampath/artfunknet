@@ -91,7 +91,7 @@ Template.randomDrop.events ({
 
 	'click .add-to-inventory.enabled' : function(element) {
 		var item_id = $(element.target).data('item_id');
-		Meteor.call('claimArtwork', Meteor.userId(), item_id, function(error) {
+		Meteor.call('claimArtwork', item_id, function(error) {
 			if (error)
 				console.log(error.message);
 		});
