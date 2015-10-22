@@ -41,20 +41,6 @@ Template.galleryItemInfo.helpers({
 				'xp_rating_text' : ""
 			}
 		}
-	},
-
-	'itemValue' : function(item_id) {
-		Meteor.call('getItemValue', item_id, 'actual', function(error, result) {
-			if (error)
-				console.log(error.message)
-
-			else {
-				var value_string = "$" + getCommaSeparatedValue(result);
-				Session.set(item_id + '_value', value_string)
-			}
-		})
-
-		return Session.get(item_id + '_value');
 	}
 })
 

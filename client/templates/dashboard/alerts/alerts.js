@@ -12,7 +12,10 @@ Template.alerts.helpers({
 Template.alerts.events({
 	'click .dismiss-alert' : function(element) {
 		var alert_id = $(element.target).closest('tr').data('alert_id');
-		alerts.remove(alert_id);
+		Meteor.call('removeAlert', alert_id, function(error) {
+			if (error)
+				console.log(error.message);
+		})
 	},
 
 	'click #clear-all' : function () {

@@ -1,14 +1,3 @@
-Template.rerollModal.rendered = function() {
-	Session.set('createAuctionErrors', []);
-	Session.set('auctionMin', false);
-	Meteor.call('getItemValue', Session.get('selectedItem'), 'auction_min', function(error, result) {
-		if (error)
-			console.log(error.message);
-
-		else Session.set('auctionMin', result);
-	});
-}
-
 Template.rerollModal.events ({
 	'click #cancel-modal' : function(event, template) {
     	Modal.hide("rerollModal");

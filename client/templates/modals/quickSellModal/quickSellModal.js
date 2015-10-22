@@ -13,6 +13,7 @@ Template.quickSellModal.helpers({
 				var artwork_object = artworks.findOne(item_object.artwork_id);
 					
 				return {
+					'item_id' : item_object._id,
 					'title' : artwork_object.title,
 					'artist' : artwork_object.artist,
 				}
@@ -29,20 +30,6 @@ Template.quickSellModal.helpers({
 				'title' : "",
 				'artist' : "",
 			}
-		}
-	},
-
-	'sellPrice' : function(item_id) {
-		if (Session.get('sell_price'))
-			return Session.get('sell_price')
-
-		else {
-			Meteor.call('getItemValue', item_id, 'sell', function(error, result) {
-				if (error)
-					console.log(error.message);
-
-				else Session.set('sell_price', "$" + getCommaSeparatedValue(result));
-			});
 		}
 	},
 
@@ -93,15 +80,13 @@ Template.quickSellModal.events({
 	},
 
 	'click #sell-artwork' : function() {
-		Meteor.call('sellArtwork', Session.get('selectedItem'), function(error) {
-			if (error)
-				console.log(error.message);
-		});
+		if (Session.get('selectedItem')) {
+			Meteor.call('sellArtwork', Session.get('selectedItem'), function(error) {
+				if (error)
+					console.log(error.message);
 
-		Modal.hide('quickSellModal');
+				else Modal.hide('quickSellModal');
+			});
+		}
 	}
 })
-
-Template.quickSellModal.rendered = function() {
-	Session.set('sell_price', false);
-};

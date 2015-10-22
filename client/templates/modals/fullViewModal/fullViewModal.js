@@ -32,20 +32,6 @@ Template.fullViewModal.helpers({
 		}
 	},
 
-	'itemValue' : function(item_id) {
-		if (Session.get('actual_value'))
-			return Session.get('actual_value')
-
-		else {
-			Meteor.call('getItemValue', item_id, 'actual', function(error, result) {
-				if (error)
-					console.log(error.message);
-
-				else Session.set('actual_value', "$" + getCommaSeparatedValue(result));
-			});
-		}
-	},
-
 	'imageInfo' : function(item_id) {
 		try {
 			var item_object = items.findOne(item_id);

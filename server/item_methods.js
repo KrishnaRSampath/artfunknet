@@ -59,6 +59,11 @@ Meteor.methods({
     },
 
     'displayArtwork' : function(item_id, duration) {
+        var errors = [];
+
+        if (isNaN(duration))
+            errors.push("invalid duration");
+
     	var item_object = canDisplayItem(item_id);
         if (item_object) {
             var end = moment().add(duration, 'minutes');
@@ -69,9 +74,12 @@ Meteor.methods({
 
                 else updateGalleryDetails(item_object.owner);
             });
+            return [];
         }
 
-        else throw "invalid operation";
+        else errors.push("invalid operation");
+
+        return errors;
     },
 
     'setItemPermanentCollectionStatus' : function(item_id, set_to_permanent) {
@@ -107,13 +115,37 @@ Meteor.methods({
 
     'auctionArtwork' : function(item_id, starting, buy_now, duration) {
     	var item_object = canAuctionItem(item_id);
-        if (item_object) {
+
+        var errors = [];
+
+        if (item_object == undefined)
+            errors.push("invalid action");
+
+        if (isNaN(starting))
+            errors.push("invalid starting value");
+
+        if (isNaN(buy_now))
+            errors.push("invalid buy now value");
+
+        if (duration == "default")
+            errors.push("invalid duration");
+
+        if (item_object) {        
+            var minimum = getItemValue(item_id, "auction_min");
+            if (Number(starting) < minimum)
+                errors.push("starting value must be greater than $" + getCommaSeparatedValue(minimum));
+
+            if (buy_now != -1 && Number(buy_now) < minimum )
+                errors.push("buy now value must be greater than $" + getCommaSeparatedValue(minimum));
+        }
+
+        if (errors.length == 0) {
             items.update({'_id': item_id}, {$set: {'status' : 'auctioned'}}, function() {
                 createAuction(item_id, starting, buy_now, duration);
             });
         }
 
-        else throw "invalid operation";
+        return errors;
     },
 
     'getItemValue' : function(item_id, type) {

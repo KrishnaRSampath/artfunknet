@@ -9,12 +9,12 @@
 				<p><span class="{{rarity}}"><strong>{{rarity}}</strong></span></p>
 				<p>{{medium}}</p>
 				<p>{{height}} x {{width}}</p>
-				<p>condition: <span style="color: rgb({{attributeColor condition}}, 0, 0)">{{condition_text}}</span></p>
-				<p>estimated value: {{itemValue item_id}}</p>
-				<p>xp rating: <span style="color: rgb({{attributeColor xp_rating}}, 0, 0)">{{xp_rating_text}}</span></p>
+				<p>condition: <span style="color: {{getHTMLColorFromValue condition}}">{{condition_text}}</span></p>
+				<p>estimated value: ${{getItemValue item_id "actual"}}</p>
+				<p>xp rating: <span style="color: {{getHTMLColorFromValue xp_rating}}">{{xp_rating_text}}</span></p>
 				<p class="item-attributes">
 				{{#each attribute}}
-					<i data-attribute_description="{{this.description}}" data-attribute_value="{{this.value}}" style="color: rgb({{attributeColor this.value}}, 0, 0)" class="item-attribute fa {{this.icon}}"></i>
+					<i data-attribute_description="{{this.description}}" data-attribute_value="{{this.value}}" style="color: {{getHTMLColorFromValue this.value}}" class="item-attribute fa {{this.icon}}"></i>
 				{{/each}}
 				</p>
 

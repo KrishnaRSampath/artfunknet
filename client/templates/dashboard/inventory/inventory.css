@@ -115,7 +115,7 @@
 	font-weight: bold;
 }
 
-.template-inventory .action-buttons i {
+.template-inventory .action-buttons {
 	color: black;
 	opacity: .5;
 	font-size: 1.2em;

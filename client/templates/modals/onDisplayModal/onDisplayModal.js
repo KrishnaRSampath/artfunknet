@@ -1,27 +1,46 @@
-Template.onDisplayModal.events ({
-	'click #ok-modal': function(event, template) {
-		var errors = [];
+var display_details_dep = new Tracker.Dependency;
 
-		if (Session.get('display_duration') == 'default') {
-			errors.push('invalid duration');
-		}
+var display_details = {};
 
-		if (errors.length > 0) {
-    		Session.set('onDisplayErrors', errors);
-    		$('.errors').show();
-    	}
+Template.onDisplayModal.rendered = function() {
+	Session.set('onDisplayErrors', []);
+	var item_id = Session.get('selectedItem');
+    refreshDisplayDetails(item_id, $('#duration').val());
+};
+
+var refreshDisplayDetails = function(item_id, duration) {
+	Meteor.call('getDisplayDetails', item_id, duration, function(error, result) {
+		if (error)
+			console.log(error.message);
 
 		else {
-			Meteor.call('displayArtwork', Session.get('selectedItem'), Session.get('display_duration'), function(error) {
-				if (error)
-					console.log(error.message);
+			display_details = {
+				'money' : getCommaSeparatedValue(result.money),
+				'xp' : getCommaSeparatedValue(result.xp),
+				'end' : getTimeString(moment(result.end))
+			};
+			display_details_dep.changed();
+		}
+	})
+}
 
-				else Modal.hide("onDisplayModal");
-			});
-			Session.set('onDisplayErrors', []);
-    		$('.errors').hide();
-	    }
+Template.onDisplayModal.events ({
+	'click #ok-modal': function(event, template) {
+		Meteor.call('displayArtwork', Session.get('selectedItem'), $('#duration').val(), function(error, error_list) {
+			if (error)
+				console.log(error.message);
 
+			else if (error_list.length > 0) {
+				Session.set('onDisplayErrors', error_list);
+				$('.errors').show();
+			}
+
+			else {
+				Session.set('onDisplayErrors', []);
+				$('.errors').hide();
+				Modal.hide("onDisplayModal");
+			}
+		});			
     },
 
     'click #cancel-modal' : function(event, template) {
@@ -29,13 +48,8 @@ Template.onDisplayModal.events ({
     },
 
     'change #duration' : function(event) {
-    	Session.set('display_duration', event.target.value);
-    	Meteor.call('getDisplayDetails', Session.get('selectedItem'), event.target.value, function(error, result) {
-    		if (error)
-    			console.log(error.message);
-
-    		else Session.set('display_details', result);
-    	})
+    	var item_id = Session.get('selectedItem');
+    	refreshDisplayDetails(item_id, $(event.target).val());
     }
 })
 
@@ -45,12 +59,14 @@ Template.onDisplayModal.helpers({
 		if (!!item_object) {
 			var artwork_object = artworks.findOne(item_object.artwork_id);
 			return {
+				'item_id' : item_object._id,
 				'title' : artwork_object.title,
 				'artist' : artwork_object.artist
 			}
 		}
 
 		else return {
+			'item_id' : "",
 			'title' : "",
 			'artist' : "",
 		}
@@ -60,26 +76,12 @@ Template.onDisplayModal.helpers({
 		return Session.get('onDisplayErrors');
 	},
 
+	'display_duration' : function() {
+		return $('#duration').val();
+	},
+
 	'displayDetails' : function() {
-		if (Session.get('display_duration') && Session.get('display_duration') != 'default' && Session.get('display_details')) {
-			var details = {
-				'money' : "$" + getCommaSeparatedValue(Session.get('display_details').money),
-				'xp' : getCommaSeparatedValue(Session.get('display_details').xp),
-				'end' : getTimeString(moment(Session.get('display_details').end)),
-			}
-
-			return details;
-		}
-
-		else return {
-			'money' : '-',
-			'xp' : '-',
-			'end' : "-"
-		}
+		display_details_dep.depend();
+		return display_details;
 	}
 })
-
-Template.onDisplayModal.rendered = function() {
-	Session.set('display_duration', 'default');
-	Session.set('onDisplayErrors', []);
-};

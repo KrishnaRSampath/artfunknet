@@ -1,12 +1,3 @@
-var setEstimatedValue = function(item_id) {
-	Meteor.call('getItemValue', item_id, 'actual', function(error, result) {
-		if (error)
-			console.log(error.message);
-
-		else Session.set(item_id + "_estimated_value", result);
-	})
-}
-
 Template.inventory.helpers({
 	'owned': function() {	
 		var owned_items = items.find({'owner': Meteor.userId(), 'status': {$in : ['claimed', 'displayed', 'permanent']}}, {sort: {'aftwork_id' : 1}}).fetch();
@@ -15,6 +6,7 @@ Template.inventory.helpers({
 		var display_objects = [];
 
 		owned_items.forEach(function(db_object) {
+			//item_value_dep.depend();
 			var artwork_object = artworks.findOne(db_object.artwork_id);
 			var display_object = db_object;
 
@@ -38,12 +30,6 @@ Template.inventory.helpers({
 			display_object.height = artwork_object.height;
 			display_object.condition_text = Math.floor((db_object.condition * 100)) + '%';
 			display_object.xp_rating_text = Math.floor(db_object.xp_rating * 100);
-
-			setEstimatedValue(db_object._id);
-
-			display_object.estimated_value = Session.get(db_object._id + "_estimated_value") ? Session.get(db_object._id + "_estimated_value") : 0;
-			display_object.estimated_value_text = Session.get(db_object._id + "_estimated_value") ? getCommaSeparatedValue(Session.get(db_object._id + "_estimated_value")) : "0";
-
 			display_objects.push(display_object);
 		})
 
@@ -55,18 +41,7 @@ Template.inventory.helpers({
 
 		return display_objects;
 	},
-
-	'sellValue' : function(item_id) {
-		if (Session.get(item_id + 'sellValue'))
-			return '$' + getCommaSeparatedValue(Session.get(item_id + 'sellValue'));
-
-		else {
-			Meteor.call('getItemValue', item_id, 'sell', function(error, result) {
-				Session.set(item_id + 'sellValue', result);
-			})
-		}
-	},
-
+	
 	'onDisplay' : function(item_id) {
 		var item_object = items.findOne(item_id);
 		return item_object && item_object.status == 'displayed';
@@ -82,7 +57,7 @@ Template.inventory.helpers({
 
 		if (item_object.status == 'displayed') {
 			var expiration = moment(item_object.display_details.end);
-			var now = moment(Session.get('inventory_now'));
+			var now = moment(Session.get('now'));
 			var remaining = expiration - now;
 
 			var remaining_text = remaining > 0 ? getCountdownString(remaining) : "expired";
@@ -267,7 +242,38 @@ Template.inventory.events ({
 		var value = Math.floor(Number(element.target.dataset.attribute_value) * 100);
 		var description = element.target.dataset.attribute_title;
 		setFootnote("level " + value + " " + description, Math.floor(Math.random() * 100000));
-	}
+	},
+
+	'mouseover .quick-sell' : function(event) {
+		var enabled = $(event.target).closest('span.quick-sell').hasClass("enabled");
+		var footnote_string = "sell artwork" + (enabled ? "" : " (unavailable)");
+		setFootnote(footnote_string, Math.floor(Math.random() * 100000));
+	},
+
+	'mouseover .auction' : function(event) {
+		var enabled = $(event.target).closest('span.auction').hasClass("enabled");
+		var footnote_string = "auction artwork" + (enabled ? "" : " (unavailable)");
+		setFootnote(footnote_string, Math.floor(Math.random() * 100000));
+	},
+
+	'mouseover .display' : function(event) {
+		var enabled = $(event.target).closest('span.display').hasClass("enabled");
+		var footnote_string = "display artwork" + (enabled ? "" : " (unavailable)");
+		setFootnote(footnote_string, Math.floor(Math.random() * 100000));
+	},
+
+	'mouseover .reroll' : function(event) {
+		var enabled = $(event.target).closest('span.reroll').hasClass("enabled");
+		var footnote_string = "reroll attribute values" + (enabled ? "" : " (unavailable)");
+		setFootnote(footnote_string, Math.floor(Math.random() * 100000));
+	},
+
+	'mouseover .perm-collection' : function(event) {
+		var active = $(event.target).closest('span.perm-collection').hasClass("active");
+		var footnote_string = active ? "remove from permanent collection" : "add to permanent collection";
+		setFootnote(footnote_string, Math.floor(Math.random() * 100000));
+	},
+
 })
 
 Template.inventory.created = function() {
@@ -276,8 +282,12 @@ Template.inventory.created = function() {
 	Session.set('list_view', false);
 	this.handle = Meteor.setInterval((function() {
 		var now = moment();
-		Session.set('inventory_now', now.toISOString());
+		Session.set('now', now.toISOString());
 	}), 1000);
+}
+
+Template.inventory.rendered = function() {
+	Blaze.getData($('.template-inventory')[0])["value_data"] = {};
 }
 
 Template.inventory.destroyed = function() {

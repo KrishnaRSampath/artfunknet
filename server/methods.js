@@ -333,6 +333,10 @@ Meteor.methods({
         alerts.remove({'user_id' : Meteor.userId()}, {multi : true});
     },
 
+    'removeAlert' : function(alert_id) {
+        alerts.remove(alert_id);
+    },
+
     'rerollXPRating' : function(item_id) {
         if (canRerollItem(item_id)) {
             var item_object = items.findOne(item_id);

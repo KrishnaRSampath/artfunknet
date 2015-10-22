@@ -22,7 +22,7 @@
 					<td>{{date}}</td>
 					<td>{{artist}}</td>
 					<td><span class="{{rarity}}"><strong>{{rarity}}</strong></span></td>
-					<td>${{estimated_value_text}}</td>
+					<td>${{getItemValue _id "actual"}}</td>
 					<td>{{height}} x {{width}}</td>
 					<td style="color: rgb({{valueColor condition}}, 0, 0)" >{{condition_text}}</td>
 					<td>
@@ -51,7 +51,7 @@
 							<span class="reroll {{#if can_reroll this}}enabled{{else}}disabled{{/if}}"><i data-item_id="{{this._id}}" class="fa fa-magic"></i></span>
 						</div>
 						<div class="col-xs-3 col-xs-offset-1 no-padding">
-							<span class="perm-collection {{#if permanent this._id}}active af-color{{else}}inactive{{/if}}"><i data-item_id="{{this._id}}" class="fa fa-heart"></i></span>
+							<span class="perm-collection {{#if permanent this._id}}active af-color{{else}}inactive{{/if}}"><i data-item_id="{{this._id}}" class="{{#if permanent this._id}}af-color{{/if}} fa fa-heart"></i></span>
 						</div>
 						{{/if}}
 					</td>

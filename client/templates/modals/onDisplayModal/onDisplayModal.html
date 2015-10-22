@@ -9,8 +9,6 @@
 				        <div class="row duration-info">
 		                	<div class="col-xs-12">
 		                		<select id="duration">
-		                			<option value="default">duration</option>
-		                			<option value="1">1 minute</option>
 		                			<option value="60">1 hour</option>
 		                			<option value="360">6 hours</option>
 		                			<option value="720">12 hours</option>
@@ -21,11 +19,9 @@
 
 				        <div class="row earning-info">
 		                	<div class="col-xs-12">
-		                		{{#with displayDetails}}
-		                		<p>money earned: <span class="highlight">{{money}}</span></p>
-		                		<p>xp earned: <span class="highlight">{{xp}}</span></p>
-		                		<p>ending time: <span class="highlight">{{end}}</span></p>
-		                		{{/with}}
+		                		<p>money earned: <span class="highlight">${{displayDetails.money}}</span></p>
+		                		<p>xp earned: <span class="highlight">{{displayDetails.xp}}</span></p>
+		                		<p>ending time: <span class="highlight">{{displayDetails.end}}</span></p>
 		                	</div>
 				        </div>
 				    </div>

@@ -29,7 +29,7 @@
 				        {{#each attribute}}
 				         <div data-attribute_id="{{this._id}}" class="row attribute-row no-padding no-margin">
 		                	<div class="col-xs-1">
-		                		<i style="color: rgb({{valueColor this.value}}, 0, 0)" class="item-attribute fa {{this.icon}}"></i>
+		                		<i style="color: {{getHTMLColorFromValue this.value}}" class="item-attribute fa {{this.icon}}"></i>
 		                	</div>
 		                	<div class="col-xs-4">
 		                		<p class="roll-description">{{this.description}}:</p>
