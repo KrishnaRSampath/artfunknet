@@ -18,7 +18,7 @@ Template.userGallery.helpers({
 
 		if (item_object && item_object.status == 'displayed') {
 			var expiration = moment(item_object.display_details.end);
-			var now = moment(Session.get('gallery_now'));
+			var now = moment(Session.get('now'));
 			var remaining = expiration - now;
 
 			var remaining_text = remaining > 0 ? getCountdownString(remaining) : "expired";
@@ -105,7 +105,7 @@ Template.userGallery.events ({
 Template.userGallery.created = function() {
 	this.handle = Meteor.setInterval((function() {
 		var now = moment();
-		Session.set('gallery_now', now.toISOString());
+		Session.set('now', now.toISOString());
 	}), 1000);
 }
 

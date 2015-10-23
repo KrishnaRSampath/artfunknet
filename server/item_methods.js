@@ -13,24 +13,24 @@ getDisplayDetails = function(item_id, duration) {
     var money, xp;
     switch(Number(duration)) {
         case 1:
-            money = actual_amount * .0001 * duration;
-            xp = xp_value * .001 * duration;
+            money = actual_amount * .00018 * duration;
+            xp = xp_value * .0008 * duration;
             break;
         case 60:
-            money = actual_amount * .00025 * duration;
-            xp = xp_value * .0012 * duration;
+            money = actual_amount * .00012 * duration;
+            xp = xp_value * .0001 * duration;
             break;
         case 360:
-            money = actual_amount * .0004 * duration;
-            xp = xp_value * .0013 * duration;
+            money = actual_amount * .00014 * duration;
+            xp = xp_value * .0002 * duration;
             break;
         case 720:
-            money = actual_amount * .00055 * duration;
-            xp = xp_value * .0014 * duration;
+            money = actual_amount * .00016 * duration;
+            xp = xp_value * .0003 * duration;
             break;
         case 1440:
-            money = actual_amount * .0007 * duration;
-            xp = xp_value * .0015 * duration;
+            money = actual_amount * .00018 * duration;
+            xp = xp_value * .0004 * duration;
             break;
         default:
             money = 0;

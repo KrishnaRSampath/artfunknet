@@ -145,7 +145,7 @@ getItemValue = function(item_id, type) {
         var condition_factor = lowest_possible + ((mint_value - lowest_possible) * parseFloat(item_object.condition));
         var actual_value = Math.floor(condition_factor);
 
-        var sell_value = Math.floor(actual_value * .8);
+        var sell_value = Math.floor(actual_value * .5);
         var purchase_value = Math.floor(actual_value * 1.2);
         var auction_min = Math.floor(sell_value * .8);
 

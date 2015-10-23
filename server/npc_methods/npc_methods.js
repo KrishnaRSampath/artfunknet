@@ -112,10 +112,10 @@ var enthusiastInteraction = function(npc_object) {
 	var xp_chunk_percentage;
 
 	switch(npc_object.quality) {
-		case 'bronze' : xp_chunk_percentage = .2; break;
-		case 'silver' : xp_chunk_percentage = .4; break;
-		case 'gold' : xp_chunk_percentage = .6; break;
-		case 'platinum' : xp_chunk_percentage = .8; break;
+		case 'bronze' : xp_chunk_percentage = .1; break;
+		case 'silver' : xp_chunk_percentage = .15; break;
+		case 'gold' : xp_chunk_percentage = .2; break;
+		case 'platinum' : xp_chunk_percentage = .25; break;
 	};
 
 	var xp_chunk = getXPChunk(Meteor.user().profile.level);
@@ -128,7 +128,7 @@ var enthusiastInteraction = function(npc_object) {
 }
 
 var benefactorInteraction = function(npc_object) {
-	var max_donation = 500000;
+	var max_donation = 200000;
 	var donation_amount;
 
 	switch(npc_object.quality) {

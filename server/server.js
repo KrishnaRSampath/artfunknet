@@ -396,8 +396,8 @@ Meteor.setInterval((function() {
 
         var periods_displayed = Math.floor(time_displayed / permanent_collection_xp_frequency);
 
-        var xp_max_percentage = .6;
-        var xp_increment = .05;
+        var xp_max_percentage = .01;
+        var xp_increment = .002;
         var percentage = periods_displayed * xp_increment <= xp_max_percentage ? periods_displayed * xp_increment : xp_max_percentage;
 
         var time_til_next_xp = (permanent_collection_xp_frequency * (periods_displayed + 1)) - time_displayed;
