@@ -1,0 +1,101 @@
+.template-store .drop {
+	margin: 20px;
+	border-top: 1px solid gray;
+}
+
+.template-store p {
+	margin: 5px 20px;
+}
+
+.template-store .button-area {
+	font-size: 1em;
+	height: 36px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.template-store .button-area > div {
+	font-size: 1.5em;
+	text-align: center;
+}
+
+.template-store .decline.disabled{
+	opacity: .5;
+}
+
+.template-store .crate-buttons .disabled{
+	opacity: .5;
+}
+
+.template-store .decline .enabled {
+	color: black;
+	opacity: .5;
+}
+
+.template-store .decline.enabled:hover {
+	opacity: 1;
+	cursor: pointer;
+	color: black;
+}
+
+.template-store .item-card {
+	border: 1px solid black;
+	width: 504px;
+	height: 300px;
+	display: inline-block;
+	margin: 24px 24px;
+	background-color: #EEEEEE;
+}
+
+.template-store .crate-buttons button {
+	background-color: white;
+	width: 260px;
+	font-weight: bold;
+	font-size: 1em;
+}
+
+#drop-button {
+	background-color: black;
+}
+
+.template-store .bronze-button {
+	border: 1px solid #D8947D;
+	color: #D8947D;
+}
+
+.template-store .silver-button {
+	border: 1px solid #AAAAAA;
+	color: #AAAAAA;
+}
+
+.template-store .gold-button {
+	border: 1px solid #D8AF5C;
+	color: #D8AF5C;
+}
+
+.template-store .platinum-button {
+	border: 1px solid #BFBFBF;
+	color: #BFBFBF;
+}
+
+.template-store .diamond-button {
+	border: 1px solid #93CFCF;
+	color: #93CFCF;
+}
+
+.template-forSaleInfo .item-attribute {
+	color: black;
+	font-size: 1.5em;
+}
+
+.template-forSaleInfo .item-attributes {
+	margin-top: 12px;
+}
+
+.template-forSaleInfo .item-attribute:hover {
+	cursor: default;
+}
+
+.template-store .purchase-button {
+	font-size: .75em;
+}

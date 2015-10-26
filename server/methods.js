@@ -83,10 +83,17 @@ Meteor.methods({
     'getUserGallery' : function(screen_name) {
         var user_object = Meteor.users.findOne({'profile.screen_name' : screen_name});
 
-        if (user_object)
-            return items.find({'owner': user_object._id, 'status': {$in : ['displayed', 'permanent']}}).fetch();
+        if (user_object) {
+            return {
+                'displayed': items.find({'owner': user_object._id, 'status': 'displayed'}).fetch(),
+                'permanent': items.find({'owner': user_object._id, 'status': 'permanent'}).fetch(),
+            }
+        }
 
-        else return [];
+        else return {
+            'displayed' : [],
+            'permanent' : []
+        }
     },
 
     'placeBid' : function(user_id, auction_id, amount) {

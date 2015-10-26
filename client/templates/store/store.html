@@ -1,0 +1,64 @@
+<template name="store">
+	<div class="template-store container">
+		<h4>bank balance: <span class="af-color">${{bank_balance}}</span></h4>
+		<div class="crate-buttons">
+			{{#each quality}}
+				{{#with dropButton this}}
+				<button class="{{buttonQuality}}-button crate-button {{#if enabled}}enabled{{else}}disabled{{/if}}" data-button_quality="{{buttonQuality}}">{{buttonQuality}} crate - {{crateCost}}</button>
+				{{/with}}
+			{{/each}}
+		</div>
+
+		{{#if full}}
+		<p>Note: your inventory is currently full. You will be unable to add new artwork to your inventory</p>
+		{{/if}}
+
+		{{#each for_sale}}
+			<div class="item-card" data-painting-id="{{this._id}}">
+				<div class="row no-padding no-margin">
+					<div class="col-xs-7 no-padding no-margin">
+						{{>forSaleInfo this._id}}
+					</div>
+					<div class="col-xs-5 no-padding no-margin">
+						<div class="image-thumbnail">
+							{{> itemThumbnail this._id}}
+						</div>
+					</div>
+				</div>
+				<div class="row button-area no-padding no-margin">
+					<div class="col-xs-10">
+						<button data-item_id="{{this._id}}" class="purchase-button {{#if canPurchase this._id}}enabled{{else}}disabled{{/if}}">purchase - ${{getItemValue this._id "dealer"}}</button>
+					</div>
+					<div class="col-xs-2">
+						<span><i data-item_id="{{this._id}}" class="enabled decline fa fa-times"></i></span>
+					</div>
+				</div>
+			</div>
+		{{/each}}
+
+	</div>
+</template>
+
+<template name="forSaleInfo">
+	<div class="template-forSaleInfo">
+		<div class="col-xs-12 no-margin">
+			<div class="info-area">
+				{{#with itemData this}}
+
+				<h4 class="{{rarity}}">{{title}}</h4>
+				<p>{{artist}}, {{date}}</p>
+				<p><span class="{{rarity}}"><strong>{{rarity}}</strong></span></p>
+				<p>{{medium}}</p>
+				<p>{{height}} x {{width}}</p>
+				<p>condition: <span style="color: {{getHTMLColorFromValue condition}}">{{condition_text}}</span></p>
+				<p>xp rating: <span style="color: {{getHTMLColorFromValue xp_rating}}">{{xp_rating_text}}</span></p>
+				<p class="item-attributes">
+				{{#each attribute}}
+					<i data-attribute_description="{{this.description}}" data-attribute_value="{{this.value}}" style="color: {{getHTMLColorFromValue this.value}}" class="item-attribute fa {{this.icon}}"></i>
+				{{/each}}
+				</p>
+				{{/with}}	
+			</div>		
+		</div>
+	</div>
+</template>

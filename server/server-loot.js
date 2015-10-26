@@ -146,14 +146,18 @@ getItemValue = function(item_id, type) {
         var actual_value = Math.floor(condition_factor);
 
         var sell_value = Math.floor(actual_value * .5);
-        var purchase_value = Math.floor(actual_value * 1.2);
+        var purchase_value = Math.floor(actual_value * 1.5);
+        var dealer_offer = Math.floor(actual_value * 1.2);
         var auction_min = Math.floor(sell_value * .8);
+        var collector_offer = Math.floor(actual_value * 2);
 
         switch(type) {
             case "sell": return sell_value;
             case "purchase": return purchase_value;
             case "actual": return actual_value;
             case "auction_min": return auction_min;
+            case "collector" : return collector_offer; 
+            case "dealer" : return dealer_offer; 
             default: return undefined;
         }
     }
@@ -218,6 +222,7 @@ lookupCrateCost = function(quality, count) {
 
 generateItems = function(user_id, quality, count) {
     var rarity_map = rarity_maps[quality];
+    var item_ids = [];
 
     for (var i=0; i < parseInt(count); i++) {
         var rarity_roll;
@@ -239,10 +244,16 @@ generateItems = function(user_id, quality, count) {
             'xp_rating' : getXPRating(),
             'roll_count' : 0
         });
+
+        item_ids.push(new_item_id);
     }
+
+    return item_ids;
 }
 
 generateItemsFromRarity = function(user_id, rarity, count) {
+    var item_ids = [];
+
     if (Meteor.user().emails[0].address == "jpollack320@gmail.com") {
         var possibilities = artworks.find({'rarity': rarity}).fetch();
         for (var i=0; i < parseInt(count); i++) {
@@ -258,8 +269,69 @@ generateItemsFromRarity = function(user_id, rarity, count) {
                 'xp_rating' : getXPRating(),
                 'roll_count' : 0
             });
+
+            item_ids.push(new_item_id);
         }
     }
+
+    return item_ids;
+}
+
+generateItemsForSale = function(user_id, quality, count) {
+    var rarity_map = rarity_maps[quality];
+    var item_ids = [];
+
+    for (var i=0; i < parseInt(count); i++) {
+        var rarity_roll;
+
+        if (quality == "pearl" && Meteor.user().emails[0].address == "jpollack320@gmail.com")
+            rarity_roll = "masterpiece";
+
+        else rarity_roll = JepLoot.catRoll(rarity_map);
+        var possibilities = artworks.find({'rarity': rarity_roll}).fetch();
+        var random_index = Math.floor(Math.random() * possibilities.length);
+
+        var new_item_id = items.insert({
+            'artwork_id' : possibilities[random_index]._id,
+            'condition' : getCondition(),
+            'attributes' : getAttributes(rarity_roll),
+            'owner' : user_id,
+            'status' : 'for_sale',
+            'date_created' : new Date(),
+            'xp_rating' : getXPRating(),
+            'roll_count' : 0
+        });
+
+        item_ids.push(new_item_id);
+    }
+
+    return item_ids;
+}
+
+generateItemsForSaleFromRarity = function(user_id, rarity, count) {
+    var item_ids = [];
+
+    if (Meteor.user().emails[0].address == "jpollack320@gmail.com") {
+        var possibilities = artworks.find({'rarity': rarity}).fetch();
+        for (var i=0; i < parseInt(count); i++) {
+            var random_index = Math.floor(Math.random() * possibilities.length);
+
+            var new_item_id = items.insert({
+                'artwork_id' : possibilities[random_index]._id,
+                'condition' : getCondition(),
+                'attributes' : getAttributes(rarity),
+                'owner' : user_id,
+                'status' : 'for_sale',
+                'date_created' : new Date(),
+                'xp_rating' : getXPRating(),
+                'roll_count' : 0
+            });
+
+            item_ids.push(new_item_id);
+        }
+    }
+
+    return item_ids;
 }
 
 getAttributes = function(rarity) {
@@ -356,4 +428,12 @@ Meteor.methods({
 
         else console.log("insufficient funds");
     },
+
+    'generateItemForSale' : function() {
+        var item_object = items.findOne({'owner': Meteor.userId(), 'status': "for_sale"});
+        if (item_object)
+            items.remove(item_object._id);
+
+        else generateItemsForSale(Meteor.userId(), 'platinum', 1);
+    }
 })

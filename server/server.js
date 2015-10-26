@@ -310,7 +310,8 @@ function concludeDisplay(item_id) {
         'end' : ""
     };
 
-    items.update(item_id, {$set: {'status' : 'claimed', 'display_details' : null_display_details}}, function(error) {
+    var new_condition = item_object.condition < .1 ? item_object.condition : item_object.condition - .01;
+    items.update(item_id, {$set: {'status' : 'claimed', 'display_details' : null_display_details, 'condition' : new_condition}}, function(error) {
         if (error)
             console.log(error.message);
 
@@ -336,7 +337,7 @@ Meteor.setInterval((function() {
     }
 
     var creation_cutoff = moment().add(-5, 'minutes')._d;
-    items.remove({'status' : 'unclaimed', 'date_created' : {$lt : creation_cutoff}});
+    items.remove({'status' : {$in: ['unclaimed', 'for_sale']}, 'date_created' : {$lt : creation_cutoff}});
 
 }), check_frequency);
 

@@ -10,26 +10,56 @@
 					{{/each}}
 				</div>
 			</div>
-			<h2>{{screen_name}} - Featured Works</h2>
-			{{#each displayed screen_name}}
-				<div class="item-card" data-painting-id="{{this._id}}">
-					<div class="row no-padding no-margin">
-						<div class="col-xs-7 no-padding no-margin">
-							{{>galleryItemInfo this._id}}
-						</div>
-						<div class="col-xs-5 no-padding no-margin">
-							<div class="image-thumbnail">
-								{{>galleryItemThumbnail this._id}}
-							</div>
-							<div class="col-xs-12">
-								<div class="row button-area">
-									<span class="remaining-text">{{time_remaining this._id}}</span>
+			<h1 class="af-color">Player Gallery - {{screen_name}}</h1>
+
+			{{#with galleryData screen_name}}
+				{{#if displayed_shown}}
+				<h2>Featured Works</h2>
+					{{#each displayed}}
+						<div class="item-card" data-painting-id="{{this._id}}">
+							<div class="row no-padding no-margin">
+								<div class="col-xs-7 no-padding no-margin">
+									{{>galleryItemInfo this._id}}
+								</div>
+								<div class="col-xs-5 no-padding no-margin">
+									<div class="image-thumbnail">
+										{{>galleryItemThumbnail this._id}}
+									</div>
+									<div class="col-xs-12">
+										<div class="row button-area">
+											<span class="remaining-text">{{time_remaining this._id}}</span>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-				</div>
-			{{/each}}
+					{{/each}}
+				{{/if}}
+				
+				{{#if permanent_shown}}
+				<h2>Permanent Collection</h2>
+					{{#each permanent}}
+						<div class="item-card" data-painting-id="{{this._id}}">
+							<div class="row no-padding no-margin">
+								<div class="col-xs-7 no-padding no-margin">
+									{{>galleryItemInfo this._id}}
+								</div>
+								<div class="col-xs-5 no-padding no-margin">
+									<div class="image-thumbnail">
+										{{>galleryItemThumbnail this._id}}
+									</div>
+									<div class="col-xs-12">
+										<div class="row button-area">
+											<span class="remaining-text">{{time_remaining this._id}}</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					{{/each}}
+				{{/if}}
+			{{/with}}
+			
 
 			{{else}}
 			<div class="col-xs-12">

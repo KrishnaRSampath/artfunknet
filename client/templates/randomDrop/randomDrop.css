@@ -28,10 +28,6 @@
 	opacity: .5;
 }
 
-.template-randomDrop .crate-buttons .disabled{
-	opacity: .5;
-}
-
 .template-randomDrop .button-area .enabled {
 	color: black;
 	opacity: .5;
@@ -65,29 +61,4 @@
 
 #drop-button {
 	background-color: black;
-}
-
-.template-randomDrop .bronze-button {
-	border: 1px solid #D8947D;
-	color: #D8947D;
-}
-
-.template-randomDrop .silver-button {
-	border: 1px solid #AAAAAA;
-	color: #AAAAAA;
-}
-
-.template-randomDrop .gold-button {
-	border: 1px solid #D8AF5C;
-	color: #D8AF5C;
-}
-
-.template-randomDrop .platinum-button {
-	border: 1px solid #BFBFBF;
-	color: #BFBFBF;
-}
-
-.template-randomDrop .diamond-button {
-	border: 1px solid #93CFCF;
-	color: #93CFCF;
 }

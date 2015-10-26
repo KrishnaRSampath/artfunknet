@@ -71,7 +71,7 @@ Meteor.methods({
 				npc_interaction = {'message': "You have met an auctioneer."};
 				break;
 			case "dealer_bonus": //DISABLE - offer rare paintings to buy
-				npc_interaction = {'message': "You have met an art dealer."};
+				npc_interaction = artDealerInteraction(npc_object);
 				break;
 			case "collector_bonus": //DISABLE - offer money for painting
 				npc_interaction = {'message': "You have met an art collector."};
@@ -212,6 +212,18 @@ var artExpertInteraction = function(npc_object) {
 	items.update(highest_item._id, {$set: {'roll_count' : Number(new_count)}});
 
 	var message = "You have met an art expert who recently attended one of your events and was impressed by your collection. As a result, they have been spreading the word about your gallery. " + artwork_object.title + " by " + artwork_object.artist + " has had its roll count reduced to " + new_count + ".";
+
+	return {'message': message}
+}
+
+var collectorInteraction = function(npc_object) {
+	
+}
+
+var artDealerInteraction = function(npc_object) {
+	generateItemsForSale(Meteor.userId(), npc_object.quality, 3);
+
+	var message = "You have met an Art Dealer who would like you to consider a few offers. Go to the store to view their inventory.";
 
 	return {'message': message}
 }

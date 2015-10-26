@@ -6,7 +6,7 @@ Template.dashboard.helpers({
 				'screen_name' : user_object.profile.screen_name,
 				'bank_balance' : getCommaSeparatedValue(user_object.profile.bank_balance),
 				'display_count' : items.find({'owner' : Meteor.userId(), 'status' : 'displayed'}).count(),
-				'inventory_count' : items.find({'owner' : Meteor.userId(), 'status' : {$ne : 'unclaimed'}}).count(),
+				'inventory_count' : items.find({'owner' : Meteor.userId(), 'status' : {$nin : ['unclaimed', 'for_sale']}}).count(),
 				'auction_count' : items.find({'owner' : Meteor.userId(), 'status' : 'auctioned'}).count(),
 				'alert_count' : alerts.find({'user_id' : Meteor.userId()}).count(),
 				'private_count' : items.find({'owner' : Meteor.userId(), 'status' : 'permanent'}).count(),

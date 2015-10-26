@@ -58,6 +58,23 @@ Meteor.methods({
         else throw "invalid operation";
     },
 
+    'declineItem' : function(item_id) {
+        var item_object = canDeclineItem(item_id);
+        if (item_object) {
+            items.remove(item_object._id);
+        }
+
+        else throw "invalid operation";
+    },
+
+    'purchaseItemFromDealer' : function(item_id) {
+        var item_object = canPurchaseItemFromDealer(item_id);
+        if (item_object) {
+            chargeAccount(Meteor.userId(), getItemValue(item_id, "dealer"));
+            items.update(item_id, {$set: {'status': "claimed"}});
+        }
+    },
+
     'displayArtwork' : function(item_id, duration) {
         var errors = [];
 

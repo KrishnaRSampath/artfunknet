@@ -31,62 +31,17 @@ Template.randomDrop.helpers({
 		}
 	},
 
-	'quality' : function() {
-		return ["bronze", "silver", "gold", "platinum"];
-		//return ["bronze", "silver", "gold", "platinum", "diamond"];
-	},
-
-	'dropButton' : function(quality) {
-		Meteor.call('lookupCrateCost', quality, drop_count, function(error, result) {
-			if (error)
-				console.log(error.message);
-
-			else Session.set(quality + 'Cost', Math.floor(result))
-		})
-
-		if (Session.get(quality + 'Cost') && Meteor.user()) {
-			return {
-				'buttonQuality' : quality,
-				'crateCost' : "$" + getCommaSeparatedValue(Session.get(quality + 'Cost')),
-				'enabled' : Meteor.user().profile.bank_balance >= Session.get(quality + 'Cost')
-			}
-		}
-
-		else return {
-			'buttonQuality' : quality,
-			'crateCost' : "",
-			'enabled' : false
-		}
-	},
-
 	'full' : function() {
 		if (Meteor.userId() && Meteor.user())
 			return items.find({'owner' : Meteor.userId(), 'status' : {$ne : 'unclaimed'}}).count() >= Meteor.user().profile.inventory_cap;
 
 		else return false;
-	},
-
-	'bank_balance' : function() {
-		if (Meteor.userId() && Meteor.user())
-			return getCommaSeparatedValue(Meteor.user().profile.bank_balance);
-
-		else return 0;
 	}
 })
 
 Template.randomDrop.events ({
 	'click #drop-button.enabled' :function() {
 		Modal.show("dropAnimationModal");
-		// var now = moment().toISOString();
-		// Meteor.users.update(Meteor.userId(), {$set: {'profile.last_drop' : now}});
-	},
-
-	'click .crate-button.enabled' : function(element) {
-		var quality = $(element.target).data('button_quality');
-		Meteor.call('openCrate', Meteor.userId(), quality, drop_count, function(error, result) {
-			if (error)
-				console.log(error.message);
-		})
 	},
 
 	'click .add-to-inventory.enabled' : function(element) {
@@ -123,6 +78,5 @@ Template.randomDrop.rendered = function() {
 };
 
 Template.randomDrop.destroyed = function() {
-	//Meteor.call('clearUnclaimed', Meteor.userId());
 	Meteor.clearInterval(this.handle);
 };

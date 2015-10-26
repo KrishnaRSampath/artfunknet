@@ -1,16 +1,37 @@
+var galleryContentTracker = new Tracker.Dependency;
+
+var setGallery = function(screen_name, template_data) {
+	Meteor.call('getUserGallery', screen_name, function(error, result) {
+		if (error)
+			console.log(error.message);
+
+		else {
+			template_data["gallery_data"] = result;
+			galleryContentTracker.changed();
+		}
+	});
+}
+
 Template.userGallery.helpers({
-	'displayed': function(screen_name) {
-		Meteor.call('getUserGallery', screen_name, function(error, result) {
-			if (error)
-				console.log(error.message);
+	'galleryData': function(screen_name) {
+		galleryContentTracker.depend();
 
-			else Session.set('user_gallery', result);
-		});
+		if (this["gallery_data"] === undefined) {
+			setGallery(screen_name, this);
+			return {
+				'displayed_shown' : false,
+				'displayed' : [],
+				'permanent_shown' : false,
+				'permanent' : []
+			}
+		}
 
-		if (Session.get('user_gallery'))
-			return Session.get('user_gallery');
-
-		else return [];
+		else return {
+			'displayed_shown' : this['gallery_data'].displayed.length,
+			'displayed' : this['gallery_data'].displayed,
+			'permanent_shown' : this['gallery_data'].permanent.length,
+			'permanent' : this['gallery_data'].permanent
+		};
 	},
 
 	'time_remaining': function(item_id) {

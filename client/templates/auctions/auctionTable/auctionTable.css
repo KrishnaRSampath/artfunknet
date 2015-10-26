@@ -71,3 +71,7 @@
 	font-weight: bold;
 	color: black;
 }
+
+.template-auctionTable .item-attribute {
+	font-size: 1.5em;
+}

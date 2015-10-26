@@ -63,3 +63,7 @@
 	font-weight: bold;
 	color: black;
 }
+
+.template-galleryTable .gallery-attribute {
+	font-size: 1.5em;
+}

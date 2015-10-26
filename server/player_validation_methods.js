@@ -66,3 +66,19 @@ canClaimItem = function(item_id) {
 	var not_full = !inventoryIsFull();
 	return owned && status_ok && not_full ? item_object : undefined;
 }
+
+canDeclineItem = function(item_id) {
+	var item_object = items.findOne(item_id);
+	var owned = Meteor.userId() && item_object && item_object.owner == Meteor.userId();
+	var status_ok = item_object && item_object.status == "for_sale";
+	return owned && status_ok ? item_object : undefined;
+}
+
+canPurchaseItemFromDealer = function(item_id) {
+	var item_object = items.findOne(item_id);
+	var owned = Meteor.userId() && item_object && item_object.owner == Meteor.userId();
+	var status_ok = item_object && item_object.status == "for_sale";
+	var can_afford = Meteor.userId() && getItemValue(item_id, "dealer") <= Meteor.user().profile.bank_balance;
+	var not_full = !inventoryIsFull();
+	return owned && status_ok && can_afford && not_full ? item_object : undefined;
+}
