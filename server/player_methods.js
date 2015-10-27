@@ -20,6 +20,10 @@ chargeAccount = function(user_id, amount) {
     Meteor.users.update(user_id, {$set: {"profile.bank_balance" : new_balance}});
 }
 
+selectRandomPainting = function(selector) {
+    return items.findOne(selector, {skip: Math.floor(Math.random() * items.find(selector).count())});
+}
+
 Meteor.methods({
     'registerUser': function(user) {
         var emailExists = !! Meteor.users.findOne({ emails: { $elemMatch: { address: user.email } } });

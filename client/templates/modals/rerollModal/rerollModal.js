@@ -32,12 +32,27 @@ Template.rerollModal.helpers({
 		var item_object = items.findOne(Session.get('selectedItem'));
 		if (!!item_object) {
 			var artwork_object = artworks.findOne(item_object.artwork_id);
+
+			var primary_attributes = [];
+			var secondary_attributes = [];
+			var attributes = item_object.attributes;
+
+			for(var i=0; i < attributes.length; i++) {
+				if (attributes[i].type == "primary")
+					primary_attributes.push(attributes[i]);
+
+				else secondary_attributes.push(attributes[i]);
+			}
+
 			return {
 				'title' : artwork_object.title,
 				'artist' : artwork_object.artist,
 				'xp_rating' : Math.floor(item_object.xp_rating * 100),
 				'roll_count' : item_object.roll_count,
-				'attribute' : item_object.attributes,
+				'show_primary' : primary_attributes.length,
+				'primary_attribute' : primary_attributes,
+				'show_secondary' : secondary_attributes.length,
+				'secondary_attribute' : secondary_attributes
 			}
 		}
 
@@ -46,7 +61,10 @@ Template.rerollModal.helpers({
 			'artist' : "",
 			'xp_rating' : "",
 			'roll_count' : "",
-			'attribute' : [],
+			'show_primary' : false,
+			'primary_attribute' : [],
+			'show_secondary' : false,
+			'secondary_attribute' : []
 		}
 	},
 

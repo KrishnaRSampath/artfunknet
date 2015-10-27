@@ -99,6 +99,16 @@ Meteor.methods({
         return errors;
     },
 
+    'acceptCollectorOffer' : function(interaction_object) {
+        var item_object = canSellToCollector(interaction_object.item._id);
+        if (item_object) {
+            addFunds(Meteor.userId(), interaction_object.offer);
+            items.remove(item_object._id);
+        }
+
+        else throw "invalid operation";
+    },
+
     'setItemPermanentCollectionStatus' : function(item_id, set_to_permanent) {
         var item_object = set_to_permanent ? canSetPermanent(item_id) : canUnsetPermanent(item_id);
         if (item_object) {

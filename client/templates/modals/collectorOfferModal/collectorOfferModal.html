@@ -1,0 +1,75 @@
+<template name="collectorOfferModal">
+	<div class="template-collectorOfferModal">
+	    <div style="z-index:9999999999999999;" class="modal fade">
+	        <div class="modal-dialog">
+	            <div class="modal-content container">
+	            	{{#with offerData}}
+	                <h4>You have met an Art Collector who has been looking for one of the items in your permanent collection. They have offered you <span class="highlight af-color">${{offer}}</span> for <span class="highlight af-color">{{title}}</span> by <span class="highlight af-color">{{artist}}</span>. The estimated value of this item is <span class="highlight">${{getItemValue item._id "actual"}}.</span></h4>
+
+	            	{{#with imageInfo item._id}}
+					<img class="image-thumb" src="/img/paintings/{{filename}}" width="{{image_width}}" height="{{image_height}}"/>
+			        {{/with}}
+
+			        <div class="item-stats">
+				        <div class="row attribute-row no-padding no-margin">
+		                	<div class="col-xs-7">
+		                		<p class="stat-description">xp rating:</p>
+		                	</div>
+		                	<div class="col-xs-4">
+		                		<p class="af-color highlight value-text">{{attributeValueText item.xp_rating}}</p>
+		                	</div>
+				        </div>
+
+				        {{#with attributeData item._id}}
+				        {{#if show_primary}}
+				        <div class="attribute-divider">
+				        	<p>Primary Attributes</p>
+				        </div>
+					        {{#each primary_attribute}}
+					         <div data-attribute_id="{{this._id}}" class="row attribute-row no-padding no-margin">
+			                	<div class="col-xs-1">
+			                		<i style="color: {{getHTMLColorFromValue this.value}}" class="item-attribute fa {{this.icon}}"></i>
+			                	</div>
+			                	<div class="col-xs-6">
+			                		<p class="stat-description">{{this.description}}:</p>
+			                	</div>
+			                	<div class="col-xs-4">
+			                		<p class="af-color highlight value-text">{{attributeValueText this.value}}</p>
+			                	</div>
+					        </div>
+					        {{/each}}
+					    {{/if}}
+
+					    {{#if show_secondary}}
+					    <div class="attribute-divider">
+				        	<p>Secondary Attributes</p>
+				        </div>
+					        {{#each secondary_attribute}}
+					         <div data-attribute_id="{{this._id}}" class="row attribute-row no-padding no-margin">
+			                	<div class="col-xs-1">
+			                		<i style="color: {{getHTMLColorFromValue this.value}}" class="item-attribute fa {{this.icon}}"></i>
+			                	</div>
+			                	<div class="col-xs-6">
+			                		<p class="stat-description">{{this.description}}:</p>
+			                	</div>
+			                	<div class="col-xs-4">
+			                		<p class="af-color highlight value-text">{{attributeValueText this.value}}</p>
+			                	</div>
+					        </div>
+					        {{/each}}
+					    {{/if}}
+					    {{/with}}
+
+				    </div>
+			        {{/with}}
+
+			        <div class="action-buttons row">
+				        <button id="accept-offer" type="button" class="btn btn-default">accept</button>
+				        <button id="close-button" type="button" class="btn btn-default">decline</button>
+				    </div>
+
+	            </div>
+	        </div>
+	    </div>
+	</div>
+</template>

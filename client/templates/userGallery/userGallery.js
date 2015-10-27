@@ -101,8 +101,22 @@ Template.userGallery.events ({
 					console.log(error.message);
 
 				else {
-					Session.set('npc_interaction', interaction_object);
-					Modal.show("standardNPCMessageModal");
+					try {
+						switch(interaction_object.type) {
+							case "collector_bonus": 
+								Session.set('npc_interaction', interaction_object);
+								Modal.show("collectorOfferModal");
+								break;
+							default: 
+								Session.set('npc_interaction', interaction_object);
+								Modal.show("standardNPCMessageModal");
+								break;
+						}
+					}
+
+					catch(error) {
+						console.log(error.message);
+					}
 				}
 			})
 		}

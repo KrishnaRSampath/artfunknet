@@ -82,3 +82,10 @@ canPurchaseItemFromDealer = function(item_id) {
 	var not_full = !inventoryIsFull();
 	return owned && status_ok && can_afford && not_full ? item_object : undefined;
 }
+
+canSellToCollector = function(item_id) {
+	var item_object = items.findOne(item_id);
+	var owned = Meteor.userId() && item_object && item_object.owner == Meteor.userId();
+	var status_ok = item_object && item_object.status == "permanent";
+	return owned && status_ok ? item_object : undefined;
+}

@@ -26,25 +26,55 @@
 		                	</div>
 				        </div>
 
-				        {{#each attribute}}
-				         <div data-attribute_id="{{this._id}}" class="row attribute-row no-padding no-margin">
-		                	<div class="col-xs-1">
-		                		<i style="color: {{getHTMLColorFromValue this.value}}" class="item-attribute fa {{this.icon}}"></i>
-		                	</div>
-		                	<div class="col-xs-4">
-		                		<p class="roll-description">{{this.description}}:</p>
-		                	</div>
-		                	<div class="col-xs-1">
-		                		<p class="af-color highlight value-text">{{attributeValueText this.value}}</p>
-		                	</div>
-		                	<div class="col-xs-3">
-		                		<button data-attribute_id="{{this._id}}" class="reroll-value-button {{#if canReroll}}enabled{{else}}disabled{{/if}}">value</button>
-		                	</div>
-		                	<div class="col-xs-3">
-		                		<button data-attribute_id="{{this._id}}" class="reroll-attribute-button {{#if canReroll}}enabled{{else}}disabled{{/if}}">attribute</button>
-		                	</div>
+				        {{#if show_primary}}
+				        <div class="attribute-divider">
+				        	<p>Primary Attributes</p>
 				        </div>
-				        {{/each}}
+					        {{#each primary_attribute}}
+					         <div data-attribute_id="{{this._id}}" class="row attribute-row no-padding no-margin">
+			                	<div class="col-xs-1">
+			                		<i style="color: {{getHTMLColorFromValue this.value}}" class="item-attribute fa {{this.icon}}"></i>
+			                	</div>
+			                	<div class="col-xs-4">
+			                		<p class="roll-description">{{this.description}}:</p>
+			                	</div>
+			                	<div class="col-xs-1">
+			                		<p class="af-color highlight value-text">{{attributeValueText this.value}}</p>
+			                	</div>
+			                	<div class="col-xs-3">
+			                		<button data-attribute_id="{{this._id}}" class="reroll-value-button {{#if canReroll}}enabled{{else}}disabled{{/if}}">value</button>
+			                	</div>
+			                	<div class="col-xs-3">
+			                		<button data-attribute_id="{{this._id}}" class="reroll-attribute-button {{#if canReroll}}enabled{{else}}disabled{{/if}}">attribute</button>
+			                	</div>
+					        </div>
+					        {{/each}}
+					    {{/if}}
+
+					    {{#if show_secondary}}
+					    <div class="attribute-divider">
+				        	<p>Secondary Attributes</p>
+				        </div>
+					        {{#each secondary_attribute}}
+					         <div data-attribute_id="{{this._id}}" class="row attribute-row no-padding no-margin">
+			                	<div class="col-xs-1">
+			                		<i style="color: {{getHTMLColorFromValue this.value}}" class="item-attribute fa {{this.icon}}"></i>
+			                	</div>
+			                	<div class="col-xs-4">
+			                		<p class="roll-description">{{this.description}}:</p>
+			                	</div>
+			                	<div class="col-xs-1">
+			                		<p class="af-color highlight value-text">{{attributeValueText this.value}}</p>
+			                	</div>
+			                	<div class="col-xs-3">
+			                		<button data-attribute_id="{{this._id}}" class="reroll-value-button {{#if canReroll}}enabled{{else}}disabled{{/if}}">value</button>
+			                	</div>
+			                	<div class="col-xs-3">
+			                		<button data-attribute_id="{{this._id}}" class="reroll-attribute-button {{#if canReroll}}enabled{{else}}disabled{{/if}}">attribute</button>
+			                	</div>
+					        </div>
+					        {{/each}}
+					    {{/if}}
 
 				    </div>
                 	

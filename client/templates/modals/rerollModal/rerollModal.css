@@ -78,3 +78,8 @@
 .template-rerollModal .value-text {
 	font-size: 1.2em;
 }
+
+.template-rerollModal .attribute-divider {
+	margin-top: 24px;
+	color: black !important;
+}

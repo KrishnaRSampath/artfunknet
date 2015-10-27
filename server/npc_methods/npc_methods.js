@@ -74,7 +74,7 @@ Meteor.methods({
 				npc_interaction = artDealerInteraction(npc_object);
 				break;
 			case "collector_bonus": //DISABLE - offer money for painting
-				npc_interaction = {'message': "You have met an art collector."};
+				npc_interaction = collectorInteraction(npc_object);
 				break;
 			case "designer_bonus": //DISABLE - give discount to store
 				npc_interaction = {'message': "You have met a designer."};
@@ -112,10 +112,10 @@ var enthusiastInteraction = function(npc_object) {
 	var xp_chunk_percentage;
 
 	switch(npc_object.quality) {
-		case 'bronze' : xp_chunk_percentage = .1; break;
-		case 'silver' : xp_chunk_percentage = .15; break;
-		case 'gold' : xp_chunk_percentage = .2; break;
-		case 'platinum' : xp_chunk_percentage = .25; break;
+		case 'bronze' : xp_chunk_percentage = .2; break;
+		case 'silver' : xp_chunk_percentage = .3; break;
+		case 'gold' : xp_chunk_percentage = .4; break;
+		case 'platinum' : xp_chunk_percentage = .5; break;
 	};
 
 	var xp_chunk = getXPChunk(Meteor.user().profile.level);
@@ -217,7 +217,28 @@ var artExpertInteraction = function(npc_object) {
 }
 
 var collectorInteraction = function(npc_object) {
-	
+	//TODO save interaction object to a DB, then return the id. This allows server-side verification that the offer was legitimate if the player accepts.
+	var offer_multiplier;
+
+	switch(npc_object.quality) {
+		case 'bronze': offer_multiplier = 1.8; break;
+		case 'silver': offer_multiplier = 2.2; break;
+		case 'gold': offer_multiplier = 2.6; break;
+		case 'platinum': offer_multiplier = 3; break;
+		default: offer_multiplier = 0; break;
+	}
+
+	var random_permanent = selectRandomPainting({'owner': Meteor.userId(), 'status': "permanent"});
+
+	if (random_permanent) {
+		var offer = Math.floor(getItemValue(random_permanent._id, "actual") * offer_multiplier);
+		return {'type': "collector_bonus", 'offer': offer, 'item': random_permanent};
+	}
+
+	else {
+		var message = "You have met an Art Collector that would love to add to their collection, but you don't have any items in your permanent collection to offer.";
+		return {'message': message}
+	}
 }
 
 var artDealerInteraction = function(npc_object) {

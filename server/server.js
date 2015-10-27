@@ -390,6 +390,7 @@ function concludeAuctionOnTimeout(auction_id, time_offset) {
 }
 
 var permanent_collection_xp_frequency = 3600000; //once per hour
+//permanent_collection_xp_frequency = 10000;
 Meteor.setInterval((function() {
     var permanent_items = items.find({'status' : 'permanent'}).fetch();
     for (var i=0; i < permanent_items.length; i++) {
@@ -397,12 +398,13 @@ Meteor.setInterval((function() {
 
         var periods_displayed = Math.floor(time_displayed / permanent_collection_xp_frequency);
 
-        var xp_max_percentage = .01;
-        var xp_increment = .002;
+        var xp_max_percentage = .1;
+        var xp_increment = .01;
         var percentage = periods_displayed * xp_increment <= xp_max_percentage ? periods_displayed * xp_increment : xp_max_percentage;
 
         var time_til_next_xp = (permanent_collection_xp_frequency * (periods_displayed + 1)) - time_displayed;
 
+        //TODO see if this gives xp after paintings have been removed from permanent collection
         giveXPOnTimeout(permanent_items[i].owner, percentage * permanent_items[i].xp_rating, time_til_next_xp);
     }
 }), permanent_collection_xp_frequency);
@@ -452,6 +454,9 @@ Meteor.setInterval((function() {
             if (proc)
                 createNPC(db_object, attribute_ids[i], npc_spawn_frequency);
         }
+
+        //code below automatically spawns npc's of a specific type, used for debugging/testing
+        //createNPC(db_object, attributes.findOne({'title': "collector_bonus"})._id, npc_spawn_frequency);
     });
 
 }), npc_spawn_frequency);
