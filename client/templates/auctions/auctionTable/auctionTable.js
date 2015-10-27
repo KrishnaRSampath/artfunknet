@@ -172,7 +172,7 @@ Template.auctionTable.helpers({
 
 	'full' : function() {
 		if (Meteor.userId())
-			return items.find({'owner' : Meteor.userId(), 'status' : {$ne : 'unclaimed'}}).count() >= Meteor.user().profile.inventory_cap;
+			return items.find({'owner' : Meteor.userId(), 'status' : {$nin : ['unclaimed', 'for_sale']}}).count() >= Meteor.user().profile.inventory_cap;
 
 		else return false;
 	}
