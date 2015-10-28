@@ -76,6 +76,7 @@ mongo@1.1.1
 mongo-id@1.0.1
 mongo-livedata@1.0.9
 mrt:bootstrap-3@0.3.8
+mrt:jquery-ui@1.9.2
 npm-bcrypt@0.7.8_2
 npm-mongo@1.4.39_1
 observe-sequence@1.0.7

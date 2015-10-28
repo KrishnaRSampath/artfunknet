@@ -96,6 +96,11 @@ Meteor.methods({
         }
     },
 
+    'getUserScreenName' : function(user_id) {
+        var user_object = Meteor.users.findOne(user_id);
+        return user_object ? user_object.profile.screen_name : undefined;
+    },
+
     'placeBid' : function(user_id, auction_id, amount) {
         try {
             var auction_object = auctions.findOne({'_id': auction_id});

@@ -19,8 +19,8 @@
 				</tr>
 				{{#each table_data.gallery}}
 					{{#with galleryInfo this}}
-					<tr data-user_id="{{_id}}">
-						<td><a href="/user/{{owner}}">{{owner}}</a></td>
+					<tr class="gallery-row" data-owner="{{owner}}">
+						<td>{{owner}}</td>
 						<td>
 						{{#each attribute}}
 							<i data-attribute_description="{{description}}" data-attribute_value="{{value}}" data-attribute_id="{{_id}}" style="color: rgb({{getRatingColor value}}, 0, 0)" class="gallery-attribute fa {{icon}}"></i>

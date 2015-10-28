@@ -114,5 +114,23 @@ Template.dashboard.events({
 
 	'click #edit-fee' : function() {
 		Modal.show('entryFeeModal');
+	},
+
+	'change #entry-fee' : function() {
+		console.log($('#entry-fee').data().uiSlider.options.value);
 	}
 });
+
+Template.dashboard.rendered = function() {
+	$('#entry-fee').slider({
+		'value': Meteor.user().profile.entry_fee,
+		'max': 100000,
+		'min': 0,
+		'change': function(event, ui) {
+			Meteor.call('updateEntryFee', ui.value - (ui.value % 1000), function(error) {
+				if (error)
+					console.log(error.message)
+			});
+		}
+	});
+}

@@ -18,7 +18,8 @@ Template.itemInfo.helpers({
 				'attribute' : item_object.attributes,
 				'item_id' : item_object._id,
 				'xp_rating' : item_object.xp_rating,
-				'xp_rating_text' : Math.floor(item_object.xp_rating * 100)
+				'xp_rating_text' : Math.floor(item_object.xp_rating * 100),
+				'roll_count' : item_object.roll_count
 			}
 
 			return item_data_object;
@@ -38,7 +39,8 @@ Template.itemInfo.helpers({
 				'attribute' : "",
 				'item_id' : "",
 				'xp_rating' : "",
-				'xp_rating_text' : ""
+				'xp_rating_text' : "",
+				'roll_count' : ""
 			}
 		}
 	}

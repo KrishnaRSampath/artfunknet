@@ -1,3 +1,21 @@
+player_level_max = 50;
+
+createUser = function(user_object, callback){
+    // if (!user_object.profile.photo)
+    //     user_object.profile.photo = getDefaultProfileImageId()
+
+    var cap_object = getCapSetterObject(0);
+    var cap_keys = Object.keys(cap_object);
+    for (var i=0; i < cap_keys.length; i++) {
+        var key = cap_keys[i];
+        var value = cap_object[key];
+
+        user_object.profile[key] = value;
+    }
+
+    return Accounts.createUser(user_object, callback);
+}
+
 addFunds = function(user_id, amount) {
     if (isNaN(amount))
         throw "invalid amount";
@@ -22,6 +40,34 @@ chargeAccount = function(user_id, amount) {
 
 selectRandomPainting = function(selector) {
     return items.findOne(selector, {skip: Math.floor(Math.random() * items.find(selector).count())});
+}
+
+getCapSetterObject = function(player_level) {
+    var cap_min_max_object = {
+        'inventory_cap': {'start': 9, 'end': 50},
+        'display_cap': {'start': 5, 'end': 12},
+        'auction_cap': {'start': 5, 'end': 12},
+        'ticket_cap': {'start': 3, 'end': 10},
+        'pc_cap': {'start': 5, 'end': 12},
+        'visitor_cap': {'start': 20, 'end': 200},
+    }
+
+    var setter_object = {};
+
+    var cap_keys = Object.keys(cap_min_max_object);
+    for (var i=0; i < cap_keys.length; i++) {
+        var key = cap_keys[i];
+        var start = cap_min_max_object[key].start;
+        var end = cap_min_max_object[key].end;
+
+        var range = end - start;
+
+        var value = Math.floor(start + (range * (player_level / player_level_max)));
+
+        setter_object[key] = value;
+    }
+
+    return setter_object;
 }
 
 Meteor.methods({
@@ -115,7 +161,7 @@ Meteor.methods({
     },
 
     'clearAlerts' : function() {
-        alerts.remove({'user_id' : Meteor.userId()}, {multi : true});
+        alerts.remove({'user_id' : Meteor.userId()});
     },
 
     'removeAlert' : function(alert_id) {

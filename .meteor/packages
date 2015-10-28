@@ -26,3 +26,4 @@ peppelg:bootstrap-3-modal
 cfs:standard-packages
 cfs:filesystem
 accounts-ui
+mrt:jquery-ui

@@ -217,7 +217,7 @@ lookupCrateCost = function(quality, count) {
         total_average += (average_value * (rarity_map[rarity] / total_proportions));
     }
 
-    return total_average * count * rarity_inflation_coefficient[quality];
+    return Math.floor(total_average * count * rarity_inflation_coefficient[quality]);
 }
 
 generateItems = function(user_id, quality, count) {

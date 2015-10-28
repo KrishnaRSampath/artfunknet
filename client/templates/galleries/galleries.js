@@ -83,6 +83,11 @@ Template.galleryTable.events({
 		var description = element.target.dataset.attribute_description;
 		var hover_string = "level " + value + " " + description;
 		setFootnote(hover_string, 4);
+	},
+
+	'click .gallery-row' : function(element) {
+		var owner = $(element.target).closest('.gallery-row').data().owner;
+		Router.go('/user/' + owner);	
 	}
 })
 
