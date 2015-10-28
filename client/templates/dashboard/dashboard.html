@@ -54,7 +54,7 @@
 				</div>		
 				<div class="row ticket-info">
 					{{#each ticket}}
-					<a href="/user/{{screen_name}}" class="ticket-button"><i data-expiration_string="{{expiration_string}}" data-owner_name="{{screen_name}}" class="fa fa-ticket"></i></a>
+					<a href="/user/{{screen_name}}" class="ticket-button {{#if unmet_npcs}}af-color{{else}}npcs-met{{/if}}"><i data-expiration_string="{{expiration_string}}" data-owner_name="{{screen_name}}" class="fa fa-ticket"></i></a>
 					{{/each}}
 				</div>
 			</div>

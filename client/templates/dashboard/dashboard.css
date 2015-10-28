@@ -44,10 +44,17 @@
 	margin-top: 40px;
 }
 
+.template-dashboard .ticket-info {
+	margin-top: 24px;
+}
+
 .template-dashboard .ticket-button {
 	font-size: 3em;
-	color: #777777;
 	opacity: .5;
+}
+
+.template-dashboard .npcs-met {
+	color: #777777;
 }
 
 .template-dashboard .player-info p {
@@ -64,6 +71,12 @@
 	cursor: pointer;
 }
 
-.template-dashboard .ticket-button:hover {
+.template-dashboard .npcs-met:hover {
 	opacity: 1;
+	color: #777777;
+}
+
+.template-dashboard .af-color:hover {
+	opacity: 1;
+	color: #FF33CC;
 }
