@@ -3,7 +3,7 @@ Template.login.events({
         event.preventDefault();
         $(event.target).blur();
 
-        var email = template.find('#login-email').value;
+        var email = template.find('#login-email').value.toLowerCase();
         var password = template.find('#login-password').value;
 
         Meteor.loginWithPassword(email, password, function(error){

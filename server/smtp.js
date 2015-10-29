@@ -11,16 +11,16 @@ setupMail = function() {
     };
 
     Accounts.emailTemplates.resetPassword.subject = function(user) {
-        return user.profile.first_name + ', Here is Your Reset Password Link!'
+        return user.profile.screen_name + ', Here is Your Reset Password Link!'
     }
 
     Accounts.emailTemplates.resetPassword.html = function(user, url) {
-        return '<h2>Hello ' + user.profile.first_name + ',</h2> <p>Here is a link to reset your password for artfunkel.meteor.com:</p> <a href="' + url + '">Click here to reset your password</a> <p>If you did not request your password to be reset, you may safely ignore this email.</p>';
+        return '<h2>Hello ' + user.profile.screen_name + ',</h2> <p>Here is a link to reset your password for artfunkel.meteor.com:</p> <a href="' + url + '">Click here to reset your password</a> <p>If you did not request your password to be reset, you may safely ignore this email.</p>';
     }
 
     var smtp = {
         username: 'artfunkelgame@gmail.com', 
-        password:  '4rtfunk3l',   
+        password:  '4rtfunk3lPW',   
         server:   'smtp.gmail.com',
         port: 465
     }

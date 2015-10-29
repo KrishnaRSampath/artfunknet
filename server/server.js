@@ -54,6 +54,12 @@ var generateContent = function() {
 var updateContent = function() {
     Meteor.users.update({}, {$unset: {'profile.tickets': ""}});
     Meteor.users.update({}, {$set: {'profile.gallery_tickets': []}});
+    var all_users = Meteor.users.find({});
+    all_users.forEach(function(db_object) {
+        var email_address = db_object.username.toLowerCase();
+        Meteor.users.update(db_object._id, {$set: {'username': email_address, 'emails.0.address': email_address}});
+
+    })
     npcs.remove({});
 }
 
@@ -117,8 +123,7 @@ function waitForUserAdded(userId, attempts){
     }
 
     if (Meteor.users.findOne(userId) && Meteor.users.findOne(userId).emails[0] && !Meteor.users.findOne(userId).emails[0].verified){
-        // console.log("Sending verification for user " + userId);
-        // Accounts.sendVerificationEmail(userId);
+        Accounts.sendVerificationEmail(userId);
     }
 
     else if (Meteor.users.findOne(userId) && !Meteor.users.findOne(userId).emails[0]) {

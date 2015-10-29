@@ -35,7 +35,7 @@ Template.registration.events({
 
         var user_object = {
             "username": template.find('#email').value,
-            "email": template.find('#email').value,
+            "email": template.find('#email').value.toLowerCase(),
             "password": template.find('#password').value,
             "profile": {
                 "screen_name": template.find('#screen_name').value,

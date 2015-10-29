@@ -186,10 +186,7 @@ Meteor.methods({
     },
 
     'sendResetPasswordEmail': function(email_address) {
-        console.log(email_address);
-        var user = Meteor.users.findOne({"emails.0.address": email_address});
-        console.log(user);
-        console.log(user._id);
+        var user = Meteor.users.findOne({"username": email_address});
 
         if (user) {
             Accounts.sendResetPasswordEmail(user._id);
