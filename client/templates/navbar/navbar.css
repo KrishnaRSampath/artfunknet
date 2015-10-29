@@ -5,7 +5,7 @@
 	opacity: .75;
 }
 
-.template-navbar .nav-icon :hover {
+.template-navbar .nav-icon:hover {
 	opacity: 1;
 }
 
@@ -42,11 +42,10 @@
 	color: #FFFFFF;
 }
 
-.template-navbar .af-color:hover {
-	opacity: 1;
-	color: #FF33CC;
+.template-navbar .af-color {
+	color: #FF33CC !important;
 }
 
-.template-navbar .af-color:focus {
-	color: #FF33CC;
+.template-navbar .af-color:hover {
+	opacity: 1;
 }

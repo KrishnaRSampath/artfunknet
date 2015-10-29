@@ -161,8 +161,16 @@ a {
 	color: #FF33CC;
 }
 
-.blue {
-	color: #0066FF;
+.blue-text {
+	color: #3399FF !important;
+}
+
+.green-text {
+	color: #00cc33 !important;
+}
+
+.yellow-text {
+	color: #fffb33 !important;
 }
 
 .modal-dialog {

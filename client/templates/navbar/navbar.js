@@ -9,14 +9,14 @@ Template.navbar.helpers({
 			var ticket_array = [];
 			for (var i=0; i < tickets.length; i++) {
 				var gallery_object = galleries.findOne({'owner_id' : tickets[i].owner_id});
-				var met_npcs = npcs.find({'owner_id': gallery_object.owner_id, 'players_met': {$ne: Meteor.userId()}}).count();
+				var unmet_npcs = npcs.find({'owner_id': gallery_object.owner_id, 'players_met': {$ne: Meteor.userId()}}).count();
 
 				if (gallery_object) {
 					var ticket_object = {
 						'owner_name' : gallery_object.owner,
 						'owner_id' : tickets[i].owner_id,
 						'expiration_string' : getTimeString(moment(tickets[i].expiration)),
-						'unmet_npcs' : met_npcs > 0
+						'unmet_npcs' : unmet_npcs > 0
 					}
 					ticket_array.push(ticket_object);
 				}
@@ -28,6 +28,25 @@ Template.navbar.helpers({
 		catch(error) {
 			return [];
 		}
+	},
+
+	'hasAlerts' : function() {
+		if (Meteor.user() == undefined)
+			return false;
+		
+		return alerts.findOne({'user_id': Meteor.userId()}) !== undefined;
+	},
+
+	'hasLoot' : function() {
+		return items.findOne({'owner': Meteor.userId(), 'status': "unclaimed"}) !== undefined;
+	},
+
+	'hasForSale' : function() {
+		return items.findOne({'owner': Meteor.userId(), 'status': "for_sale"}) !== undefined; 
+	},
+
+	'hasVisitors' : function() {
+		return npcs.findOne({'owner_id': Meteor.userId(), 'players_met': {$ne: Meteor.userId()}}) !== undefined;
 	}
 })
 

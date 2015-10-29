@@ -3,13 +3,13 @@
 		<div class="col-xs-12 no-padding pull-right">
 			<div class="container">
 				<div class="col-xs-6 no-padding">
-					<a href="/"><i data-title="Home" class="nav-icon fa fa-home"></i></a>
+					<a href="/"><i data-title="Home" class="{{#if hasAlerts}}blue-text{{/if}} nav-icon fa fa-home"></i></a>
 						{{#if currentUser}}
 						<a href="/auctions"><i data-title="Auction House" class="nav-icon fa fa-gavel"></i></a>
-						<a href="/loot"><i data-title="Loot Section" class="nav-icon fa fa-gift"></i></a>
-						<a href="/store"><i data-title="Store" class="nav-icon fa fa-money"></i></a>
+						<a href="/loot"><i data-title="Loot Section" class="{{#if hasLoot}}yellow-text{{/if}} nav-icon fa fa-gift"></i></a>
+						<a href="/store"><i data-title="Store" class="{{#if hasForSale}}green-text{{/if}} nav-icon fa fa-money"></i></a>
 						<a href="/galleries"><i data-title="Player Galleries" class="nav-icon fa fa-globe"></i></a>
-						<a href="/user/{{screen_name}}"><i data-title="My Gallery" class="nav-icon fa fa-picture-o"></i></a>
+						<a href="/user/{{screen_name}}"><i data-title="My Gallery" class="{{#if hasVisitors}}af-color{{/if}} nav-icon fa fa-picture-o"></i></a>
 				        <a href="/logout"><i data-title="Log Out" class="nav-icon fa fa-sign-out light-gray"></i></a>
 				    	{{/if}}
 				    <a href="/help"><i data-title="Help" class="nav-icon fa fa-question"></i></a>
