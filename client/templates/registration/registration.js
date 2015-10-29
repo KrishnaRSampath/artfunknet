@@ -33,27 +33,12 @@ Template.registration.events({
     'click #register-button' : function(event, template) {
         event.preventDefault();
 
-        var last_drop = moment().add(-1, 'days');
-
         var user_object = {
             "username": template.find('#email').value,
             "email": template.find('#email').value,
             "password": template.find('#password').value,
             "profile": {
                 "screen_name": template.find('#screen_name').value,
-                "user_type": "player",
-                "bank_balance" : 100000,
-                "last_drop" : last_drop._d.toISOString(),
-                // 'inventory_cap' : 9,
-                // 'display_cap' : 5,
-                // 'auction_cap' :5,
-                // 'ticket_cap' : 8,
-                // 'pc_cap' : 5,
-                'level' : 0,
-                'xp' : 0,
-                'entry_fee' : 0,
-                'gallery_tickets' : [],
-                'gallery_details' : {}
             }
         };
 

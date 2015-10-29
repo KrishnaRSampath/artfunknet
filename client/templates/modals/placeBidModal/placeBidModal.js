@@ -63,7 +63,7 @@ Template.placeBidModal.events({
     	}
 
     	else {
-    		Meteor.call('placeBid', Meteor.userId(), auction_object._id, bid_amount, function(error) {
+    		Meteor.call('placeBid', auction_object._id, bid_amount, function(error) {
     			if (error)
     				console.log(error.message);
     		});
@@ -83,7 +83,7 @@ Template.placeBidModal.events({
     		$('.errors').show();
 
     	else {
-    		Meteor.call('placeBid', Meteor.userId(), auction_object._id, auction_object.bid_minimum, function(error) {
+    		Meteor.call('placeBid', auction_object._id, auction_object.bid_minimum, function(error) {
     			if (error)
     				console.log(error.message);
     		});
@@ -102,7 +102,7 @@ Template.placeBidModal.events({
     		$('.errors').show();
 
     	else {
-    		Meteor.call('placeBid', Meteor.userId(), auction_object._id, auction_object.buy_now, function(error) {
+    		Meteor.call('placeBid', auction_object._id, auction_object.buy_now, function(error) {
     			if (error)
     				console.log(error.message);
     		});

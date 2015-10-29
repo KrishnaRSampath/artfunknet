@@ -44,19 +44,6 @@
 	margin-top: 40px;
 }
 
-.template-dashboard .ticket-info {
-	margin-top: 24px;
-}
-
-.template-dashboard .ticket-button {
-	font-size: 3em;
-	opacity: .5;
-}
-
-.template-dashboard .npcs-met {
-	color: #777777;
-}
-
 .template-dashboard .player-info p {
 	font-size: 1.2em;
 }
@@ -69,6 +56,19 @@
 	color: black;
 	opacity: 1em;
 	cursor: pointer;
+}
+
+.template-dashboard .ticket-info {
+	margin-top: 24px;
+}
+
+.template-dashboard .ticket-button {
+	font-size: 3em;
+	opacity: .5;
+}
+
+.template-dashboard .npcs-met {
+	color: #777777;
 }
 
 .template-dashboard .npcs-met:hover {

@@ -54,11 +54,14 @@ Template.userGallery.helpers({
 
 		if (Meteor.user() && gallery_object) {
 			var viewer_object = Meteor.user();
-			var tickets_maxed = viewer_object.profile.tickets != undefined && Object.keys(viewer_object.profile.tickets).length >= viewer_object.profile.ticket_cap;
+			var tickets_maxed = viewer_object.profile.gallery_tickets.length >= viewer_object.profile.ticket_cap;
 			var insufficient_funds = gallery_object.entry_fee > viewer_object.profile.bank_balance;
+			var paid = viewer_object.profile.gallery_tickets.some(function(ticket_object) {
+				return ticket_object.owner_id == gallery_object.owner_id;
+			});
 
 			return {
-				'paid' : viewer_object.profile.screen_name == screen_name || (viewer_object.profile.tickets != undefined && viewer_object.profile.tickets[gallery_object.owner_id] != undefined),
+				'paid' : paid || screen_name == viewer_object.profile.screen_name,
 				'pay_fee_enabled' : !insufficient_funds && !tickets_maxed,
 				'entry_fee_text' : "$" + getCommaSeparatedValue(gallery_object.entry_fee),
 				'screen_name' : screen_name,

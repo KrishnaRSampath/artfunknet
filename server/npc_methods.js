@@ -29,12 +29,6 @@ createNPC = function(gallery_object, attribute_id, duration) {
     npcs.insert(npc_object, function(error, inserted_id) {
         if (error)
             console.log(error.message)
-
-        else {
-            Meteor.setTimeout(function() {
-                npcs.remove(inserted_id);
-            }, duration);
-        }
     })
 }
 

@@ -52,11 +52,9 @@ var generateContent = function() {
 }
 
 var updateContent = function() {
-    var user_objects = Meteor.users.find().fetch();
-    for (var i=0; i < user_objects.length; i++) {
-        if (user_objects[i].profile.gallery_details === undefined)
-            Meteor.users.update(user_objects[i]._id, {$set: {'profile.gallery_details' : {} }});
-    }
+    Meteor.users.update({}, {$unset: {'profile.tickets': ""}});
+    Meteor.users.update({}, {$set: {'profile.gallery_tickets': []}});
+    npcs.remove({});
 }
 
 Meteor.startup(function() {
@@ -67,8 +65,6 @@ Meteor.startup(function() {
 		generateContent();
 
     updateContent();
-
-    npcs.remove({});
 
     //clear out expired tickets
     //conclude expired auctions
@@ -82,22 +78,12 @@ Meteor.startup(function() {
     }
 
     if (Meteor.users.find().count() == 0) {
-        var last_drop = moment().add(-1, 'days');
-
         var admin_object = {
             "username": "jpollack320@gmail.com",
             "email": "jpollack320@gmail.com",
             "password": "password",
             "profile": {
                 'screen_name': "EindacorDS",
-                'user_type': "player",
-                'bank_balance' : 100000,
-                'last_drop' : last_drop._d.toISOString(),
-                'level' : 0,
-                'xp' : 0,
-                'entry_fee' : 0,
-                'gallery_tickets' : [],
-                'gallery_details' : {}
             }
         };
 
@@ -107,13 +93,6 @@ Meteor.startup(function() {
             "password": "Password123!",
             "profile": {
                 'screen_name': "PMoons",
-                'user_type': "player",
-                'bank_balance' : 100000,
-                'last_drop' : last_drop._d.toISOString(),
-                'level' : 0,
-                'xp' : 0,
-                'entry_fee' : 0,
-                'gallery_tickets' : []
             }
         }
         
@@ -123,14 +102,6 @@ Meteor.startup(function() {
             "password": "password",
             "profile": {
                 'screen_name': "Buyer",
-                'user_type': "player",
-                'bank_balance' : 10000000,
-                'last_drop' : last_drop._d.toISOString(),
-                'level' : 0,
-                'xp' : 0,
-                'entry_fee' : 0,
-                'gallery_tickets' : [],
-                'gallery_details' : {}
             }
         };
 

@@ -101,10 +101,11 @@ Meteor.methods({
         return user_object ? user_object.profile.screen_name : undefined;
     },
 
-    'placeBid' : function(user_id, auction_id, amount) {
+    'placeBid' : function(auction_id, amount) {
         try {
             var auction_object = auctions.findOne({'_id': auction_id});
             var item_object = items.findOne({'_id': auction_object.item_id});
+            var user_object = Meteor.user();
 
             if (item_object == undefined)
                 throw "cannot find item";
@@ -115,17 +116,17 @@ Meteor.methods({
             if (amount < auction_object.bid_minimum && (amount < auction_object.buy_now && auction_object.buy_now != -1))
                 throw "invalid amount";
 
-            if (! !!Meteor.userId() || Meteor.userId() != user_id)
+            if (user_object === undefined)
                 throw "invalid user";
 
-            if (amount > Meteor.user().profile.bank_balance)
+            if (amount > user_object.profile.bank_balance)
                 throw "invalid amount";
 
             if (amount >= auction_object.buy_now && auction_object.buy_now != -1) {
                 refundHighestBid(auction_id);
 
                 var highest_bidder = getHighestBidder(auction_id);
-                if (highest_bidder && highest_bidder != Meteor.userId()) {
+                if (highest_bidder && highest_bidder != user_object._id) {
                     var message = "Someone has purchased one of your watched items: " + auction_object.title + " by " + auction_object.artist;
                     var alert_object = {
                         'user_id' : highest_bidder,
@@ -151,10 +152,10 @@ Meteor.methods({
 
                 alerts.insert(alert_object);
 
-                chargeAccount(user_id, auction_object.buy_now);
+                chargeAccount(user_object._id, auction_object.buy_now);
                 var owner_id = item_object.owner;
                 addFunds(owner_id, auction_object.buy_now);
-                items.update({'_id': item_object._id}, {$set: {'status' : 'claimed', 'owner': user_id}});
+                items.update({'_id': item_object._id}, {$set: {'status' : 'claimed', 'owner': user_object._id}});
                 auctions.remove({'_id': auction_id});
 
                 return;
@@ -180,7 +181,7 @@ Meteor.methods({
             }
 
             var bid_object = {
-                'user_id': user_id,
+                'user_id': user_object._id,
                 'amount' : amount,
                 'date' : moment(),
             }
@@ -192,7 +193,7 @@ Meteor.methods({
                 }
             );
 
-            chargeAccount(user_id, amount);
+            chargeAccount(user_object._id, amount);
         }
 
         catch(error) {
@@ -298,7 +299,8 @@ var refundHighestBid = function(auction_id) {
                 highest_bid = bid_history[n];
         }
 
-        addFunds(highest_bid.user_id, highest_bid.amount);
+        if (highest_bid.user_id != "auction_bot")
+            addFunds(highest_bid.user_id, highest_bid.amount);
     }
 }
 

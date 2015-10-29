@@ -13,6 +13,15 @@ createUser = function(user_object, callback){
         user_object.profile[key] = value;
     }
 
+    user_object.profile.user_type = "player";
+    user_object.profile.bank_balance = 100000;
+    user_object.profile.last_drop = moment().add(-1, 'days')._d.toISOString();
+    user_object.profile.level = 0;
+    user_object.profile.xp = 0;
+    user_object.profile.entry_fee = 1000;
+    user_object.profile.gallery_tickets = [];
+    user_object.profile.gallery_details = {};
+
     return Accounts.createUser(user_object, callback);
 }
 
@@ -177,7 +186,10 @@ Meteor.methods({
     },
 
     'sendResetPasswordEmail': function(email_address) {
+        console.log(email_address);
         var user = Meteor.users.findOne({"emails.0.address": email_address});
+        console.log(user);
+        console.log(user._id);
 
         if (user) {
             Accounts.sendResetPasswordEmail(user._id);
@@ -188,36 +200,20 @@ Meteor.methods({
     },
 
     'purchaseTicket' : function(buyer_id, owner_id) {
-        // var ticket_duration = 10000;
-        var ticket_duration = 1800000;
-        var ticket_expiration = moment().add(ticket_duration, 'milliseconds')._d.toISOString();
+        var ticket_duration = 30;
+        // ticket_duration = 1;
+        var ticket_expiration = moment().add(ticket_duration, 'minutes')._d.toISOString();
         var entry_fee = Meteor.users.findOne(owner_id).profile.entry_fee;
 
         if (entry_fee > Meteor.user().profile.bank_balance)
             return;
 
-        var current_tickets = Meteor.users.findOne(buyer_id).profile.tickets;
-
-        if (current_tickets == undefined) {
-            var ticket_object = {};
-            ticket_object[owner_id] = ticket_expiration;
-            Meteor.users.update(buyer_id, {$set: {'profile.tickets' : ticket_object}});
+        var ticket_object = {
+            'owner_id': owner_id,
+            'expiration': ticket_expiration
         }
 
-        else {
-            if (Object.keys(current_tickets).length >= Meteor.users.findOne(buyer_id).profile.ticket_cap)
-                return;
-
-            current_tickets[owner_id] = ticket_expiration;
-            Meteor.users.update(buyer_id, {$set: {'profile.tickets' : current_tickets}});
-        }
-
-        Meteor.setTimeout(function() {
-            var buyer_object = Meteor.users.findOne(buyer_id);
-            var current_tickets = buyer_object.profile.tickets;
-            delete current_tickets[owner_id];
-            Meteor.users.update(buyer_id, {$set: {'profile.tickets' : current_tickets}});
-        }, ticket_duration);
+        Meteor.users.update(buyer_id, {$push: {'profile.gallery_tickets': ticket_object}})
 
         addFunds(owner_id, entry_fee);
         addXPChunkPercentage(owner_id, .02);

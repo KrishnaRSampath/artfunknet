@@ -83,30 +83,24 @@ Template.dashboard.helpers({
 
 	'ticket' : function() {
 		try {
-			var tickets = Meteor.user().profile.tickets;
-			if (tickets != undefined) {
-				var ticket_ids = Object.keys(tickets);
-				var ticket_array = [];
-				for (var i=0; i < ticket_ids.length; i++) {
-					var gallery_object = galleries.findOne({'owner_id' : ticket_ids[i]});
+			var tickets = Meteor.user().profile.gallery_tickets;
+			var ticket_array = [];
+			for (var i=0; i < tickets.length; i++) {
+				var gallery_object = galleries.findOne({'owner_id' : tickets[i].owner_id});
+				var met_npcs = npcs.find({'owner_id': gallery_object.owner_id, 'players_met': {$ne: Meteor.userId()}}).count();
 
-					var met_npcs = npcs.find({'owner_id': gallery_object.owner_id, 'players_met': {$ne: Meteor.userId()}}).count();
-
-					if (gallery_object) {
-						var ticket_object = {
-							'screen_name' : gallery_object.owner,
-							'owner_id' : ticket_ids[i],
-							'expiration_string' : getTimeString(moment(tickets[ticket_ids[i]])),
-							'unmet_npcs' : met_npcs > 0
-						}
-						ticket_array.push(ticket_object);
+				if (gallery_object) {
+					var ticket_object = {
+						'owner_name' : gallery_object.owner,
+						'owner_id' : tickets[i].owner_id,
+						'expiration_string' : getTimeString(moment(tickets[i].expiration)),
+						'unmet_npcs' : met_npcs > 0
 					}
+					ticket_array.push(ticket_object);
 				}
-
-				return ticket_array;
 			}
 
-			else return [];
+			return ticket_array;
 		}
 
 		catch(error) {

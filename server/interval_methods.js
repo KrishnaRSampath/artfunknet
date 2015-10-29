@@ -141,7 +141,7 @@ Meteor.setInterval((function() {
 }), check_frequency);
 
 var auction_bot_frequency = 3600000; //once per hour
-// var auction_bot_frequency = 10000;
+// auction_bot_frequency = 10000;
 var max_bot_auctions = 2;
 Meteor.setInterval((function() {
     if (auctions.find({'bid_history.user_id' : "auction_bot"}).count() < max_bot_auctions) {
@@ -152,14 +152,13 @@ Meteor.setInterval((function() {
             var item_object = items.findOne(potential_auctions[i].item_id);
             var actual_value = getItemValue(item_object._id, 'actual');
             var asking_value = potential_auctions[i].current_price;
-            var difference = Math.abs(actual_value - asking_value);
+            var difference = asking_value - actual_value;
             if (difference / actual_value < .5)
                 qualifying_auctions.push(potential_auctions[i]);
         }
 
         if (qualifying_auctions.length > 0) {
             var random_auction = qualifying_auctions[Math.floor(Math.random() * (qualifying_auctions.length))];
-
             var bid_object = {
                 'user_id': "auction_bot",
                 'amount' : random_auction.bid_minimum,
@@ -214,33 +213,39 @@ function giveXPOnTimeout(user_id, percentage, time_offset) {
     }, time_offset);
 }
 
-var expire_ticket_frequency = 3600000; //once per hour
-expire_ticket_frequency = 600000;
+var check_ticket_frequency = 600000; //once every 10 minutes
+// check_ticket_frequency = 30000; //once every 30 seconds
 Meteor.setInterval((function() {
-    var next_check = moment().add(expire_ticket_frequency, 'milliseconds');
+    var next_check = moment().add(check_ticket_frequency, 'milliseconds');
     var next_string = next_check._d.toISOString();
     var now = moment();
-    var ticket_holders = Meteor.users.find({'profile.tickets' : {$ne : undefined}}).fetch();
-    for (var i=0; i < ticket_holders.length; i++) {
-        var ticket_ids = Object.keys(ticket_holders[i].profile.tickets);
-        for (var n=0; n < ticket_ids.length; n++) {
-            var owner_id = ticket_ids[n];
-            if (moment(ticket_holders[i].profile.tickets[owner_id]) < now) {
-                var ticket_unsetter = {};
-                ticket_unsetter[owner_id] = "";
-                Meteor.users.update(ticket_holders[i]._id, {$unset : {'profile.tickets' : ticket_unsetter}});
+
+    var expiring_ticket_holders = Meteor.users.find({'profile.gallery_tickets.expiration' : {$lt : next_string}});
+    expiring_ticket_holders.forEach(function(db_object) {
+        for (var i=0; i < db_object.profile.gallery_tickets.length; i++) {
+            if (db_object.profile.gallery_tickets[i].expiration < next_string) {
+                var time_from_now = check_ticket_frequency - (next_check - moment(db_object.profile.gallery_tickets[i].expiration));
+                removeTicketOnTimeout(db_object._id, db_object.profile.gallery_tickets[i].owner_id, time_from_now);
             }
         }
-    }
-}), expire_ticket_frequency);
+    });
 
-var npc_spawn_frequency = 600000;
+}), check_ticket_frequency);
+
+function removeTicketOnTimeout(buyer_id, owner_id, time_offset) {
+    Meteor.setTimeout(function() {
+        Meteor.users.update(buyer_id, {$pull : {'profile.gallery_tickets' : {'owner_id': owner_id}}});
+    }, time_offset);
+}
+
+var npc_spawn_frequency = 600000; // 10 minutes
 // npc_spawn_frequency = 30000;
 Meteor.setInterval((function() {
     var default_spawn_chance = .5;
 
     var gallery_objects = galleries.find();
     gallery_objects.forEach(function(db_object) {
+        npcs.remove({'owner_id': db_object.owner_id});
         var attribute_values = db_object.attribute_values;
         var attribute_ids = Object.keys(attribute_values);
         for (var i=0; i < attribute_ids.length; i++) {

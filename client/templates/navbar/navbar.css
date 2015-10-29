@@ -1,11 +1,11 @@
-.template-navbar i {
-	font-size: 2.0em;
+.template-navbar .nav-icon {
+	font-size: 3.0rem;
 	margin-right: 20px;
 	color: white;
 	opacity: .75;
 }
 
-.template-navbar i:hover {
+.template-navbar .nav-icon :hover {
 	opacity: 1;
 }
 
@@ -18,4 +18,35 @@
 
 .template-navbar {
 	position: static;
+}
+
+.template-navbar .ticket-info {
+	margin-top: 24px;
+}
+
+.template-navbar .ticket-button {
+	font-size: 3.0rem;
+	opacity: .75;
+}
+
+.template-navbar .npcs-met {
+	color: #FFFFFF;
+}
+
+.template-navbar .npcs-met:hover {
+	opacity: 1;
+	color: #FFFFFF;
+}
+
+.template-navbar .npcs-met:focus {
+	color: #FFFFFF;
+}
+
+.template-navbar .af-color:hover {
+	opacity: 1;
+	color: #FF33CC;
+}
+
+.template-navbar .af-color:focus {
+	color: #FF33CC;
 }
