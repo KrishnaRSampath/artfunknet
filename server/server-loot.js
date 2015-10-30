@@ -437,9 +437,9 @@ getAttributeValue = function() {
 Meteor.methods({
     'giveDailyDrop' : function() {
         if (Meteor.user() && dailyDropIsEnabled()) {
-            var rolled_rarity = getSmartRarityMap(Meteor.user().profile.level, 0);
-            //var rolled_rarity = getRolledCrateQuality();
-            generateItems(Meteor.userId(), rolled_rarity, admin_settings.daily_drop_count);
+            var rolled_quality = getRolledCrateQuality();
+
+            generateItems(Meteor.userId(), rolled_quality, admin_settings.daily_drop_count);
    
             var now = moment().toISOString();
             Meteor.users.update(Meteor.userId(), {$set: {'profile.last_drop' : now}});
