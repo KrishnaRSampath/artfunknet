@@ -3,10 +3,10 @@
 		<div class="template-adminTools">
 			<div class="container">
 				{{#with adminData}}
-					{{> settable_field set_id="set_level" current=player_level button_id="level-set" button_label="set level"}}
-					{{> settable_field set_id="set_daily_drop" current=daily_drop_count button_id="update-daily-drop-count" button_label="daily drop count"}}
-					{{> settable_field set_id="set_crate_drop" current=crate_drop_count button_id="update-crate-drop-count" button_label="crate count"}}
-					{{> settable_field set_id="set_bank_balance" current=bank_balance button_id="set-bank-balance" button_label="set bank balance"}}
+					{{> settable_field set_id="set_level" current=player_level button_id="level-set" label="player level"}}
+					{{> settable_field set_id="set_daily_drop" current=daily_drop_count button_id="update-daily-drop-count" label="daily drop count"}}
+					{{> settable_field set_id="set_crate_drop" current=crate_drop_count button_id="update-crate-drop-count" label="crate count"}}
+					{{> settable_field set_id="set_bank_balance" current=bank_balance button_id="set-bank-balance" label="bank balance"}}
 					{{> adminButton button_id="reset-daily" button_label="reset daily drop"}}
 					{{> adminButton button_id="clear-unclaimed" button_label="clear unclaimed"}}
 					{{> adminButton button_id="generate-for-sale" button_label="generate for-sale"}}
@@ -30,13 +30,14 @@
 	<div class="row">
 		<div data-set_id="{{set_id}}" class="set-container col-xs-6 no-padding">
 			<div class="row">
+				<div class="col-xs-4">
+					<p>{{label}}: </p>
+				</div>
 				<div class="col-xs-8">
 					<!-- <textarea class="set-field" placeholder="enter value"></textarea> -->
 					<p class="text-field">{{current}}</p>
 				</div>
-				<div class="col-xs-4">
-					<button id="{{button_id}}" class="set-button">{{button_label}}</button>
-				</div>
+				
 			</div>
 		</div>
 	</div>

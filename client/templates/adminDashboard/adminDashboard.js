@@ -1,25 +1,27 @@
 var adminDataTracker = new Tracker.Dependency;
 
-var updateAdminData = function(template) {
-	Meteor.call('getAdminData', function(error, admin_data) {
+var admin_data = undefined;
+
+var updateAdminData = function() {
+	Meteor.call('getAdminData', function(error, result) {
 		if (error)
 			console.log(error.message);
 
 		else {
-			template.data = {"admin_data" : admin_data};
+			admin_data = result
 			adminDataTracker.changed();
 		}
 	})
 }
 
-var setAdminData = function(set_id, value, template) {
+var setAdminData = function(set_id, value) {
 	switch(set_id) {
 		case 'set_level': 
 			Meteor.call('setPlayerLevel', Number(value), function(error) {
 				if (error)
 					console.log(error.message);
 
-				else updateAdminData(template);
+				else updateAdminData();
 			});
 			break;
 
@@ -28,7 +30,7 @@ var setAdminData = function(set_id, value, template) {
 				if (error)
 					console.log(error.message);
 
-				else updateAdminData(template);
+				else updateAdminData();
 			});
 			break;
 
@@ -37,7 +39,7 @@ var setAdminData = function(set_id, value, template) {
 				if (error)
 					console.log(error.message);
 
-				else updateAdminData(template);
+				else updateAdminData();
 			})
 			break;
 
@@ -46,7 +48,7 @@ var setAdminData = function(set_id, value, template) {
 				if (error)
 					console.log(error.message);
 
-				else updateAdminData(template);
+				else updateAdminData();
 			})
 			break;
 
@@ -109,7 +111,7 @@ Template.adminTools.events({
 		var set_id = target.closest('.set-container').data().set_id;
 		target.replaceWith('<p class="text-field">' + value + '</p>');
 
-		setAdminData(set_id, value, Template.instance());
+		setAdminData(set_id, value);
 	},
 
 	'keydown .set-field' : function(element) {
@@ -119,7 +121,7 @@ Template.adminTools.events({
 			var set_id = target.closest('.set-container').data().set_id;
 			target.replaceWith('<p class="text-field">' + value + '</p>');
 
-			setAdminData(set_id, value, Template.instance());
+			setAdminData(set_id, value);
         }
     },
 })
@@ -128,13 +130,13 @@ Template.adminTools.helpers({
 	'adminData' : function() {
 		adminDataTracker.depend();
 
-		console.log(Template.instance().data)
+		if (admin_data == undefined)
+			updateAdminData();
 
-		if (Template.instance().data == null) {
-			updateAdminData(Template.instance());
-			return {};
-		}
-
-		else return Template.instance().data[admin_data];
+		else return admin_data;
 	}
 })
+
+Template.adminTools.rendered = function() {
+	updateAdminData();
+}

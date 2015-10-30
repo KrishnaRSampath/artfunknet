@@ -100,13 +100,22 @@ Meteor.methods({
     },
 
     'acceptCollectorOffer' : function(interaction_object) {
-        var item_object = canSellToCollector(interaction_object.item._id);
-        if (item_object) {
-            addFunds(Meteor.userId(), interaction_object.offer);
-            items.remove(item_object._id);
+        try {
+            var item_object = canSellToCollector(interaction_object.item._id);
+            if (item_object) {
+                addFunds(Meteor.userId(), interaction_object.offer);
+                items.remove(item_object._id);
+            }
+
+            else {
+                console.log(item_object);
+                console.log(interaction_object);
+            }
         }
 
-        else throw "invalid operation";
+        catch(error) {
+            console.log(error.message);
+        }
     },
 
     'setItemPermanentCollectionStatus' : function(item_id, set_to_permanent) {

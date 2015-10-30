@@ -121,7 +121,7 @@ Template.collectorOfferModal.events({
 	},
 
 	'click #accept-offer' : function() {
-		if (Session.get('npc_interaction')) {
+		if (Session.get('npc_interaction') != undefined) {
 			Meteor.call('acceptCollectorOffer', Session.get('npc_interaction'), function(error) {
 				if (error)
 					console.log(error.message);
@@ -132,5 +132,7 @@ Template.collectorOfferModal.events({
 				}
 			});
 		}
+
+		else console.log("an error has occurred");
 	}
 })

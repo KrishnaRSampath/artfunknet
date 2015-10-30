@@ -81,7 +81,6 @@ Meteor.methods({
 
 	'getAdminData': function() {
 		var user_object = Meteor.user();
-		console.log("getting data");
 
 		if (user_object) {
 			return {

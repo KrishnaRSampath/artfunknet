@@ -444,7 +444,7 @@ Meteor.methods({
             var now = moment().toISOString();
             Meteor.users.update(Meteor.userId(), {$set: {'profile.last_drop' : now}});
 
-            return rolled_rarity;    
+            return rolled_quality;    
         }
 
         else return undefined;
@@ -495,12 +495,12 @@ smart_loot_map = {
     },
 
     'uncommon': {
-        'min_player_level': .35,
+        'min_player_level': .39,
         'max_player_level': .3
     },
 
     'rare': {
-        'min_player_level': .049899,
+        'min_player_level': .009899,
         'max_player_level': .5949
     },
 
