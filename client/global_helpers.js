@@ -31,3 +31,7 @@ Template.registerHelper('getHTMLColorFromValue', function(value) {
 	var color_string = "rgb(" + red_value + " , 0, 0)";
 	return color_string;
 })
+
+Template.registerHelper('userIsAdmin', function() {
+	return Meteor.user() && Meteor.user().profile.user_type == "admin";
+})

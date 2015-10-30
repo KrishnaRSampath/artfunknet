@@ -239,7 +239,7 @@ function removeTicketOnTimeout(buyer_id, owner_id, time_offset) {
 }
 
 var npc_spawn_frequency = 600000; // 10 minutes
-// npc_spawn_frequency = 10000; // 10 seconds
+ npc_spawn_frequency = 10000; // 10 seconds
 Meteor.setInterval((function() {
     var default_spawn_chance = .5;
 
@@ -261,8 +261,8 @@ Meteor.setInterval((function() {
 
         //code below automatically spawns npc's of a specific type, used for debugging/testing
         // createNPC(db_object, attributes.findOne({'title': "dealer_bonus"})._id, npc_spawn_frequency);
-        // createNPC(db_object, attributes.findOne({'title': "donor_bonus"})._id, npc_spawn_frequency);
-        // createNPC(db_object, attributes.findOne({'title': "enthusiast_bonus"})._id, npc_spawn_frequency);
+         createNPC(db_object, attributes.findOne({'title': "donor_bonus"})._id, npc_spawn_frequency);
+         createNPC(db_object, attributes.findOne({'title': "enthusiast_bonus"})._id, npc_spawn_frequency);
     });
 
 }), npc_spawn_frequency);

@@ -1,5 +1,3 @@
-var drop_count = 6;
-
 Template.store.helpers({
 	'for_sale': function() {
 		return items.find({'owner': Meteor.userId(), 'status': 'for_sale'}).fetch();
@@ -10,7 +8,7 @@ Template.store.helpers({
 	},
 
 	'dropButton' : function(quality) {
-		Meteor.call('lookupCrateCost', quality, drop_count, function(error, result) {
+		Meteor.call('lookupCrateCost', quality, function(error, result) {
 			if (error)
 				console.log(error.message);
 
@@ -54,7 +52,7 @@ Template.store.helpers({
 Template.store.events ({
 	'click .crate-button.enabled' : function(element) {
 		var quality = $(element.target).data('button_quality');
-		Meteor.call('openCrate', Meteor.userId(), quality, drop_count, function(error, result) {
+		Meteor.call('openCrate', Meteor.userId(), quality, function(error, result) {
 			if (error)
 				console.log(error.message);
 

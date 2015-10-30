@@ -52,14 +52,6 @@ var generateContent = function() {
 }
 
 var updateContent = function() {
-    Meteor.users.update({}, {$unset: {'profile.tickets': ""}});
-    Meteor.users.update({}, {$set: {'profile.gallery_tickets': []}});
-    var all_users = Meteor.users.find({});
-    all_users.forEach(function(db_object) {
-        var email_address = db_object.username.toLowerCase();
-        Meteor.users.update(db_object._id, {$set: {'username': email_address, 'emails.0.address': email_address}});
-
-    })
     npcs.remove({});
 }
 
@@ -71,6 +63,12 @@ Meteor.startup(function() {
 		generateContent();
 
     updateContent();
+
+    // for (var i=0; i<51; i++) {
+    //     console.log("level " + i);
+    //     console.log(testMap(getSmartRarityMap(i, 0)));
+    //     console.log(testMap(getSmartRarityMap(i, 1)));
+    // }
 
     //clear out expired tickets
     //conclude expired auctions
@@ -90,6 +88,7 @@ Meteor.startup(function() {
             "password": "password",
             "profile": {
                 'screen_name': "EindacorDS",
+                'user_type': "player"
             }
         };
 
@@ -99,6 +98,7 @@ Meteor.startup(function() {
             "password": "Password123!",
             "profile": {
                 'screen_name': "PMoons",
+                'user_type': "player"
             }
         }
         
@@ -108,6 +108,17 @@ Meteor.startup(function() {
             "password": "password",
             "profile": {
                 'screen_name': "Buyer",
+                'user_type': "player"
+            }
+        };
+
+        var admin_object = {
+            "username": "admin@email.com",
+            "email": "admin@email.com",
+            "password": "admin_password",
+            "profile": {
+                'screen_name': "Buyer",
+                'user_type': "admin"
             }
         };
 

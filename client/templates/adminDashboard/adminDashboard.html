@@ -1,47 +1,49 @@
-<template name="artworkEntry">
-	<img class="image-preview" src="{{imageURL}}" id="image_{{_id}}" alt="" />
-	
-	<p>Title: {{title}}</p>
-	<p>Date Created: {{dateCreated}}</p>
-	<p>Height: {{height}}</p>
-	<p>Width: {{width}}</p>
-	<p>Medium: {{medium}}</p>
-	<p>Style: {{style}}</p>
-	<p>Image Height (px): {{image_height}}</p>
-	<p>Image Width (px): {{image_width}}</p>
+<template name="adminTools">
+	{{#if userIsAdmin}}
+		<div class="template-adminTools">
+			<div class="container">
+				{{#with adminData}}
+					{{> settable_field set_id="set_level" current=player_level button_id="level-set" button_label="set level"}}
+					{{> settable_field set_id="set_daily_drop" current=daily_drop_count button_id="update-daily-drop-count" button_label="daily drop count"}}
+					{{> settable_field set_id="set_crate_drop" current=crate_drop_count button_id="update-crate-drop-count" button_label="crate count"}}
+					{{> settable_field set_id="set_bank_balance" current=bank_balance button_id="set-bank-balance" button_label="set bank balance"}}
+					{{> adminButton button_id="reset-daily" button_label="reset daily drop"}}
+					{{> adminButton button_id="clear-unclaimed" button_label="clear unclaimed"}}
+					{{> adminButton button_id="generate-for-sale" button_label="generate for-sale"}}
+					{{> adminButton button_id="clear-for-sale" button_label="clear for-sale"}}
+
+					<div class="row">
+						<button id="generate-npc" class="set-button">generate npc</button>
+						<select class="npc-selector">
+							{{#each npcs}}
+							<option value="{{_id}}">{{description}}</option>
+							{{/each}}
+						</select>
+					</div>
+				{{/with}}
+			</div>
+		</div>
+	{{/if}}
 </template>
 
-<template name="artistEntry">
-	<p>Name: {{artistName}}</p>
-	<p>Date of Birth: {{birthDate}}</p>
-	<p>Date of Death: {{height}}</p>
-	<a class="link" href="{{portfolio}}">Porfolio</a>
-	<a class="link" href="mailto:{{email}}">Email</a>
+<template name="settable_field">
+	<div class="row">
+		<div data-set_id="{{set_id}}" class="set-container col-xs-6 no-padding">
+			<div class="row">
+				<div class="col-xs-8">
+					<!-- <textarea class="set-field" placeholder="enter value"></textarea> -->
+					<p class="text-field">{{current}}</p>
+				</div>
+				<div class="col-xs-4">
+					<button id="{{button_id}}" class="set-button">{{button_label}}</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </template>
 
-<template name="adminDashboard">
-	<h1>Admin Dashboard</h1>
-	{{#each artwork}}
-	<div class="entry">
-		<div class="artwork-entry">
-			{{> artworkEntry this}}
-		</div>
-		<div class="button-container">
-			<button class="approve-button" id="approve_{{_id}}">approve</button>
-			<button class="deny-button" id="deny_{{_id}}">deny</button>
-		</div>
+<template name="adminButton">
+	<div class="row">
+		<button id="{{button_id}}" class="set-button">{{button_label}}</button>
 	</div>
-	{{/each}}
-
-	{{#each artist}}
-	<div class="entry">
-		<div class="artist-entry">
-			{{> artistEntry this}}
-		</div>
-		<div class="button-container">
-			<button class="approve-button" id="approve_{{_id}}">approve</button>
-			<button class="deny-button" id="deny_{{_id}}">deny</button>
-		</div>
-	</div>
-	{{/each}}
 </template>

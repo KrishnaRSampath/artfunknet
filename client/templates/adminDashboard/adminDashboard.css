@@ -1,0 +1,13 @@
+.template-adminTools button {
+	width: 200px;
+	height: 32px;
+	font-size: 1.5rem;
+	margin: 8px 0px;
+}
+
+.template-adminTools textarea {
+	width: 100%;
+	height: 32px;
+	resize: none;
+	font-size: 1.5rem;
+}

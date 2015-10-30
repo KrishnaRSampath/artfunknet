@@ -13,7 +13,6 @@ createUser = function(user_object, callback){
         user_object.profile[key] = value;
     }
 
-    user_object.profile.user_type = "player";
     user_object.profile.bank_balance = 100000;
     user_object.profile.last_drop = moment().add(-1, 'days')._d.toISOString();
     user_object.profile.level = 0;
@@ -143,10 +142,6 @@ Meteor.methods({
 
     'chargeAccount' : function(user_id, amount) {
         chargeAccount(user_id, amount);
-    },
-
-    'clearUnclaimed' : function(user_id) {
-        items.remove({'owner': user_id, 'status': 'unclaimed'});
     },
 
     'alertAllUsers' : function(message) {

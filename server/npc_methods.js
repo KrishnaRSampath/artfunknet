@@ -141,7 +141,7 @@ var benefactorInteraction = function(npc_object) {
 }
 
 var donorInteraction = function(npc_object) {
-	generateItems(Meteor.userId(), npc_object.quality, 1);
+	generateItems(Meteor.userId(), npc_object.quality, 2);
 
 	var message = "You have met a donor who would like to contribute to your collection. You may claim your gift in the loot area.";
 
@@ -222,21 +222,21 @@ var collectorInteraction = function(npc_object) {
 		default: offer_multiplier = 0; break;
 	}
 
-	var random_permanent = selectRandomPainting({'owner': Meteor.userId(), 'status': "permanent"});
+	var random_claimed = selectRandomPainting({'owner': Meteor.userId(), 'status': "claimed"});
 
-	if (random_permanent) {
-		var offer = Math.floor(getItemValue(random_permanent._id, "actual") * offer_multiplier);
-		return {'type': "collector_bonus", 'offer': offer, 'item': random_permanent};
+	if (random_claimed) {
+		var offer = Math.floor(getItemValue(random_claimed._id, "actual") * offer_multiplier);
+		return {'type': "collector_bonus", 'offer': offer, 'item': random_claimed};
 	}
 
 	else {
-		var message = "You have met an Art Collector that would love to add to their collection, but you don't have any items in your permanent collection to offer.";
+		var message = "You have met an Art Collector that would love to add to their collection, but you don't seem to have any paintings available for donation. Art collectors will only ask for paintings that are not on display or in your permanent collection.";
 		return {'message': message}
 	}
 }
 
 var artDealerInteraction = function(npc_object) {
-	generateItemsForSale(Meteor.userId(), npc_object.quality, 3);
+	generateItemsForSale(Meteor.userId(), npc_object.quality, 6);
 
 	var message = "You have met an Art Dealer who would like you to consider a few offers. Go to the store to view their inventory.";
 

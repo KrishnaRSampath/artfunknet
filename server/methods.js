@@ -49,10 +49,6 @@ createAuction = function(item_id, starting, buy_now, duration) {
 }
 
 Meteor.methods({
-    'generateItemsFromRarity' : function(user_id, rarity, count) {
-        generateItemsFromRarity(user_id, rarity, count);
-    },
-
     'getInventory' : function() {
         var owned = items.find({'owner': Meteor.userId(), 'status': 'claimed'});
         var owned_array = [];
@@ -249,8 +245,8 @@ Meteor.methods({
         return getDisplayDetails(item_id, duration);
     },
 
-    'lookupCrateCost' : function(quality, count) {
-        return lookupCrateCost(quality, count);
+    'lookupCrateCost' : function(quality) {
+        return lookupCrateCost(quality, admin_settings.crate_drop_count);
     },
 
     'rerollXPRating' : function(item_id) {

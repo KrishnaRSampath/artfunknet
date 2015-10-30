@@ -39,6 +39,7 @@ Template.registration.events({
             "password": template.find('#password').value,
             "profile": {
                 "screen_name": template.find('#screen_name').value,
+                'user_type': "player"
             }
         };
 

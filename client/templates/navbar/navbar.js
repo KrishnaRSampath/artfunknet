@@ -26,6 +26,7 @@ Template.navbar.helpers({
 		}
 
 		catch(error) {
+			console.log(error.message);
 			return [];
 		}
 	},

@@ -1,5 +1,3 @@
-var daily_drop_count = 6;
-
 bronze_rarity_map = {
     'common': 60,
     'uncommon': 12,
@@ -221,16 +219,32 @@ lookupCrateCost = function(quality, count) {
 }
 
 generateItems = function(user_id, quality, count) {
-    var rarity_map = rarity_maps[quality];
+    if (Meteor.users.findOne(user_id) === undefined)
+        return;
+
+    var map_amplifier;
+
+    switch(quality) {
+        case 'bronze': map_amplifier = 0; break;
+        case 'silver': map_amplifier = .2; break;
+        case 'gold': map_amplifier = .4; break;
+        case 'platinum': map_amplifier = .8; break;
+        default: map_amplifier = 0; break;
+    }
+
+    // var rarity_map = rarity_maps[quality];
     var item_ids = [];
 
     for (var i=0; i < parseInt(count); i++) {
-        var rarity_roll;
+        // var rarity_roll;
 
-        if (quality == "pearl" && Meteor.user().emails[0].address == "jpollack320@gmail.com")
-            rarity_roll = "masterpiece";
+        // if (quality == "pearl" && Meteor.user().emails[0].address == "jpollack320@gmail.com")
+        //     rarity_roll = "masterpiece";
 
-        else rarity_roll = JepLoot.catRoll(rarity_map);
+        // else rarity_roll = JepLoot.catRoll(rarity_map);
+
+        var rarity_roll = JepLoot.catRoll(getSmartRarityMap(Meteor.users.findOne(user_id).profile.level, map_amplifier));
+
         var possibilities = artworks.find({'rarity': rarity_roll}).fetch();
         var random_index = Math.floor(Math.random() * possibilities.length);
 
@@ -278,16 +292,32 @@ generateItemsFromRarity = function(user_id, rarity, count) {
 }
 
 generateItemsForSale = function(user_id, quality, count) {
-    var rarity_map = rarity_maps[quality];
+    if (Meteor.users.findOne(user_id) === undefined)
+        return;
+
+    var map_amplifier;
+
+    switch(quality) {
+        case 'bronze': map_amplifier = 0; break;
+        case 'silver': map_amplifier = .2; break;
+        case 'gold': map_amplifier = .4; break;
+        case 'platinum': map_amplifier = .8; break;
+        default: map_amplifier = 0; break;
+    }
+
+    // var rarity_map = rarity_maps[quality];
     var item_ids = [];
 
     for (var i=0; i < parseInt(count); i++) {
-        var rarity_roll;
+        // var rarity_roll;
 
-        if (quality == "pearl" && Meteor.user().emails[0].address == "jpollack320@gmail.com")
-            rarity_roll = "masterpiece";
+        // if (quality == "pearl" && Meteor.user().emails[0].address == "jpollack320@gmail.com")
+        //     rarity_roll = "masterpiece";
 
-        else rarity_roll = JepLoot.catRoll(rarity_map);
+        // else rarity_roll = JepLoot.catRoll(rarity_map);
+
+        var rarity_roll = JepLoot.catRoll(getSmartRarityMap(Meteor.users.findOne(user_id).profile.level, map_amplifier));
+
         var possibilities = artworks.find({'rarity': rarity_roll}).fetch();
         var random_index = Math.floor(Math.random() * possibilities.length);
 
@@ -407,8 +437,9 @@ getAttributeValue = function() {
 Meteor.methods({
     'giveDailyDrop' : function() {
         if (Meteor.user() && dailyDropIsEnabled()) {
-            var rolled_rarity = getRolledCrateQuality();
-            generateItems(Meteor.userId(), rolled_rarity, daily_drop_count);
+            var rolled_rarity = getSmartRarityMap(Meteor.user().profile.level, 0);
+            //var rolled_rarity = getRolledCrateQuality();
+            generateItems(Meteor.userId(), rolled_rarity, admin_settings.daily_drop_count);
    
             var now = moment().toISOString();
             Meteor.users.update(Meteor.userId(), {$set: {'profile.last_drop' : now}});
@@ -419,21 +450,134 @@ Meteor.methods({
         else return undefined;
     },
 
-    'openCrate' : function(user_id, quality, count) {
-        var cost = lookupCrateCost(quality, count);
+    'openCrate' : function(user_id, quality) {
+        var cost = lookupCrateCost(quality, admin_settings.crate_drop_count);
         if (Meteor.userId() && Meteor.userId() == user_id && cost < Meteor.user().profile.bank_balance) {
-            generateItems(user_id, quality, count);
+            generateItems(user_id, quality, admin_settings.crate_drop_count);
             chargeAccount(user_id, cost);
         }
 
         else console.log("insufficient funds");
-    },
-
-    'generateItemForSale' : function() {
-        var item_object = items.findOne({'owner': Meteor.userId(), 'status': "for_sale"});
-        if (item_object)
-            items.remove(item_object._id);
-
-        else generateItemsForSale(Meteor.userId(), 'platinum', 1);
     }
 })
+
+// smart_loot_map = {
+//     'common': {
+//         'min_player_level': 100000,
+//         'max_player_level': 100
+//     },
+
+//     'uncommon': {
+//         'min_player_level': 90000,
+//         'max_player_level': 200
+//     },
+
+//     'rare': {
+//         'min_player_level': 70000,
+//         'max_player_level': 600
+//     },
+
+//     'legendary': {
+//         'min_player_level': 1000,
+//         'max_player_level': 10
+//     },
+
+//     'masterpiece': {
+//         'min_player_level': 100,
+//         'max_player_level': 1
+//     }
+// }
+
+smart_loot_map = {
+    'common': {
+        'min_player_level': .6,
+        'max_player_level': .1
+    },
+
+    'uncommon': {
+        'min_player_level': .35,
+        'max_player_level': .3
+    },
+
+    'rare': {
+        'min_player_level': .049899,
+        'max_player_level': .5949
+    },
+
+    'legendary': {
+        'min_player_level': .0001,
+        'max_player_level': .005
+    },
+
+    'masterpiece': {
+        'min_player_level': .000001,
+        'max_player_level': .0001
+    }
+}
+
+// bronze_rarity_map = {
+//     'common': 60,
+//     'uncommon': 12,
+//     'rare': 0,
+//     'legendary': 0,
+//     'masterpiece': 0
+// }
+
+getSmartRarityMap = function(player_level, amplifier) {
+    var player_weight = player_level / player_level_max;
+    var rarities = ['common', 'uncommon', 'rare', 'legendary', 'masterpiece'];
+
+    var rarity_map = {};
+
+    for (var i=0; i < rarities.length; i++) {
+        var rarity = rarities[i];
+        var rarity_map_range = smart_loot_map[rarity].max_player_level - smart_loot_map[rarity].min_player_level;
+        var weighted_value = 100000 * (smart_loot_map[rarity].min_player_level + (player_weight * rarity_map_range));
+
+        var max_reduction_coefficient;
+        switch(rarity) {
+            case "common": max_reduction_coefficient = .8; break;
+            case "uncommon": max_reduction_coefficient = .4; break;
+            case "rare": max_reduction_coefficient = .2; break;
+            case "legendary": max_reduction_coefficient = .1; break;
+        }
+        
+        weighted_value = weighted_value * (1 - (max_reduction_coefficient * amplifier));
+        rarity_map[rarity] = Math.floor(weighted_value);
+    }
+
+    return rarity_map;
+}
+
+calculateMapChances = function(loot_map) {
+    var map_keys = Object.keys(loot_map);
+    var sum_total = 0;
+    for (var i=0; i<map_keys.length; i++) {
+        sum_total += loot_map[map_keys[i]];
+    }
+
+    var map_chances = {};
+
+    for (var i=0; i<map_keys.length; i++) {
+        map_chances[map_keys[i]] = loot_map[map_keys[i]] / sum_total;
+    }
+
+    return map_chances;
+}
+
+testMap = function(loot_map) {
+    var roll_counts = {
+        'common': 0,
+        'uncommon': 0,
+        'rare': 0,
+        'legendary': 0,
+        'masterpiece': 0
+    };
+
+    for (var i=0; i < 10000; i++) {
+        var rarity_rolled = JepLoot.catRoll(loot_map);
+        roll_counts[rarity_rolled] += 1;
+    }
+
+    return roll_counts;
+}
