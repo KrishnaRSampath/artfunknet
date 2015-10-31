@@ -53,6 +53,11 @@ var generateContent = function() {
 
 var updateContent = function() {
     npcs.remove({});
+    var all_users = Meteor.users.find();
+    all_users.forEach(function(db_object) {
+        updateGalleryDetails(db_object._id);
+        calcMVP(db_object._id);
+    })
 }
 
 Meteor.startup(function() {
