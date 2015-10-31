@@ -49,44 +49,37 @@ createAuction = function(item_id, starting, buy_now, duration) {
 }
 
 var getMVPData = function() {
-    var mvp_owner = Meteor.users.findOne({}, {sort: {'profile.mvp.value': -1}});
-    if (mvp_owner == undefined) {
-        console.log("mvp_owner not found");
-        return undefined;
-    }
+    var all_items = items.find({'status': {$nin: ['unclaimed', 'for_sale']}}).fetch()
+    all_items.sort(function(first, second) {
+        return getItemValue(first._id, 'actual') < getItemValue(second._id, 'actual');
+    });
 
-    var mvp = mvp_owner.profile.mvp;
+    all_items = all_items.slice(0, 20);
 
-    if (mvp == undefined) {
-        console.log("mvp not found");
-        return undefined;
-    }
+    var mvp_array = [];
+    for (var i=0; i<all_items.length; i++) {
+        var artwork_object = artworks.findOne(all_items[i].artwork_id);
+        var leaderboard_object =  {
+            'artist': artwork_object.artist,
+            'title': artwork_object.title,
+            'owner': Meteor.users.findOne(all_items[i].owner).profile.screen_name,
+            'value': getItemValue(all_items[i]._id, 'actual'),
+            'rarity': artwork_object.rarity,
+            'condition': all_items[i].condition,
+        }
 
-    var item_object = items.findOne(mvp.item_id);
+        mvp_array.push(leaderboard_object);
+    };
 
-    if (item_object == undefined) {
-        console.log("item_object not found");
-        return undefined;
-    }
-
-    var artwork_object = artworks.findOne(item_object.artwork_id);
-
-    return {
-        'artist': artwork_object.artist,
-        'title': artwork_object.title,
-        'owner': mvp_owner.profile.screen_name,
-        'value': getItemValue(item_object._id, 'actual'),
-        'rarity': artwork_object.rarity,
-        'condition': item_object.condition,
-    }
+    return mvp_array;    
 }
 
 Meteor.methods({
     'getLeaderboardData' : function() {
         return {
             'mvp_data': getMVPData(),
-            'gallery_score_data': Meteor.users.find({}, {limit: 20, sort: {'profile.gallery_score': -1}}).fetch(),
-            'gallery_value_data': Meteor.users.find({}, {limit: 20, sort: {'profile.gallery_value': -1}}).fetch()
+            'gallery_score_data': galleries.find({}, {limit: 20, sort: {'score': -1}}).fetch(),
+            'gallery_value_data': galleries.find({}, {limit: 20, sort: {'value': -1}}).fetch()
         }
     },
 

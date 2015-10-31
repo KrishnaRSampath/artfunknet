@@ -19,7 +19,6 @@ createUser = function(user_object, callback){
     user_object.profile.xp = 0;
     user_object.profile.entry_fee = 1000;
     user_object.profile.gallery_tickets = [];
-    user_object.profile.gallery_details = {};
     user_object.profile.gallery_value = 0;
     user_object.profile.gallery_score = 0;
 
@@ -131,6 +130,7 @@ updateGalleryDetails = function(user_id) {
         var attribute_ids = Object.keys(attribute_totals);
         var attribute_values = {};
 
+        //remove from db if no items present
         if (attribute_ids.length == 0) {
             var gallery_object = galleries.findOne({'owner_id' : user_id});
             if (gallery_object != undefined)
@@ -145,18 +145,18 @@ updateGalleryDetails = function(user_id) {
             attribute_values[attribute_id] = attribute_rating;
         }
 
-        Meteor.users.update(user_id, {$set: {'profile.gallery_details' : attribute_values, 'profile.gallery_value': gallery_value, 'profile.gallery_score': gallery_score}});
-
         if (galleries.findOne({"owner_id" : user_id}) == undefined) {
             galleries.insert({
                 'owner_id' : user_id,
                 'owner' : user_object.profile.screen_name,
                 'attribute_values' : attribute_values,
                 'entry_fee' : user_object.profile.entry_fee,
+                'score': gallery_score,
+                'value': gallery_value
             });
         }
 
-        else galleries.update({'owner_id' : user_id}, {$set: {'attribute_values' : attribute_values}});
+        else galleries.update({'owner_id' : user_id}, {$set: {'attribute_values' : attribute_values, 'score': gallery_score, 'value': gallery_value}});
     }
 }
 

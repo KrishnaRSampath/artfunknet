@@ -2,9 +2,7 @@
 	<div class="template-leaderboard">
 		<div class="container">
 			{{#with leaderboard_data}}
-				{{#if mvp_data}}
-					{{> mvp mvp_data}}
-				{{/if}}
+				{{> mvp mvp_data}}
 				{{> galleryScore gallery_score_data}}
 				{{> galleryValue gallery_value_data}}
 			{{/with}}
@@ -13,12 +11,29 @@
 </template>
 
 <template name="mvp">
-	<div class="template-mvp">
-		<h2 class="af-color">Most Valuable Item</h2>
-		<p>owner: <span class="highlight">{{this.owner}}</span></p>
-		<p><span class="highlight">{{this.title}}</span> by <span class="highlight">{{this.artist}}</span></p>
-		<p>estimated value: <span class="highlight">{{displayAsMoneyValue this.value}}</span></p>
-		<p class="{{this.rarity}}">{{this.rarity}}</p>
+	<div class="row list-mvp">
+		<div class="template-galleryScore col-xs-12">
+			<h2 class="af-color">Most Valuable Items</h2>
+			{{#each this}}
+			<div class="row list-row">
+				<div class="col-xs-1">
+					<p>{{positionFromIndex @index}}.</p>
+				</div> 
+				<div class="col-xs-2">
+					<p class="highlight">{{this.owner}}</p>
+				</div> 
+				<div class="col-xs-5">
+					<p><span class="highlight">{{this.title}}</span> by <span class="highlight">{{this.artist}}</span></p>
+				</div> 
+				<div class="col-xs-2">
+					<p class="highlight">{{displayAsMoneyValue this.value}}</p>
+				</div> 
+				<div class="col-xs-1">
+					<p class="{{this.rarity}}">{{this.rarity}}</p>
+				</div> 
+			</div>
+			{{/each}}
+		</div>
 	</div>
 </template>
 
@@ -27,16 +42,16 @@
 		<div class="template-galleryScore col-xs-12 col-md-6 col-lg-3">
 			<h2 class="af-color">Gallery Score</h2>
 			{{#each this}}
-				{{#if this.profile.gallery_score}}
+				{{#if this.score}}
 				<div class="row list-row">
 					<div class="col-xs-1">
 						<p>{{positionFromIndex @index}}.</p>
 					</div> 
 					<div class="col-xs-6">
-						<p class="highlight">{{this.profile.screen_name}}</p>
+						<p class="highlight">{{this.owner}}</p>
 					</div> 
 					<div class="col-xs-5">
-						<p class="highlight">{{commaSeparatedValue this.profile.gallery_score}}</p>
+						<p class="highlight">{{commaSeparatedValue this.score}}</p>
 					</div> 
 				</div>
 				{{/if}}
@@ -50,16 +65,16 @@
 		<div class="template-galleryValue col-xs-12 col-md-6 col-lg-3">
 			<h2 class="af-color">Gallery Value</h2>
 			{{#each this}}
-				{{#if this.profile.gallery_value}}
+				{{#if this.value}}
 				<div class="row list-row">
 					<div class="col-xs-1">
 						<p>{{positionFromIndex @index}}.</p>
 					</div> 
 					<div class="col-xs-6">
-						<p class="highlight">{{this.profile.screen_name}}</p>
+						<p class="highlight">{{this.owner}}</p>
 					</div> 
 					<div class="col-xs-5">
-						<p class="highlight">{{displayAsMoneyValue this.profile.gallery_value}}</p>
+						<p class="highlight">{{displayAsMoneyValue this.value}}</p>
 					</div> 
 				</div>
 				{{/if}}
