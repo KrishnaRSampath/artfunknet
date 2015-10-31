@@ -19,7 +19,8 @@ Template.itemInfo.helpers({
 				'item_id' : item_object._id,
 				'xp_rating' : item_object.xp_rating,
 				'xp_rating_text' : Math.floor(item_object.xp_rating * 100),
-				'roll_count' : item_object.roll_count
+				'roll_count' : item_object.roll_count,
+				'is_permanent' : item_object.status == "permanent"
 			}
 
 			return item_data_object;
@@ -40,7 +41,8 @@ Template.itemInfo.helpers({
 				'item_id' : "",
 				'xp_rating' : "",
 				'xp_rating_text' : "",
-				'roll_count' : ""
+				'roll_count' : "",
+				'is_permanent' : false
 			}
 		}
 	}

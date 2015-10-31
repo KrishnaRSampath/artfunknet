@@ -201,18 +201,30 @@ getRerollCost = function(item_id) {
 
 //calculates crate costs based on rarity maps and qulity maps
 lookupCrateCost = function(quality, count) {
+
+    var map_amplifier;
+
+    switch(quality) {
+        case 'bronze': map_amplifier = 0; break;
+        case 'silver': map_amplifier = .2; break;
+        case 'gold': map_amplifier = .4; break;
+        case 'platinum': map_amplifier = .8; break;
+        default: map_amplifier = 0; break;
+    }
+
+    var smart_loot_map = getSmartRarityMap(Meteor.user().profile.level, map_amplifier);
+
     var total_proportions = 0;
-    var rarity_map = rarity_maps[quality];
     for (var i=0; i < artwork_rarities.length; i++) {
         var rarity = artwork_rarities[i];
-        total_proportions += rarity_map[rarity];
+        total_proportions += smart_loot_map[rarity];
     }
 
     var total_average = 0;
     for (var i=0; i < artwork_rarities.length; i++) {
         var rarity = artwork_rarities[i];
         var average_value = Math.floor((rarity_values[rarity].min + rarity_values[rarity].max) / 2)
-        total_average += (average_value * (rarity_map[rarity] / total_proportions));
+        total_average += (average_value * (smart_loot_map[rarity] / total_proportions));
     }
 
     return Math.floor(total_average * count * rarity_inflation_coefficient[quality]);

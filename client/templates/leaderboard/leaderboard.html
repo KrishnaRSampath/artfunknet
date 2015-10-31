@@ -1,0 +1,63 @@
+<template name="leaderboard">
+	<div class="template-leaderboard">
+		<div class="container">
+			{{#with leaderboard_data}}
+				{{> mvp mvp_data}}
+				{{> galleryScore gallery_score_data}}
+				{{> galleryValue gallery_value_data}}
+			{{/with}}
+		</div>
+	</div>
+</template>
+
+<template name="mvp">
+	<div class="template-mvp">
+		<h2 class="af-color">Most Valuable Item</h2>
+		<p>owner: <span class="highlight">{{this.owner}}</span></p>
+		<p><span class="highlight">{{this.title}}</span> by <span class="highlight">{{this.artist}}</span></p>
+		<p>estimated value: <span class="highlight">{{displayAsMoneyValue this.value}}</span></p>
+		<p class="{{this.rarity}}">{{this.rarity}}</p>
+	</div>
+</template>
+
+<template name="galleryScore">
+	<div class="row list-section">
+		<div class="template-galleryScore col-xs-12 col-md-6 col-lg-3">
+			<h2 class="af-color">Gallery Score</h2>
+			{{#each this}}
+			<div class="row list-row">
+				<div class="col-xs-1">
+					<p>{{positionFromIndex @index}}.</p>
+				</div> 
+				<div class="col-xs-6">
+					<p class="highlight">{{this.profile.screen_name}}</p>
+				</div> 
+				<div class="col-xs-5">
+					<p class="highlight">{{commaSeparatedValue this.profile.gallery_score}}</p>
+				</div> 
+			</div>
+			{{/each}}
+		</div>
+	</div>
+</template>
+
+<template name="galleryValue">
+	<div class="row list-section">
+		<div class="template-galleryValue col-xs-12 col-md-6 col-lg-3">
+			<h2 class="af-color">Gallery Value</h2>
+			{{#each this}}
+			<div class="row list-row">
+				<div class="col-xs-1">
+					<p>{{positionFromIndex @index}}.</p>
+				</div> 
+				<div class="col-xs-6">
+					<p class="highlight">{{this.profile.screen_name}}:</p>
+				</div> 
+				<div class="col-xs-5">
+					<p class="highlight">{{displayAsMoneyValue this.profile.gallery_value}}</p>
+				</div> 
+			</div>
+			{{/each}}
+		</div>
+	</div>
+</template>

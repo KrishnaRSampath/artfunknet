@@ -86,6 +86,6 @@ canPurchaseItemFromDealer = function(item_id) {
 canSellToCollector = function(item_id) {
 	var item_object = items.findOne(item_id);
 	var owned = Meteor.userId() && item_object && item_object.owner == Meteor.userId();
-	var status_ok = item_object && item_object.status == "claimed";
+	var status_ok = item_object && (item_object.status == "claimed" || item_object.status == "permanent");
 	return owned && status_ok ? item_object : undefined;
 }

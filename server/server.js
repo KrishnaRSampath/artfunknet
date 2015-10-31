@@ -82,7 +82,7 @@ Meteor.startup(function() {
     }
 
     if (Meteor.users.find().count() == 0) {
-        var admin_object = {
+        var player_1 = {
             "username": "jpollack320@gmail.com",
             "email": "jpollack320@gmail.com",
             "password": "password",
@@ -92,7 +92,7 @@ Meteor.startup(function() {
             }
         };
 
-        var admin_object_2 = {
+        var player_2 = {
             "username": "peter.mooney90@gmail.com",
             "email": "peter.mooney90@gmail.com",
             "password": "Password123!",
@@ -102,7 +102,7 @@ Meteor.startup(function() {
             }
         }
         
-        var player_object = {
+        var player_3 = {
             "username": "player@email.com",
             "email": "player@email.com",
             "password": "password",
@@ -112,19 +112,20 @@ Meteor.startup(function() {
             }
         };
 
-        var admin_object = {
+        var admin = {
             "username": "admin@email.com",
             "email": "admin@email.com",
             "password": "admin_password",
             "profile": {
-                'screen_name': "Buyer",
+                'screen_name': "admin",
                 'user_type': "admin"
             }
         };
 
-        createUser(admin_object);
-        createUser(admin_object_2);
-        createUser(player_object);
+        createUser(player_1);
+        createUser(player_2);
+        createUser(player_3);
+        createUser(admin);
     }
 })
 

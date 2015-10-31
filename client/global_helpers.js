@@ -35,3 +35,15 @@ Template.registerHelper('getHTMLColorFromValue', function(value) {
 Template.registerHelper('userIsAdmin', function() {
 	return Meteor.user() && Meteor.user().profile.user_type == "admin";
 })
+
+Template.registerHelper('displayAsMoneyValue', function(value) {
+	return "$" + getCommaSeparatedValue(value);
+})
+
+Template.registerHelper('commaSeparatedValue', function(value) {
+	return getCommaSeparatedValue(value);
+})
+
+Template.registerHelper('positionFromIndex', function(index) {
+	return index + 1;
+})

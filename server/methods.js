@@ -48,7 +48,48 @@ createAuction = function(item_id, starting, buy_now, duration) {
     }
 }
 
+var getMVPData = function() {
+    var mvp_owner = Meteor.users.findOne({}, {sort: {'profile.mvp.value': -1}});
+    if (mvp_owner == undefined) {
+        console.log("mvp_owner not found");
+        return undefined;
+    }
+
+    var mvp = mvp_owner.profile.mvp;
+
+    if (mvp == undefined) {
+        console.log("mvp not found");
+        return undefined;
+    }
+
+    var item_object = items.findOne(mvp.item_id);
+
+    if (item_object == undefined) {
+        console.log("item_object not found");
+        return undefined;
+    }
+
+    var artwork_object = artworks.findOne(item_object.artwork_id);
+
+    return {
+        'artist': artwork_object.artist,
+        'title': artwork_object.title,
+        'owner': mvp_owner.profile.screen_name,
+        'value': getItemValue(item_object._id, 'actual'),
+        'rarity': artwork_object.rarity,
+        'condition': item_object.condition,
+    }
+}
+
 Meteor.methods({
+    'getLeaderboardData' : function() {
+        return {
+            'mvp_data': getMVPData(),
+            'gallery_score_data': Meteor.users.find({}, {limit: 20, sort: {'profile.gallery_score': -1}}).fetch(),
+            'gallery_value_data': Meteor.users.find({}, {limit: 20, sort: {'profile.gallery_value': -1}}).fetch()
+        }
+    },
+
     'getInventory' : function() {
         var owned = items.find({'owner': Meteor.userId(), 'status': 'claimed'});
         var owned_array = [];
@@ -316,53 +357,4 @@ var getHighestBidder = function(auction_id) {
     }
 
     else return undefined;
-}
-
-updateGalleryDetails = function(user_id) {
-    var items_on_display = items.find({'owner' : user_id, 'status' : 'displayed'}).fetch();
-    var attribute_totals = {};
-    for (var i=0; i < items_on_display.length; i++) {
-        var item_attributes = items_on_display[i].attributes;
-        for (var n=0; n < item_attributes.length; n++) {
-            var attribute_id = item_attributes[n]._id;
-            var attribute_value = item_attributes[n].value;
-            if (attribute_totals[attribute_id] === undefined)
-                attribute_totals[attribute_id] = attribute_value;
-
-            else attribute_totals[attribute_id] += attribute_value;
-        }
-    }
-
-    var display_cap = Meteor.users.findOne(user_id).profile.display_cap;
-    var attribute_ids = Object.keys(attribute_totals);
-    var attribute_values = {};
-
-    if (attribute_ids.length == 0) {
-        var gallery_object = galleries.findOne({'owner_id' : user_id});
-        if (gallery_object != undefined)
-            galleries.remove(gallery_object._id);
-
-        return;
-    }
-
-    for (var i=0; i < attribute_ids.length; i++) {
-        var attribute_id = attribute_ids[i];
-        attribute_values[attribute_id] = attribute_totals[attribute_id] / display_cap;
-    }
-
-    Meteor.users.update(user_id, {$set: {'profile.gallery_details' : attribute_values}});
-
-    if (galleries.findOne({"owner_id" : user_id}) == undefined) {
-        var user_object = Meteor.users.findOne(user_id);
-        if (user_object != undefined) {
-            galleries.insert({
-                'owner_id' : user_id,
-                'owner' : user_object.profile.screen_name,
-                'attribute_values' : attribute_values,
-                'entry_fee' : user_object.profile.entry_fee,
-            });
-        }
-    }
-
-    else galleries.update({'owner_id' : user_id}, {$set: {'attribute_values' : attribute_values}});
 }

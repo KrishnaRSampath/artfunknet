@@ -18,7 +18,8 @@ Template.galleryItemInfo.helpers({
 				'attribute' : item_object.attributes,
 				'item_id' : item_object._id,
 				'xp_rating' : item_object.xp_rating,
-				'xp_rating_text' : Math.floor(item_object.xp_rating * 100)
+				'xp_rating_text' : Math.floor(item_object.xp_rating * 100),
+				'is_not_permanent' : item_object.status != "permanent"
 			}
 
 			return item_data_object;
@@ -38,7 +39,8 @@ Template.galleryItemInfo.helpers({
 				'attribute' : "",
 				'item_id' : "",
 				'xp_rating' : "",
-				'xp_rating_text' : ""
+				'xp_rating_text' : "",
+				'is_not_permanent' : ""
 			}
 		}
 	}

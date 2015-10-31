@@ -41,3 +41,7 @@
 .template-itemInfo .item-attribute:hover {
 	cursor: default;
 }
+
+.template-itemInfo .permanent {
+	opacity: .1;
+}

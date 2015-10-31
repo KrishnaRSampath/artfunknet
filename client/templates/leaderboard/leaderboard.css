@@ -1,0 +1,26 @@
+.template-leaderboard p {
+	font-size: 1.2em;
+	margin-bottom: 0px;
+}
+
+.template-leaderboard .highlight {
+	color: black;
+	font-weight: 500;
+}
+
+.template-leaderboard h2 {
+	font-weight: 600;
+}
+
+.template-leaderboard .list-row:nth-child(odd) {
+	background-color: #EEEEEE;
+}
+
+.template-leaderboard .list-row {
+	border: 1px solid #EEEEEE;
+	padding: 8px;
+}
+
+.template-leaderboard .list-section {
+	margin-top: 48px;
+}

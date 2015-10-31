@@ -1,3 +1,139 @@
+concludeAuction = function(auction_id) {
+    var auction_object = auctions.findOne(auction_id);
+    var item_object = items.findOne({'_id': auction_object.item_id});
+
+    if (auction_object.bid_history.length == 0) {
+        items.update(item_object._id, {$set: {'status' : 'claimed'}});
+
+        auctions.remove({'_id': auction_object._id});
+
+        var message = "Your auction has ended for " + auction_object.title + " by " + auction_object.artist + " without a sale";
+        var alert_object = {
+            'user_id' : item_object.owner,
+            'message' : message,
+            'link' : '/',
+            'icon' : 'fa-gavel',
+            'sentiment' : "neutral",
+            'time' : moment()
+        };
+        alerts.insert(alert_object);
+    }
+
+    else {
+        var bid_history = auction_object.bid_history;
+        var highest_bid = { 'amount' : 0 }
+
+        for (var i=0; i < bid_history.length; i++) {
+            if (bid_history[i].amount > highest_bid.amount)
+                highest_bid = bid_history[i];
+        }
+
+        var sale_message = "You have successfully auctioned " + auction_object.title + " by " + auction_object.artist + " for $" + getCommaSeparatedValue(auction_object.current_price)
+        var alert_sale_object = {
+            'user_id' : item_object.owner,
+            'message' : sale_message,
+            'link' : '/',
+            'icon' : 'fa-gavel',
+            'sentiment' : "good",
+            'time' : moment()
+        };
+        alerts.insert(alert_sale_object);
+
+        if (highest_bid.user_id != "auction_bot") {
+            var win_message = "You have won " + auction_object.title + " by " + auction_object.artist + " in the auction house for $" + getCommaSeparatedValue(auction_object.current_price);
+            var alert_win_object = {
+                'user_id' : highest_bid.user_id,
+                'message' : win_message,
+                'link' : '/',
+                'icon' : 'fa-gavel',
+                'sentiment' : "good",
+                'time' : moment()
+            };
+            alerts.insert(alert_win_object);
+        }
+
+        var XPChunkValue;
+
+        switch(auction_object.rarity) {
+            case 'common' : XPChunkValue = .5; break;
+            case 'uncommon' : XPChunkValue = .6; break;
+            case 'rare' : XPChunkValue = .7; break;
+            case 'legendary' : XPChunkValue = .8; break;
+            case 'masterpiece' : XPChunkValue = 1; break;
+            default: break;
+        }
+            
+        addXPChunkPercentage(item_object.owner, XPChunkValue);
+        addFunds(item_object.owner, highest_bid.amount);
+
+        if (highest_bid.user_id != "auction_bot") {
+            addXPChunkPercentage(highest_bid.user_id, XPChunkValue);
+            transferAuctionItem(item_object._id, item_object.owner, highest_bid.user_id);
+        }
+
+        else {
+            items.remove(item_object._id);
+            calcMVP(item_object.owner);
+        }
+
+        auctions.remove({'_id': auction_id}, function(error) {
+            if (error)
+                console.log(error.message);
+        });
+    }
+}
+
+transferAuctionItem = function(item_id, owner_id, winner_id) {
+    items.update(item_id, {$set: {'status' : 'claimed', 'owner': winner_id}}, function(error) {
+        if (error)
+            console.log(error.message);
+
+        else {
+            calcMVP(winner_id);
+            calcMVP(owner_id);
+        }
+    });
+}
+
+concludeDisplay = function(item_id) {
+    var item_object = items.findOne(item_id);
+    var artwork_object = artworks.findOne(item_object.artwork_id);
+    var money_earned = item_object.display_details.money;
+    var user_id = item_object.owner;
+    var xp_earned = item_object.display_details.xp;
+
+    var display_message = "Your exhibition of " + artwork_object.title + " by " + artwork_object.artist + " has concluded. You have earned $" + getCommaSeparatedValue(money_earned);
+    var alert_win_object = {
+        'user_id' : user_id,
+        'message' : display_message,
+        'link' : '/',
+        'icon' : 'fa-usd',
+        'sentiment' : "good",
+        'time' : moment()
+    };
+    alerts.insert(alert_win_object);
+
+    addFunds(user_id, money_earned);
+    addXP(user_id, xp_earned);
+
+    var null_display_details = {
+        'money' : 0,
+        'xp' : 0,
+        'end' : ""
+    };
+
+    var new_condition = item_object.condition < .1 ? item_object.condition : item_object.condition - .01;
+    items.update(item_id, {$set: {'status' : 'claimed', 'display_details' : null_display_details, 'condition' : new_condition}}, function(error) {
+        if (error)
+            console.log(error.message);
+
+        else {
+            updateGalleryDetails(items.findOne(item_id).owner);
+            calcMVP(Meteor.userId());
+        }
+    });
+}
+
 getDisplayDetails = function(item_id, duration) {
     // 1 hour
     // 6 hours
@@ -52,7 +188,12 @@ Meteor.methods({
 	'claimArtwork' : function(item_id) {
 		var item_object = canClaimItem(item_id);
         if (item_object) {
-            items.update({'_id': item_id}, {$set: {'status' : 'claimed'}});
+            items.update({'_id': item_id}, {$set: {'status' : 'claimed'}}, function(error) {
+                if (error)
+                    console.log(error.message);
+
+                else calcMVP(Meteor.userId());
+            });
         }
 
         else throw "invalid operation";
@@ -71,7 +212,12 @@ Meteor.methods({
         var item_object = canPurchaseItemFromDealer(item_id);
         if (item_object) {
             chargeAccount(Meteor.userId(), getItemValue(item_id, "dealer"));
-            items.update(item_id, {$set: {'status': "claimed"}});
+            items.update(item_id, {$set: {'status': "claimed"}}, function(error) {
+                if (error)
+                    console.log(error.message);
+
+                else calcMVP(Meteor.userId());
+            });
         }
     },
 
@@ -100,21 +246,15 @@ Meteor.methods({
     },
 
     'acceptCollectorOffer' : function(interaction_object) {
-        try {
-            var item_object = canSellToCollector(interaction_object.item._id);
-            if (item_object) {
-                addFunds(Meteor.userId(), interaction_object.offer);
-                items.remove(item_object._id);
-            }
+        var item_object = canSellToCollector(interaction_object.item._id);
+        if (item_object) {
+            addFunds(Meteor.userId(), interaction_object.offer);
+            items.remove(item_object._id, function(error) {
+                if (error)
+                    console.log(error.message);
 
-            else {
-                console.log(item_object);
-                console.log(interaction_object);
-            }
-        }
-
-        catch(error) {
-            console.log(error.message);
+                else calcMVP(Meteor.userId());
+            });
         }
     },
 
@@ -143,7 +283,12 @@ Meteor.methods({
                 throw "invalid amount";
 
             addFunds(Meteor.userId(), value);
-            items.remove({'_id': item_id});
+            items.remove(item_id, function(error) {
+                if (error)
+                    console.log(error.message);
+
+                else calcMVP(Meteor.userId());
+            });
         }
 
         else throw "invalid operation";

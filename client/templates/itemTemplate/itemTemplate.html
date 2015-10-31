@@ -15,7 +15,7 @@
 				<p>roll count: {{roll_count}}</p>
 				<p class="item-attributes">
 				{{#each attribute}}
-					<i data-attribute_description="{{this.description}}" data-attribute_value="{{this.value}}" style="color: {{getHTMLColorFromValue this.value}}" class="item-attribute fa {{this.icon}}"></i>
+					<i data-attribute_description="{{this.description}}" data-attribute_value="{{this.value}}" style="color: {{getHTMLColorFromValue this.value}}" class="{{#if ../is_permanent}}permanent{{/if}} item-attribute fa {{this.icon}}"></i>
 				{{/each}}
 				</p>
 

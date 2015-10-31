@@ -13,9 +13,11 @@
 				<p>estimated value: ${{getItemValue item_id "actual"}}</p>
 				<p>xp rating: <span style="color: {{getHTMLColorFromValue xp_rating}}">{{xp_rating_text}}</span></p>
 				<p class="item-attributes">
-				{{#each attribute}}
-					<i data-attribute_description="{{this.description}}" data-attribute_value="{{this.value}}" style="color: {{getHTMLColorFromValue this.value}}" class="item-attribute fa {{this.icon}}"></i>
-				{{/each}}
+				{{#if is_not_permanent}}
+					{{#each attribute}}
+						<i data-attribute_description="{{this.description}}" data-attribute_value="{{this.value}}" style="color: {{getHTMLColorFromValue this.value}}" class="item-attribute fa {{this.icon}}"></i>
+					{{/each}}
+				{{/if}}
 				</p>
 
 				{{/with}}	
